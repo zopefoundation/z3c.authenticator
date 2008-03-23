@@ -106,7 +106,7 @@ class HTTPBasicAuthCredentialsPlugin(persistent.Persistent,
           >>> response._status
           401
           >>> response.getHeader('WWW-Authenticate', literal=True)
-          'basic realm="Zope"'
+          'basic realm="Zope Application Management"'
 
         Notice that the realm is quoted, as per RFC 2617.
 
