@@ -1,0 +1,31 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/browser"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c">
+
+  <!-- Group -->
+  <z3c:pagelet
+      name="addGroup.html"
+      for="..interfaces.IGroupContainer"
+      class=".group.GroupAddForm"
+      permission="zope.ManageServices"
+      />
+
+  <z3c:pagelet
+      name="edit.html"
+      for="..interfaces.IGroup"
+      class=".group.GroupEditForm"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageServices"
+      />
+
+  <!-- GroupContainer -->
+  <z3c:pagelet
+      name="addGroupContainer.html"
+      for="..interfaces.IAuthenticator"
+      class=".group.GroupContainerAddForm"
+      permission="zope.ManageServices"
+      />
+
+</configure> 

@@ -1,0 +1,44 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c">
+
+  <class class=".authentication.Authenticator">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="zope.ManageSite"
+        interface=".interfaces.IAuthenticator"
+        set_schema=".interfaces.IAuthenticator"
+        />
+    <require
+        permission="zope.ManageServices"
+        attributes="registrationManager"
+        />
+  </class>
+
+  <adapter
+      for=".interfaces.IQuerySchemaSearch
+           .interfaces.IAuthenticator"
+      provides=".interfaces.IQueriableAuthenticator"
+      factory=".authentication.QuerySchemaSearchAdapter"
+      />
+
+  <utility
+      component=".vocabulary.authenticatorPlugins"
+      name="Z3CAuthenticatorPlugins"
+      />
+
+  <utility
+      component=".vocabulary.credentialsPlugins"
+      name="Z3CCredentialsPlugins"
+      />
+
+  <include file="principal.zcml" />
+  <include file="group.zcml" />
+  <include file="user.zcml" />
+  <include file="credential.zcml" />
+
+  <include package=".browser" />
+
+</configure>

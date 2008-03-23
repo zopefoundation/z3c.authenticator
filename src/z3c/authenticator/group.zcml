@@ -1,0 +1,50 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c">
+
+  <class class=".group.Group">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.IGroup"
+        />
+    <require
+        permission="zope.ManageServices"
+        set_schema=".interfaces.IGroup"
+        />
+  </class>
+
+  <class class=".group.GroupContainer">
+    <implements
+        interface=".interfaces.IGroupContainer"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.IGroupContainer
+                   zope.app.container.interfaces.INameChooser"
+        />
+  </class>
+
+  <adapter
+      factory=".group.GroupPrincipal"
+      />
+
+  <adapter
+      provides="zope.app.container.interfaces.INameChooser"
+      for=".interfaces.IGroupContainer"
+      factory="zope.app.authentication.idpicker.IdPicker"
+      />
+
+  <subscriber
+      for=".interfaces.IPrincipalCreated"
+      handler=".group.specialGroups"
+      />
+
+  <subscriber
+      for=".interfaces.IPrincipalCreated"
+      handler=".group.setGroupsForPrincipal"
+      />
+
+</configure>

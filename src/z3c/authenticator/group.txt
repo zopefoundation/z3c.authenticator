@@ -1,0 +1,581 @@
+=====
+Group
+=====
+
+Group container provide support for groups information stored in the ZODB. 
+They are persistent, and must be contained within the IAuthentication that 
+use them.
+
+
+Group
+-----
+
+Like other users, groups are created when they are needed.
+
+  >>> from z3c.authenticator import interfaces
+  >>> from z3c.authenticator.group import Group
+  >>> group1 = Group(u'groups')
+  >>> interfaces.IGroup.providedBy(group1)
+  True
+
+  >>> group1.title
+  u'groups'
+
+  >>> group1.description
+  u''
+
+  >>> group1.principals
+  ()
+
+
+GroupContainer
+--------------
+
+Group containers contain IGroup objects. A IAuthentication will adapt
+IFoundGroup to this IGroup objects.
+
+  >>> from z3c.authenticator.group import GroupContainer
+  >>> groups = GroupContainer('groups.')
+
+  >>> interfaces.IGroupContainer.providedBy(groups)
+  True
+
+We can add your previous created group to the group container using the 
+addGroup method which returns the group id and group:
+
+  >>> gid, g1 = groups.addGroup(u'g1', group1)
+  >>> gid
+  u'groups.g1'
+
+  >>> interfaces.IGroup.providedBy(g1)
+  True
+
+  >>> g1.__name__
+  u'groups.g1'
+
+Note that when group is added, a GroupAdded event is generated:
+
+  >>> from zope.component.eventtesting import getEvents
+  >>> getEvents(interfaces.IGroupAdded)
+  [<GroupAdded u'groups.g1'>]
+
+Groups are defined with respect to an authentication service. Groups must be 
+accessible via an authentication service and can contain principals accessible
+via an authentication service. To illustrate the group interaction with the 
+authentication service, we will setup a Authenticator utility:
+
+  >>> from z3c.authenticator.authentication import Authenticator
+  >>> sau = Authenticator()
+
+Give them a location and register them as a IAuthentication utility :
+
+  >>> import zope.component
+  >>> from zope.app.security.interfaces import IAuthentication
+  >>> rootFolder['sau'] = sau
+  >>> zope.component.provideUtility(sau, IAuthentication)
+
+We will create and register a new principals utility:
+
+  >>> zope.component.provideUtility(sau, IAuthentication)
+
+We also need to register the group athentication plugin:
+
+  >>> zope.component.provideUtility(groups, 
+  ...     provides=interfaces.IAuthenticatorPlugin, 
+  ...     name='My Group Plugin')
+
+After setup the group and group container, we will create a simple credentials 
+plugin and add them to the authentication utility:
+
+  >>> import zope.interface
+  >>> from z3c.authenticator import interfaces
+
+  >>> class MyCredentialsPlugin(object):
+  ...
+  ...     zope.interface.implements(interfaces.ICredentialsPlugin)
+  ...
+  ...     def extractCredentials(self, request):
+  ...         return {'login':request.get('login', ''), 
+  ...                 'password':request.get('password', '')}
+  ...
+  ...     def challenge(self, request):
+  ...         pass # challenge is a no-op for this plugin
+  ...
+  ...     def logout(self, request):
+  ...         pass # logout is a no-op for this plugin
+
+and configure and add the credential plugin to the Authenticator:
+
+  >>> myCredentialsPlugin = MyCredentialsPlugin()
+  >>> sau['credentials'] = myCredentialsPlugin
+  >>> sau.credentialsPlugins = ('credentials', )
+
+We also need a principal and a IAuthenticationPlugin:
+
+  >>> from z3c.authenticator.user import User
+  >>> p1 = User(u'p1', u'password', u'Principal 1')
+  >>> p2 = User(u'p2', u'password', u'Principal 2')
+  >>> p3 = User(u'p3', u'password', u'Principal 3')
+  >>> p4 = User(u'p4', u'password', u'Principal 4')
+
+  >>> from z3c.authenticator.user import UserContainer
+  >>> users = UserContainer()
+  >>> token1, p1 = users.add(p1)
+  >>> token2, p2 = users.add(p2)
+  >>> token3, p3 = users.add(p3)
+  >>> token4, p4 = users.add(p4)
+
+Add the GroupContainer and UserContainer to the Authenticator and 
+set the correct plugin names
+
+  >>> sau['users'] = users
+  >>> sau['groups'] = groups
+  >>> sau.authenticatorPlugins = ('users', 'groups')
+
+
+Adding users to groups
+----------------------
+
+Now we can set the users on the group but first we need to register the
+IFoundPrincipal adapter for groups. The GroupPrincipal adapter provides this
+interface:
+
+  >>> from z3c.authenticator.group import GroupPrincipal
+  >>> zope.component.provideAdapter(GroupPrincipal, 
+  ...     provides=interfaces.IFoundPrincipal)
+
+And we also need to provide the IFoundPrincipal and IAuthenticatedPrincipal
+adapter for IPrincipal objects:
+
+  >>> from z3c.authenticator.principal import AuthenticatedPrincipal
+  >>> from z3c.authenticator.principal import FoundPrincipal
+  >>> zope.component.provideAdapter(AuthenticatedPrincipal, 
+  ...     provides=interfaces.IAuthenticatedPrincipal)
+
+  >>> zope.component.provideAdapter(FoundPrincipal, 
+  ...     provides=interfaces.IFoundPrincipal)
+
+And we need the ``setGroupsForPrincipal`` subscriber:
+
+  >>> from z3c.authenticator.group import setGroupsForPrincipal
+  >>> zope.component.provideHandler(setGroupsForPrincipal, 
+  ...     [interfaces.IPrincipalCreated])
+
+  >>> g1.principals = [p1.__name__, p2.__name__]
+  >>> g1.principals
+  (..., ...)
+
+  >>> g1.principals[0] == p1.__name__
+  True
+
+  >>> g1.principals[1] == p2.__name__
+  True
+
+Adding users fires an event.
+
+  >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
+  <PrincipalsAddedToGroup [..., ...] u'groups.g1'>
+
+We can now look up groups for the users:
+
+  >>> groups.getGroupsForPrincipal(p1.__name__)
+  (u'groups.g1',)
+
+Note that the group id is a concatenation of the group-folder prefix
+and the name of the group object within the folder.
+
+If we delete a group:
+
+  >>> del groups['groups.g1']
+
+then the groups folder loses the group information for that group's users:
+
+  >>> groups.getGroupsForPrincipal('p1')
+  ()
+
+but the principal information on the group is unchanged:
+
+  >>> g1.principals
+  (..., ...)
+
+  >>> g1.principals[0] == p1.__name__
+  True
+
+  >>> g1.principals[1] == p2.__name__
+  True
+
+It also fires an event showing that the users are removed from the groups.
+
+  >>> getEvents(interfaces.IPrincipalsRemovedFromGroup)[-1]
+  <PrincipalsRemovedFromGroup [..., ...] 'groups.g1'>
+
+Adding the group again within a different name will make the groups 
+available for the principal. Let's use a different group name:
+
+  >>> groups['groups.G1'] = g1
+
+  >>> groups.getGroupsForPrincipal(p1.__name__)
+  (u'groups.G1',)
+
+Here we see that the new name is reflected in the group information.
+
+An event is fired, as usual.
+
+  >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
+  <PrincipalsAddedToGroup [..., ...] u'groups.G1'>
+
+In terms of member events (members added and removed from groups), we have
+now seen that events are fired when a group object is added and when it is 
+removed from a group container; and we have seen that events are fired
+when a principal is added to an already-registered groups.  Events are also
+fired when a principal is removed from an already-registered groups.  Let's
+quickly see some more examples.
+
+  >>> g1.principals = (p1.__name__, p3.__name__, p4.__name__)
+  >>> g1.principals
+  (..., ..., ...)
+
+  >>> g1.principals[0] == p1.__name__
+  True
+
+  >>> g1.principals[1] == p3.__name__
+  True
+
+  >>> g1.principals[2] == p4.__name__
+  True
+
+  >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
+  <PrincipalsAddedToGroup [..., ...] u'groups.G1'>
+
+  >>> getEvents(interfaces.IPrincipalsRemovedFromGroup)[-1]
+  <PrincipalsRemovedFromGroup [...] u'groups.G1'>
+
+  >>> g1.principals = (p1.__name__, p2.__name__)
+  >>> g1.principals
+  (..., ...)
+
+  >>> g1.principals[0] == p1.__name__
+  True
+
+  >>> g1.principals[1] == p2.__name__
+  True
+
+  >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
+  <PrincipalsAddedToGroup [...] u'groups.G1'>
+
+  >>> getEvents(interfaces.IPrincipalsRemovedFromGroup)[-1]
+  <PrincipalsRemovedFromGroup [..., ...] u'groups.G1'>
+
+  >>> groups.getGroupsForPrincipal(p2.__name__)
+  (u'groups.G1',)
+
+
+Groups in groups
+----------------
+
+Groups can contain groups:
+
+  >>> g2 = Group('Group Two')
+  >>> groups['groups.G2'] = g2
+  >>> g2.principals
+  ()
+  
+  >>> g2.principals = ['groups.G1']
+
+  >>> g2.principals
+  ('groups.G1',)
+
+  >>> groups.getGroupsForPrincipal('groups.G2')
+  ()
+
+  >>> g1.principals
+  (..., ...)
+
+  >>> g1.principals[0] == p1.__name__
+  True
+
+  >>> g1.principals[1] == p2.__name__
+  True
+
+  >>> groups.getGroupsForPrincipal('groups.G1')
+  (u'groups.G2',)
+
+  >>> old = getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
+  >>> old
+  <PrincipalsAddedToGroup ['groups.G1'] u'groups.G2'>
+
+Groups cannot contain cycles:
+
+  >>> g1.principals
+  (..., ...)
+
+  >>> g1.principals[0] == p1.__name__
+  True
+
+  >>> g1.principals[1] == p2.__name__
+  True
+
+  >>> g2.principals
+  ('groups.G1',)
+
+  >>> g1.principals = (p1.__name__, p2.__name__, 'groups.G2')
+  Traceback (most recent call last):
+  ...
+  GroupCycle: (...)
+
+  >>> g1.principals
+  (..., ...)
+
+  >>> g1.principals[0] == p1.__name__
+  True
+
+  >>> g1.principals[1] == p2.__name__
+  True
+
+Trying to do so does not fire an event.
+
+  >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1] is old
+  True
+
+They need not be hierarchical:
+
+  >>> ga = Group("Group A")
+  >>> groups['groups.GA'] = ga
+
+  >>> gb = Group("Group B")
+  >>> groups['groups.GB'] = gb
+  >>> gb.principals = ['groups.GA']
+
+  >>> gc = Group("Group C")
+  >>> groups['groups.GC'] = gc
+  >>> gc.principals = ['groups.GA']
+
+  >>> gd = Group("Group D")
+  >>> groups['groups.GD'] = gd
+  >>> gd.principals = ['groups.GA', 'groups.GB']
+
+  >>> ga.principals = [p1.__name__]
+
+Group containers provide a very simple search interface.  They perform
+simple string searches on group titles and descriptions.
+
+  >>> list(groups.search({'search': 'grou'}))
+  [u'groups.G1', u'groups.G2',
+   u'groups.GA', u'groups.GB', u'groups.GC', u'groups.GD']
+
+  >>> list(groups.search({'search': 'two'}))
+  [u'groups.G2']
+
+They also support batching:
+
+  >>> list(groups.search({'search': 'grou'}, 2, 3))
+  [u'groups.GA', u'groups.GB', u'groups.GC']
+
+
+If you don't supply a search key, no results will be returned:
+
+  >>> list(groups.search({}))
+  []
+
+Identifying groups
+------------------
+
+The function, `setGroupsForPrincipal`, is a subscriber to
+principal-creation events.  It adds any group-folder-defined groups to
+users in those groups:
+
+  >>> auth1 = sau.getPrincipal(p1.__name__)
+
+  >>> auth1.groups
+  [u'groups.G1', u'groups.GA']
+
+Of course, this applies to groups too:
+
+  >>> g1 = sau.getPrincipal('groups.G1')
+  >>> g1.id
+  u'groups.G1'
+
+  >>> g1.groups
+  [u'groups.G2']
+
+A GroupPrincipal provides IGroupPrincipal which is inherited from 
+IFoundPrincipal and IGroup:
+
+  >>> interfaces.IGroupPrincipal.providedBy(g1)
+  True
+
+  >>> interfaces.IFoundPrincipal.providedBy(g1)
+  True
+
+  >>> import zope.security.interfaces
+  >>> zope.security.interfaces.IGroup.providedBy(g1)
+  True
+
+
+Special groups
+--------------
+
+Two special groups, Authenticated, and Everyone may apply to users
+created by the pluggable-authentication utility.  There is a
+subscriber, specialGroups, that will set these groups on any non-group
+users if IAuthenticatedGroup, or IEveryoneGroup utilities are
+provided.
+
+If we notify the subscriber with the principal, nothing will happen
+because the groups haven't been defined:
+
+  >>> from z3c.authenticator.principal import FoundPrincipal
+  >>> from z3c.authenticator.event import FoundPrincipalCreated
+  >>> from z3c.authenticator.group import specialGroups
+  >>> x = User('x', 'password', 'X')
+  >>> found = FoundPrincipal(x)
+  >>> event = FoundPrincipalCreated(sau, found)
+  >>> specialGroups(event)
+  >>> found.groups
+  []
+
+Now, if we define the Everybody group:
+
+  >>> import zope.app.security.interfaces
+  >>> class EverybodyGroup(GroupPrincipal):
+  ...     zope.interface.implements(
+  ...        zope.app.security.interfaces.IEveryoneGroup)
+
+  >>> all = Group('groups.all')
+  >>> groups['groups.all'] = all
+  >>> everybody = EverybodyGroup(all)
+  >>> zope.component.provideUtility(everybody,
+  ...     zope.app.security.interfaces.IEveryoneGroup)
+
+Then the group will be added to the principal:
+
+  >>> specialGroups(event)
+  >>> found.groups
+  [u'groups.all']
+
+Similarly for the authenticated group:
+
+  >>> class AuthenticatedGroup(GroupPrincipal):
+  ...     zope.interface.implements(
+  ...         zope.app.security.interfaces.IAuthenticatedGroup)
+
+  >>> authenticated = Group('groups.authenticated')
+  >>> groups['groups.authenticated'] = authenticated
+  >>> authenticated = AuthenticatedGroup(authenticated)
+  >>> zope.component.provideUtility(authenticated,
+  ...     zope.app.security.interfaces.IAuthenticatedGroup)
+
+Then the group will be added to the principal:
+
+  >>> found.groups = []
+  >>> specialGroups(event)
+  >>> found.groups.sort()
+  >>> found.groups
+  [u'groups.all', u'groups.authenticated']
+
+These groups are only added to non-group principals:
+
+  >>> found.groups = []
+  >>> zope.interface.directlyProvides(found, zope.security.interfaces.IGroup)
+  >>> specialGroups(event)
+  >>> found.groups
+  []
+
+And they are only added to group aware principals:
+
+  >>> class SolitaryPrincipal:
+  ...     zope.interface.implements(zope.security.interfaces.IPrincipal)
+  ...     id = title = description = ''
+
+  >>> event = FoundPrincipalCreated(sau, SolitaryPrincipal())
+  >>> specialGroups(event)
+  >>> found.groups
+  []
+
+
+UserAwareGroup
+----------------
+
+We can manages groups via the group getUser and setUser methods:
+
+  >>> foundGroup = interfaces.IFoundPrincipal(g1)
+  >>> foundGroup.getUsers()
+  (..., ...)
+
+  >>> foundGroup.getUsers()[0] == p1.__name__
+  True
+
+  >>> foundGroup.getUsers()[1] == p2.__name__
+  True
+
+Let's remove a member from the group:
+
+  >>> foundGroup.setUsers((p2.__name__,))
+  >>> foundGroup.getUsers()
+  (...,)
+
+  >>> foundGroup.getUsers()[0] == p2.__name__
+  True
+
+  >>> foundGroup.members
+  (...,)
+
+  >>> foundGroup.getUsers()[0] == p2.__name__
+  True
+
+Ensure that such a group provides the IMemberAwareGroup interfaces.
+
+  >>> zope.security.interfaces.IMemberAwareGroup.providedBy(foundGroup)
+  True
+
+#User-aware groups
+#-------------------
+#The groupfolder includes a subscriber that gives group principals the
+#zope.security.interfaces.IGroupAware interface and an implementation thereof.
+#This allows groups to be able to get and set their members.
+#
+#Given an info object and a groups...
+#
+#    >>> class DemoGroupInformation(object):
+#    ...     interface.implements(
+#    ...         zope.app.authentication.groupfolder.IGroupInformation)
+#    ...     def __init__(self, title, description, principals):
+#    ...         self.title = title
+#    ...         self.description = description
+#    ...         self.principals = principals
+#    ...
+#    >>> i = DemoGroupInformation(
+#    ...     'Managers', 'Taskmasters', ('joe', 'jane'))
+#    ...
+#    >>> info = zope.app.authentication.groupfolder.GroupInfo(
+#    ...     'groups.managers', i)
+#    >>> class DummyGroup(object):
+#    ...     interface.implements(IGroupAwarePrincipal)
+#    ...     def __init__(self, id, title=u'', description=u''):
+#    ...         self.id = id
+#    ...         self.title = title
+#    ...         self.description = description
+#    ...         self.groups = []
+#    ...
+#    >>> principal = DummyGroup('foo')
+#    >>> zope.security.interfaces.IMemberAwareGroup.providedBy(principal)
+#    False
+#
+#...when you call the subscriber, it adds the two pseudo-methods to the
+#principal and makes the principal provide the IMemberAwareGroup interface.
+#
+#    >>> zope.app.authentication.groupfolder.setUserSubscriber(
+#    ...     interfaces.FoundPrincipalCreated(
+#    ...         'dummy auth (ignored)', principal, info))
+#    >>> principal.getUsers()
+#    ('joe', 'jane')
+#    >>> principal.setUsers(('joe', 'jane', 'jaimie'))
+#    >>> principal.getUsers()
+#    ('joe', 'jane', 'jaimie')
+#    >>> zope.security.interfaces.IMemberAwareGroup.providedBy(principal)
+#    True
+#
+#The two methods work with the value on the IGroupInformation object.
+#
+#    >>> i.principals == principal.getUsers()
+#    True

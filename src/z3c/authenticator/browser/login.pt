@@ -1,0 +1,19 @@
+<metal:block use-macro="macro:form">
+  <div metal:fill-slot="viewspace">
+    <metal:block use-macro="macro:form-header">
+      header
+    </metal:block>
+    <p tal:content="view/message" i18n:translate="">Please provide Login Information</p>
+    <p tal:condition="python:request.get('lostPassword')"
+       i18n:translate="">The password coverage process was started by mail, check
+      your mailbox for more information.</p>
+    <metal:block use-macro="macro:widget-rows">
+      widgets
+    </metal:block>
+  </div>
+</metal:block>
+<div class="linkRow">
+  <a href="loginForm.html.html"
+     tal:attributes="href string:${request/URL/-1}/sendPassword.html">Ich habe
+  mein Passwort vergessen.</a>
+</div>

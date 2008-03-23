@@ -1,0 +1,28 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="xauth">
+
+  <!-- login form -->
+  <z3c:pagelet
+      name="loginForm.html"
+      for="*"
+      class=".login.LoginForm"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="login.pt"
+      for=".login.LoginForm"
+      />
+
+  <!-- logout form -->
+  <page
+      name="logout.html"
+      for="*"
+      class=".login.SiteLogout"
+      permission="zope.Public"
+      />
+
+</configure>

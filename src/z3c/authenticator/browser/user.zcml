@@ -1,0 +1,30 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/browser"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c">
+
+  <!-- UserContainer -->
+  <z3c:pagelet
+      name="addUserContainer.html"
+      for="..interfaces.IAuthenticator"
+      class=".user.UserContainerAddForm"
+      permission="zope.ManageServices"
+      />
+
+  <!-- User -->
+  <z3c:pagelet
+      name="addUser.html"
+      for="..interfaces.IUserContainer"
+      class=".user.UserAddForm"
+      permission="zope.ManageServices"
+      />
+
+  <z3c:pagelet
+      name="edit.html"
+      for="..interfaces.IUser"
+      class=".user.UserEditForm"
+      permission="zope.ManageServices"
+      />
+
+</configure>
