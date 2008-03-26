@@ -17,8 +17,8 @@ $Id:$
 __docformat__ = "reStructuredText"
 
 import zope.component
-from zope.app.authentication.interfaces import IPasswordManager
-from zope.app.authentication.password import PlainTextPasswordManager
+from z3c.authenticator.interfaces import IPasswordManager
+from z3c.authenticator.password import PlainTextPasswordManager
 from zope.app.testing import setup
 
 ###############################################################################
@@ -41,6 +41,7 @@ def setUpPasswordManager():
 def siteSetUp(test):
     site = setup.placefulSetUp(site=True)
     test.globs['rootFolder'] = site
+    setUpPasswordManager()
 
 
 def siteTearDown(test):

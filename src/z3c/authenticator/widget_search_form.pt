@@ -1,0 +1,38 @@
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>
+      <div class="row">
+        <tal:block define="widget nocall:view/widgets/search">
+          <div class="label">
+            <label tal:attributes="for widget/id">
+              <span i18n:translate=""
+                  tal:content="widget/label">label</span>
+              <span class="required"
+                    tal:condition="widget/required">*</span>
+            </label>
+          </div>
+          <div class="widget">
+            <tal:block content="structure widget/render">
+              <input type="text" size="20" value="" />
+            </tal:block>
+            <input tal:replace="structure view/actions/search/render" />
+          </div>
+          <div class="error"
+               tal:condition="widget/error">
+            <span tal:replace="structure widget/error/render">error</span>
+          </div>
+        </tal:block>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td tal:condition="python: view.actions.get('add')">
+      <div class="row" tal:define="widget nocall:view/widgets/results">
+        <div metal:use-macro="macro:widget-row" />
+      </div>
+      <div class="row">
+        <input tal:replace="structure view/actions/add/render" />
+      </div>
+    </td>
+  </tr>
+</table>

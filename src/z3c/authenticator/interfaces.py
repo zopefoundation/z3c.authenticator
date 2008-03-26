@@ -21,7 +21,6 @@ import zope.schema
 
 from zope.security.interfaces import IGroupClosureAwarePrincipal
 from zope.security.interfaces import IMemberAwareGroup
-from zope.app.authentication.interfaces import ICredentialsPlugin
 from zope.app.container.interfaces import IContainer
 from zope.app.container.constraints import contains
 from zope.app.container.constraints import containers
@@ -29,6 +28,18 @@ from zope.app.security.interfaces import ILogout
 from zope.app.security.vocabulary import PrincipalSource
 
 from z3c.i18n import MessageFactory as _
+
+
+# TODO: this shoulld really, really go to another place then 
+#       zope.app.authentication
+class IPasswordManager(zope.interface.Interface):
+    """Password manager."""
+
+    def encodePassword(password):
+        """Return encoded data for the password."""
+
+    def checkPassword(storedPassword, password):
+        """Return whether the password coincide with the storedPassword."""
 
 
 class IPlugin(zope.interface.Interface):
@@ -93,11 +104,30 @@ class ICredentialsPlugin(IPlugin):
         """
 
 
+class ISearchable(zope.interface.Interface):
+    """An interface for searching using schema-constrained input."""
+
+    def search(query, start=None, batch_size=None):
+        """Returns an iteration of principal IDs matching the query.
+
+        query is a mapping of name/value pairs for fields specified by the
+        schema.
+
+        If the start argument is provided, then it should be an
+        integer and the given number of initial items should be
+        skipped.
+
+        If the batch_size argument is provided, then it should be an
+        integer and no more than the given number of items should be
+        returned.
+        """
+
+
 class IAuthenticator(ILogout, IContainer):
     """Authentication utility.
     
     The Authenticator supports NOT IAuthenticatorPlugin plugins defined 
-    in zope.app.authentication.interfaces. Because they use and return a 
+    in z3c.authenticator.interfaces. Because they use and return a 
     IPrincipalInfo object in the authenticateCredentials method.
     
     Note: you have to write your own authenticator plugins because we do not 
@@ -185,7 +215,7 @@ class IUser(zope.interface.Interface):
         default=u'')
 
 
-class IUserSearchCriteria(zope.interface.Interface):
+class ISourceSearchCriteria(zope.interface.Interface):
     """Search Interface for this Principal Provider"""
 
     search = zope.schema.TextLine(
@@ -196,10 +226,13 @@ class IUserSearchCriteria(zope.interface.Interface):
         missing_value=u'')
 
 
-class IUserContainer(IContainer, IAuthenticatorPlugin):
+class IUserContainer(IContainer, IAuthenticatorPlugin, ISearchable):
     """Principal container."""
 
     contains(IUser)
+
+    def add(user):
+        """Add a user and returns a the assigned token (principal id)."""
 
 
 # principal interfaces
@@ -277,15 +310,16 @@ class IGroup(zope.interface.Interface):
         required=False)
 
     principals = zope.schema.List(
-        title=_("Principals"),
+        title=_('Group Principals'),
+        description=_("List of ids of principals which belong to the group"),
         value_type=zope.schema.Choice(
+            title=_('Group Principals'),
+            description=_('Group Principals'),
             source=PrincipalSource()),
-        description=_(
-        "List of ids of principals which belong to the group"),
         required=False)
 
 
-class IGroupContainer(IContainer, IAuthenticatorPlugin):
+class IGroupContainer(IContainer, IAuthenticatorPlugin, ISearchable):
 
     contains(IGroup)
 
@@ -302,15 +336,6 @@ class IGroupContainer(IContainer, IAuthenticatorPlugin):
 
     def getPrincipalsForGroup(groupid):
         """Get principals which belong to the group"""
-
-
-class IGroupSearchCriteria(zope.interface.Interface):
-
-    search = zope.schema.TextLine(
-        title=_("Group Search String"),
-        required=False,
-        missing_value=u'',
-        )
 
 
 class IGroupPrincipal(IFoundPrincipal, IMemberAwareGroup):
@@ -442,32 +467,6 @@ class ILoginSchema(zope.interface.Interface):
 
 
 # queriable search interfaces
-class IQueriableAuthenticator(zope.interface.Interface):
+class IQueriableAuthenticator(ISearchable):
     """Indicates the authenticator provides a search UI for principals."""
-
-
-class IQuerySchemaSearch(zope.interface.Interface):
-    """An interface for searching using schema-constrained input."""
-
-    schema = zope.interface.Attribute("""
-        The schema that constrains the input provided to the search method.
-
-        A mapping of name/value pairs for each field in this schema is used
-        as the query argument in the search method.
-        """)
-
-    def search(query, start=None, batch_size=None):
-        """Returns an iteration of principal IDs matching the query.
-
-        query is a mapping of name/value pairs for fields specified by the
-        schema.
-
-        If the start argument is provided, then it should be an
-        integer and the given number of initial items should be
-        skipped.
-
-        If the batch_size argument is provided, then it should be an
-        integer and no more than the given number of items should be
-        returned.
-        """
 

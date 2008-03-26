@@ -93,10 +93,7 @@ class Group(persistent.Persistent, contained.Contained):
 
 class GroupContainer(btree.BTreeContainer):
 
-    zope.interface.implements(interfaces.IGroupContainer,
-        interfaces.IQuerySchemaSearch,)
-
-    schema = interfaces.IGroupSearchCriteria
+    zope.interface.implements(interfaces.IGroupContainer)
 
     def __init__(self, prefix=u''):
         self.prefix = prefix

@@ -73,8 +73,7 @@ class UserAddForm(form.AddForm):
 
     label = _('Add User.')
 
-    fields = field.Fields(IAddName)
-    fields += field.Fields(interfaces.IUser).select('login', 'password', 
+    fields = field.Fields(interfaces.IUser).select('login', 'password', 
         'title', 'description', 'passwordManagerName')
 
     def createAndAdd(self, data):
@@ -85,9 +84,8 @@ class UserAddForm(form.AddForm):
         passwordManagerName = data.get('passwordManagerName', u'')
         obj = user.User(login, password, title, description, 
             passwordManagerName)
-        self.contentName = data.get('__name__', u'')
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
-        self.context[self.contentName] = obj
+        self.contentName, usr = self.context.add(obj)
 
         #configure
         configurator.configure(obj, data)

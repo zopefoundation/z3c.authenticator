@@ -17,13 +17,6 @@
         />
   </class>
 
-  <adapter
-      for=".interfaces.IQuerySchemaSearch
-           .interfaces.IAuthenticator"
-      provides=".interfaces.IQueriableAuthenticator"
-      factory=".authentication.QuerySchemaSearchAdapter"
-      />
-
   <utility
       component=".vocabulary.authenticatorPlugins"
       name="Z3CAuthenticatorPlugins"
@@ -34,10 +27,12 @@
       name="Z3CCredentialsPlugins"
       />
 
-  <include file="principal.zcml" />
-  <include file="group.zcml" />
-  <include file="user.zcml" />
   <include file="credential.zcml" />
+  <include file="group.zcml" />
+  <include file="password.zcml" />
+  <include file="principal.zcml" />
+  <include file="user.zcml" />
+  <include file="widget.zcml" />
 
   <include package=".browser" />
 

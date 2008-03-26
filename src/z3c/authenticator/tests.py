@@ -158,6 +158,7 @@ def test_suite():
             setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown),
         doctest.DocFileSuite('vocabulary.txt',
             setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown),
+        doctest.DocTestSuite('z3c.authenticator.password'),
         unittest.makeSuite(AuthenticatorTest),
         unittest.makeSuite(UserContainerTest),
         unittest.makeSuite(UserTest),

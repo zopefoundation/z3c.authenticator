@@ -31,12 +31,6 @@
       factory=".group.GroupPrincipal"
       />
 
-  <adapter
-      provides="zope.app.container.interfaces.INameChooser"
-      for=".interfaces.IGroupContainer"
-      factory="zope.app.authentication.idpicker.IdPicker"
-      />
-
   <subscriber
       for=".interfaces.IPrincipalCreated"
       handler=".group.specialGroups"

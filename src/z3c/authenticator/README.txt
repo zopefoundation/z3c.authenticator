@@ -1,10 +1,10 @@
-========================
-X Authentication Utility
-========================
+=======================
+IAuthentication Utility
+=======================
 
-The X Authentication Utility provides a framework for authenticating 
-principals and associating information with them. It uses plugins and 
-subscribers to get its work done.
+The Authenticator Utility provides a framework for authenticating principals 
+and associating information with them. It uses plugins and subscribers to get 
+its work done.
 
 For a simple authentication utility to be used, it should be registered as a
 utility providing the `zope.app.security.interfaces.IAuthentication` interface.
@@ -67,11 +67,10 @@ Authenticator plugins are responsible for authenticating the credentials
 extracted by a credentials plugin. They are also typically able to create
 principal objects for credentials they successfully authenticate.
 
-Given a request object, the Authenticator returns a principal object, 
-if it can. The X Autentication utility does this by first iterateing 
-through its credentials plugins to obtain a set of credentials. If it gets 
-credentials, it iterates through its authenticator plugins to authenticate 
-them.
+Given a request object, the Authenticator returns a principal object, if it 
+can. The Authenticator utility does this by first iterateing through its 
+credentials plugins to obtain a set of credentials. If it gets credentials, it 
+iterates through its authenticator plugins to authenticate them.
 
 If an authenticator succeeds in authenticating a set of credentials, the 
 Authenticator uses the authenticator to create a principal 

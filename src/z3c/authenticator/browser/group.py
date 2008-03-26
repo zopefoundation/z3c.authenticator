@@ -27,11 +27,13 @@ from z3c.i18n import MessageFactory as _
 from z3c.authenticator import interfaces
 from z3c.authenticator import group
 from z3c.authenticator import user
+from z3c.authenticator.widget import getSourceInputWidget
 from z3c.form import field
 from z3c.form import button
 from z3c.formui import form
 from z3c.pagelet import browser
 from z3c.configurator import configurator
+
 
 
 class IAddName(zope.interface.Interface):
@@ -103,5 +105,25 @@ class GroupEditForm(form.EditForm):
     """Group edit form."""
 
     label = _('Edit Group.')
+    groupCycleErrorMessage = _('There is a cyclic relationship among groups.')
 
-    fields = field.Fields(interfaces.IGroup).select('title', 'description')
+    fields = field.Fields(interfaces.IGroup).select('title', 'description',
+        'principals')
+
+    fields['principals'].widgetFactory = getSourceInputWidget
+
+    @button.buttonAndHandler(_('Apply'), name='apply')
+    def handleApply(self, action):
+        data, errors = self.extractData()
+        if errors:
+            self.status = self.formErrorsMessage
+            return
+        try:
+            changes = self.applyChanges(data)
+        except group.GroupCycle, e:
+            self.status = self.groupCycleErrorMessage
+            return
+        if changes:
+            self.status = self.successMessage
+        else:
+            self.status = self.noChangesMessage

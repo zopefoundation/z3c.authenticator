@@ -144,34 +144,4 @@ class Authenticator(btree.BTreeContainer):
                 next.logout(request)
 
 
-class QuerySchemaSearchAdapter(object):
-    """Performs schema-based principal searches on behalf of a PAU.
-
-    Delegates the search to the adapted authenticator (which also provides
-    IQuerySchemaSearch)..
-    """
-    zope.component.adapts(
-        interfaces.IQuerySchemaSearch,
-        interfaces.IAuthenticator)
-
-    zope.interface.implements(
-        interfaces.IQueriableAuthenticator,
-        interfaces.IQuerySchemaSearch,
-        ILocation)
-
-    def __init__(self, authplugin, pau):
-        if ILocation.providedBy(authplugin):
-            self.__parent__ = authplugin.__parent__
-            self.__name__ = authplugin.__name__
-        else:
-            self.__parent__ = pau
-            self.__name__ = ""
-        self.authplugin = authplugin
-        self.pau = pau
-        self.schema = authplugin.schema
-
-    def search(self, query, start=None, batch_size=None):
-        for id in self.authplugin.search(query, start, batch_size):
-            yield id
-
 

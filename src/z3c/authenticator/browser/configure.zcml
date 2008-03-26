@@ -3,13 +3,6 @@
     xmlns="http://namespaces.zope.org/browser"
     i18n_domain="z3c">
 
-  <zope:adapter
-      for="..interfaces.IQuerySchemaSearch
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.browser.interfaces.ISourceQueryView"
-      factory=".schemasearch.QuerySchemaSearchView"
-      />
-
   <include file="authenticator.zcml" />
   <include file="credential.zcml" />
   <include file="group.zcml" />

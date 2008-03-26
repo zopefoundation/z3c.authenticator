@@ -26,7 +26,6 @@ import zope.component
 from zope.app.container import contained
 from zope.app.container import btree
 from zope.app.container.interfaces import DuplicateIDError
-from zope.app.authentication.interfaces import IPasswordManager
 
 from z3c.authenticator import interfaces
 
@@ -63,7 +62,7 @@ class User(persistent.Persistent, contained.Contained):
     passwordManagerName = property(getPasswordManagerName)
 
     def _getPasswordManager(self):
-        return zope.component.getUtility(IPasswordManager, 
+        return zope.component.getUtility(interfaces.IPasswordManager, 
             self.passwordManagerName)
 
     def getPassword(self):
@@ -103,10 +102,7 @@ class UserContainer(btree.BTreeContainer):
     See principalfolder.txt for details.
     """
 
-    zope.interface.implements(interfaces.IUserContainer, 
-        interfaces.IQuerySchemaSearch)
-
-    schema = interfaces.IUserSearchCriteria
+    zope.interface.implements(interfaces.IUserContainer)
 
     def __init__(self):
         super(UserContainer, self).__init__()

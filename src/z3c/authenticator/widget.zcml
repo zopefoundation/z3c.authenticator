@@ -1,0 +1,72 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zope">
+
+  <adapter
+      for=".interfaces.ISearchable
+           .interfaces.IAuthenticator"
+      provides=".interfaces.IQueriableAuthenticator"
+      factory=".widget.QueriableAuthenticator"
+      />
+
+  <adapter
+      factory=".widget.PrincipalSourceDataConverter"
+      />
+  <adapter
+      factory=".widget.SourceSearchDataConverter"
+      />
+
+  <adapter
+      factory=".widget.PrincipalTerms"
+      />
+  <adapter
+      factory=".widget.PrincipalSourceWidget"
+      />
+
+
+  <!-- widget templates -->
+  <z3c:widgetTemplate
+      mode="input"
+      widget=".widget.ISourceResultWidget"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="widget_source_search_input.pt"
+      />
+
+  <z3c:widgetTemplate
+      mode="input"
+      widget=".widget.IPrincipalSourceWidget"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="widget.pt"
+      />
+
+
+  <!-- search forms -->
+  <adapter
+      for=".interfaces.ISearchable
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides=".widget.ISourceSearchForm"
+      factory=".widget.AuthenticatorSearchForm"
+      />
+
+  <adapter
+      for="zope.app.security.interfaces.IAuthentication
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides=".widget.ISourceSearchForm"
+      factory=".widget.PrincipalRegistrySearchForm"
+      />
+
+  <z3c:template
+      for=".widget.AuthenticatorSearchForm"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="widget_search_form.pt"
+      />
+
+  <z3c:template
+      for=".widget.PrincipalRegistrySearchForm"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="widget_search_form.pt"
+      />
+      
+
+</configure>
