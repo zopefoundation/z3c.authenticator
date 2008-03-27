@@ -175,9 +175,8 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
     To illustrate how a session plugin works, we'll first setup some session
     machinery:
 
-      >>> from zope.session.session import RAMSessionDataContainer
-      >>> from zope.app.authentication.tests import sessionSetUp
-      >>> sessionSetUp(RAMSessionDataContainer)
+      >>> from z3c.authenticator.testing import sessionSetUp
+      >>> sessionSetUp()
 
     This lets us retrieve the same session info from any test request, which
     simulates what happens when a user submits a session ID as a cookie.
@@ -189,6 +188,12 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
     A session plugin uses an ISession component to store the last set of
     credentials it gets from a request. Credentials can be retrieved from
     subsequent requests using the session-stored credentials.
+
+    If the given extractCredentials argument doesn't provide IHTTPRequest the
+    result will always be None:
+
+      >>> print plugin.extractCredentials(None)
+      None
 
     Our test environment is initially configured without credentials:
 
@@ -235,10 +240,20 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
       >>> plugin.extractCredentials(request)
       {'login': 'luke', 'password': 'the_force'}
 
-    Finally, we clear the session credentials using the logout method:
+    Finally, we clear the session credentials using the logout method.
+    If the given logout argument doesn't provide IHTTPRequest the
+    result will always be False:
+
+      >>> plugin.logout(None)
+      False
+
+    Now try to logout with the correct argument:
 
       >>> plugin.logout(TestRequest())
       True
+
+    After logout we can not logaout again:
+
       >>> print plugin.extractCredentials(TestRequest())
       None
 
@@ -333,6 +348,12 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
 
           >>> request.response.getHeader('location') # doctest: +ELLIPSIS
           '.../@@mylogin.html?camefrom=%2Ffoo%2Fbar%2Ffolder%2Fpage+1.html%3Fq%3Dvalue'
+
+        If the given challenge argument doesn't provide IHTTPRequest the
+        result will always be False:
+
+          >>> plugin.challenge(None)
+          False
 
         This can be used by the login form to redirect the user back to the
         originating URL upon successful authentication.

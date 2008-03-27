@@ -2,7 +2,7 @@
 IAuthentication Utility
 =======================
 
-The Authenticator Utility provides a framework for authenticating principals 
+The Authenticator package provides a framework for authenticating principals 
 and associating information with them. It uses plugins and subscribers to get 
 its work done.
 
@@ -10,7 +10,8 @@ For a simple authentication utility to be used, it should be registered as a
 utility providing the `zope.app.security.interfaces.IAuthentication` interface.
 
 Our target is to support a handy IAuthentication utility which offers a simple
-API for custom IUser implementations.
+API for custom IUser implementations and does not depend on the default
+zope.app.authentication implementation.
 
 
 Security
@@ -37,11 +38,11 @@ which are implemented as adapters for a IUser. This adapters do not offer
 it's context which is the real IUser.
 
 The Authenticator doesn't use a prefix. The usage of a prefix is only
-implemented in the IUserContainer. 
+implemented in the IGroupContainer. 
 
 We do not use a prefix in the IUserContainer because of the used unique user 
 id tokens. This will make sure that the same principal id doesn't get used at 
-a later time (Common criteria). There is a ``add`` method which creates 
+a later time (common criteria). There is a ``add`` method which creates 
 this id for you based on the login. The __setitem__ should not get used 
 directly for adding IUser instances anymore. We heavily restricted the
 usage of this method. See the inline doc tests in __setitem__ for more info.

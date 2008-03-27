@@ -147,10 +147,10 @@ class SessionCredentialsPluginFormTest(InterfaceBaseTest):
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('README.txt',
-            setUp=testing.siteSetUp, tearDown=testing.siteTearDown,
+            setUp=testing.placefulSetUp, tearDown=testing.placefulSetUp,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         doctest.DocFileSuite('group.txt',
-            setUp=testing.siteSetUp, tearDown=testing.siteTearDown,
+            setUp=testing.placefulSetUp, tearDown=testing.placefulSetUp,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         doctest.DocTestSuite('z3c.authenticator.credential',
             setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown),

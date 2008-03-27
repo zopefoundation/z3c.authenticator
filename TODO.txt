@@ -2,13 +2,4 @@
 TODO
 ====
 
-- remove session setup from zope.app.authentication
-
-- implement own zope.app.authentication.idpicker.IdPicker
-
-- implement own zope.app.authentication.interfaces import IPasswordManager
-
 - implement nickName, email and phone?
-
-- check README and make sure the documentation is conform with the 
-  implementation

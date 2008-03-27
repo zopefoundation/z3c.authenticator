@@ -409,9 +409,6 @@ class ISessionCredentials(zope.interface.Interface):
         access to the credentials.
     """
 
-    def __init__(login, password):
-        pass
-
     def getLogin():
         """Return login name."""
 

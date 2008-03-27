@@ -28,7 +28,6 @@ from zope.app.component.vocabulary import UtilityVocabulary
 
 from z3c.authenticator.interfaces import IPasswordManager
 
-
 _encoder = getencoder("utf-8")
 
 

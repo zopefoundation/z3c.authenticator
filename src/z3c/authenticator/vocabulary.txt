@@ -2,11 +2,12 @@
 Vocabulary
 ==========
 
-The vocabulary module provides vocabularies for the authenticatorPlugins.
+The vocabulary module provides vocabularies for the authenticator plugins and
+the credentials plugins.
 
 The options should include the unique names of all of the plugins that provide
-the appropriate interface (interfaces.IAuthentiatorPlugin, respectively) for 
-the current context-- which is expected to be a pluggable authentication 
+the appropriate interface (IAuthentiatorPlugin or ICredentialsPlugin, 
+respectively) for the current context which is expected to be a IAuthenticator 
 utility, hereafter referred to as a Authenticator.
 
 These names may be for objects contained within the Authenticator 
@@ -55,6 +56,10 @@ others in a faux Authenticator.
     ...     return zope.component.getGlobalSiteManager()
     ...
     >>> zope.component.provideAdapter(getSiteManager)
+
+
+authenticatorPlugins
+--------------------
 
 We are now ready to create a vocabulary that we can use.  The context is
 our faux authentication utility, `auth`.
@@ -127,6 +132,73 @@ expect.
 
     >>> from zope import i18n
     >>> import pprint
+    >>> pprint.pprint([i18n.translate(term.title) for term in vocab])
+    [u'Plugin 0 (a utility)',
+     u'Special Title (in contents)',
+     u'Plugin 2 (in contents)',
+     u'Plugin 3 (in contents)',
+     u'Plugin 4 (in contents)',
+     u'Plugin X (not found; deselecting will remove)']
+
+
+credentialsPlugins
+------------------
+
+For completeness, we'll do the same review of the credentialsPlugins.
+
+    >>> class DemoPlugin(object):
+    ...     zope.interface.implements(interfaces.ICredentialsPlugin)
+    ...     def __init__(self, name):
+    ...         self.name = name
+    ...
+    >>> utility_plugins = dict(
+    ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(4))
+    >>> contained_plugins = dict(
+    ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(1, 5))
+    >>> for p in utility_plugins.values():
+    ...     zope.component.provideUtility(p, name=p.name)
+    ...
+    >>> auth = DemoAuth((p.name, p) for p in contained_plugins.values())
+    >>> vocab = vocabulary.credentialsPlugins(auth)
+
+Iterating over the vocabulary results in all of the terms, in a relatively
+arbitrary order of their names.  (This vocabulary should typically use a
+widget that sorts values on the basis of localized collation order of the term
+titles.) Similarly, we can use `in` to test for the presence of values in the
+vocabulary. The length reports the expected value.
+
+    >>> [term.value for term in vocab] # doctest: +NORMALIZE_WHITESPACE
+    [u'Plugin 0', u'Plugin 1', u'Plugin 2', u'Plugin 3', u'Plugin 4',
+     u'Plugin X']
+    >>> ['Plugin %s' % i in vocab for i in range(-1, 6)]
+    [False, True, True, True, True, True, False]
+    >>> 'Plugin X' in vocab
+    True
+    >>> len(vocab)
+    6
+
+One can get a term for a given value using `getTerm()`; its token, in
+turn, should also return the same effective term from `getTermByToken`.
+
+    >>> values = ['Plugin 0', 'Plugin 1', 'Plugin 2', 'Plugin 3', 'Plugin 4',
+    ...           'Plugin X']
+    >>> for val in values:
+    ...     term = vocab.getTerm(val)
+    ...     assert term.value == val
+    ...     term2 = vocab.getTermByToken(term.token)
+    ...     assert term2.token == term.token
+    ...     assert term2.value == val
+    ...
+
+The terms have titles, which are message ids that show the plugin title or id
+and whether the plugin is a utility or just contained in the auth utility.
+We'll give one of the plugins a dublin core title just to show the
+functionality. We need to regenerate the vocabulary, since it calculates all
+of its data at once. Then we'll check the titles.  We'll have to translate
+them to see what we expect.
+
+    >>> zope.interface.directlyProvides(contained_plugins[1], ISpecial)
+    >>> vocab = vocabulary.credentialsPlugins(auth)
     >>> pprint.pprint([i18n.translate(term.title) for term in vocab])
     [u'Plugin 0 (a utility)',
      u'Special Title (in contents)',

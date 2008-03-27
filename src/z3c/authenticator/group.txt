@@ -15,6 +15,9 @@ Like other users, groups are created when they are needed.
   >>> from z3c.authenticator import interfaces
   >>> from z3c.authenticator.group import Group
   >>> group1 = Group(u'groups')
+  >>> group1
+  <Group None>
+
   >>> interfaces.IGroup.providedBy(group1)
   True
 
@@ -65,18 +68,18 @@ via an authentication service. To illustrate the group interaction with the
 authentication service, we will setup a Authenticator utility:
 
   >>> from z3c.authenticator.authentication import Authenticator
-  >>> sau = Authenticator()
+  >>> authenticator = Authenticator()
 
 Give them a location and register them as a IAuthentication utility :
 
   >>> import zope.component
   >>> from zope.app.security.interfaces import IAuthentication
-  >>> rootFolder['sau'] = sau
-  >>> zope.component.provideUtility(sau, IAuthentication)
+  >>> rootFolder['authenticator'] = authenticator
+  >>> zope.component.provideUtility(authenticator, IAuthentication)
 
 We will create and register a new principals utility:
 
-  >>> zope.component.provideUtility(sau, IAuthentication)
+  >>> zope.component.provideUtility(authenticator, IAuthentication)
 
 We also need to register the group athentication plugin:
 
@@ -107,8 +110,8 @@ plugin and add them to the authentication utility:
 and configure and add the credential plugin to the Authenticator:
 
   >>> myCredentialsPlugin = MyCredentialsPlugin()
-  >>> sau['credentials'] = myCredentialsPlugin
-  >>> sau.credentialsPlugins = ('credentials', )
+  >>> authenticator['credentials'] = myCredentialsPlugin
+  >>> authenticator.credentialsPlugins = ('credentials', )
 
 We also need a principal and a IAuthenticationPlugin:
 
@@ -128,9 +131,9 @@ We also need a principal and a IAuthenticationPlugin:
 Add the GroupContainer and UserContainer to the Authenticator and 
 set the correct plugin names
 
-  >>> sau['users'] = users
-  >>> sau['groups'] = groups
-  >>> sau.authenticatorPlugins = ('users', 'groups')
+  >>> authenticator['users'] = users
+  >>> authenticator['groups'] = groups
+  >>> authenticator.authenticatorPlugins = ('users', 'groups')
 
 
 Adding users to groups
@@ -384,14 +387,14 @@ The function, `setGroupsForPrincipal`, is a subscriber to
 principal-creation events.  It adds any group-folder-defined groups to
 users in those groups:
 
-  >>> auth1 = sau.getPrincipal(p1.__name__)
+  >>> auth1 = authenticator.getPrincipal(p1.__name__)
 
   >>> auth1.groups
   [u'groups.G1', u'groups.GA']
 
 Of course, this applies to groups too:
 
-  >>> g1 = sau.getPrincipal('groups.G1')
+  >>> g1 = authenticator.getPrincipal('groups.G1')
   >>> g1.id
   u'groups.G1'
 
@@ -429,7 +432,7 @@ because the groups haven't been defined:
   >>> from z3c.authenticator.group import specialGroups
   >>> x = User('x', 'password', 'X')
   >>> found = FoundPrincipal(x)
-  >>> event = FoundPrincipalCreated(sau, found)
+  >>> event = FoundPrincipalCreated(authenticator, found)
   >>> specialGroups(event)
   >>> found.groups
   []
@@ -473,6 +476,16 @@ Then the group will be added to the principal:
   >>> found.groups
   [u'groups.all', u'groups.authenticated']
 
+The `allGroups` attribute is a readonly iterable of the full closure of the
+groups in the `groups` attribute--that is, if the principal is a direct member
+of the 'Administrators' group, and the 'Administrators' group is a member of
+the 'Reviewers' group, then p.groups would be ['Administrators'] and 
+list(p.allGroups) would be ['Administrators', 'Reviewers'].
+
+  >>> sorted(found.allGroups)
+  [u'groups.all', u'groups.authenticated']
+
+
 These groups are only added to non-group principals:
 
   >>> found.groups = []
@@ -487,10 +500,11 @@ And they are only added to group aware principals:
   ...     zope.interface.implements(zope.security.interfaces.IPrincipal)
   ...     id = title = description = ''
 
-  >>> event = FoundPrincipalCreated(sau, SolitaryPrincipal())
+  >>> event = FoundPrincipalCreated(authenticator, SolitaryPrincipal())
   >>> specialGroups(event)
   >>> found.groups
   []
+
 
 
 UserAwareGroup
@@ -527,55 +541,3 @@ Ensure that such a group provides the IMemberAwareGroup interfaces.
 
   >>> zope.security.interfaces.IMemberAwareGroup.providedBy(foundGroup)
   True
-
-#User-aware groups
-#-------------------
-#The groupfolder includes a subscriber that gives group principals the
-#zope.security.interfaces.IGroupAware interface and an implementation thereof.
-#This allows groups to be able to get and set their members.
-#
-#Given an info object and a groups...
-#
-#    >>> class DemoGroupInformation(object):
-#    ...     interface.implements(
-#    ...         zope.app.authentication.groupfolder.IGroupInformation)
-#    ...     def __init__(self, title, description, principals):
-#    ...         self.title = title
-#    ...         self.description = description
-#    ...         self.principals = principals
-#    ...
-#    >>> i = DemoGroupInformation(
-#    ...     'Managers', 'Taskmasters', ('joe', 'jane'))
-#    ...
-#    >>> info = zope.app.authentication.groupfolder.GroupInfo(
-#    ...     'groups.managers', i)
-#    >>> class DummyGroup(object):
-#    ...     interface.implements(IGroupAwarePrincipal)
-#    ...     def __init__(self, id, title=u'', description=u''):
-#    ...         self.id = id
-#    ...         self.title = title
-#    ...         self.description = description
-#    ...         self.groups = []
-#    ...
-#    >>> principal = DummyGroup('foo')
-#    >>> zope.security.interfaces.IMemberAwareGroup.providedBy(principal)
-#    False
-#
-#...when you call the subscriber, it adds the two pseudo-methods to the
-#principal and makes the principal provide the IMemberAwareGroup interface.
-#
-#    >>> zope.app.authentication.groupfolder.setUserSubscriber(
-#    ...     interfaces.FoundPrincipalCreated(
-#    ...         'dummy auth (ignored)', principal, info))
-#    >>> principal.getUsers()
-#    ('joe', 'jane')
-#    >>> principal.setUsers(('joe', 'jane', 'jaimie'))
-#    >>> principal.getUsers()
-#    ('joe', 'jane', 'jaimie')
-#    >>> zope.security.interfaces.IMemberAwareGroup.providedBy(principal)
-#    True
-#
-#The two methods work with the value on the IGroupInformation object.
-#
-#    >>> i.principals == principal.getUsers()
-#    True
