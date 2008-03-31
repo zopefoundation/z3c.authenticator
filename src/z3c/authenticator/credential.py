@@ -175,7 +175,9 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
     To illustrate how a session plugin works, we'll first setup some session
     machinery:
 
+      >>> from zope.app.testing import placelesssetup
       >>> from z3c.authenticator.testing import sessionSetUp
+      >>> placelesssetup.setUp()
       >>> sessionSetUp()
 
     This lets us retrieve the same session info from any test request, which

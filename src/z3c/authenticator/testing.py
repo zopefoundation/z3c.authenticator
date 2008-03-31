@@ -20,7 +20,6 @@ import zope.component
 import zope.interface
 from zope.publisher.interfaces import IRequest
 from zope.app.testing import setup
-from zope.app.testing import placelesssetup
 
 from zope.session.interfaces import IClientId
 from zope.session.interfaces import IClientIdManager
@@ -52,7 +51,6 @@ class TestClientId(object):
 
 
 def sessionSetUp(session_data_container_class=RAMSessionDataContainer):
-    placelesssetup.setUp()
     zope.component.provideAdapter(TestClientId, (IRequest,), IClientId)
     zope.component.provideAdapter(Session, (IRequest,), ISession)
     zope.component.provideUtility(CookieClientIdManager(), IClientIdManager)
