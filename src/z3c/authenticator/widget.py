@@ -22,12 +22,10 @@ import zope.interface
 import zope.i18n
 import zope.schema
 import zope.schema.interfaces
-import zope.location
 import zope.app.security.interfaces
 from zope.traversing import api
 from zope.location.interfaces import ILocation
 from zope.app.security.interfaces import IAuthentication
-from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.security.interfaces import IPrincipalSource
 
 from z3c.formui import form
@@ -37,7 +35,6 @@ from z3c.form.i18n import MessageFactory as _
 from z3c.form.widget import SequenceWidget, FieldWidget
 from z3c.form.browser import widget
 from z3c.form.browser import text
-from z3c.form.browser.orderedselect import SequenceSelectFieldWidget
 from z3c.form import converter
 from z3c.form.interfaces import IFieldWidget
 from z3c.form.interfaces import IWidget
@@ -46,7 +43,6 @@ from z3c.form.interfaces import ICheckBoxWidget
 from z3c.form.interfaces import IWidgets
 from z3c.form.interfaces import IFormLayer
 from z3c.form.interfaces import ITerms
-from z3c.template.template import getPageTemplate
 from z3c.template.template import getLayoutTemplate
 from z3c.authenticator import interfaces
 

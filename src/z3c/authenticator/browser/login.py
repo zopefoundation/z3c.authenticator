@@ -9,18 +9,10 @@ $Id: login.py 357 2007-03-15 17:17:37Z roger.ineichen $
 """
 __docformat__ = "reStructuredText"
 
-from urllib import urlencode
-from urllib import quote
-import zope.interface
 import zope.component
-import zope.schema
-from zope.interface import invariant
-from zope.interface import Invalid
 from zope.publisher.browser import BrowserPage
 from zope.traversing.browser import absoluteURL
-from zope.security.proxy import removeSecurityProxy
 from zope.app.component import hooks
-from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import ILogout
@@ -30,7 +22,6 @@ from z3c.form.interfaces import IWidgets
 from z3c.form import field
 from z3c.form import button
 from z3c.formui import form
-import z3c.schema.email
 from z3c.template.template import getPageTemplate
 from z3c.template.template import getLayoutTemplate
 

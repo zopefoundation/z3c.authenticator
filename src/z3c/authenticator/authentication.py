@@ -20,7 +20,6 @@ import zope.interface
 import zope.component
 import zope.event
 from zope.schema.interfaces import ISourceQueriables
-from zope.location.interfaces import ILocation
 
 from zope.app.component import queryNextUtility
 from zope.app.container import btree

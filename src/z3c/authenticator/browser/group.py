@@ -17,7 +17,6 @@ $Id:$
 __docformat__ = "reStructuredText"
 
 import zope.interface
-import zope.component
 import zope.event
 import zope.lifecycleevent
 from zope.traversing.browser import absoluteURL
@@ -31,7 +30,6 @@ from z3c.authenticator.widget import getSourceInputWidget
 from z3c.form import field
 from z3c.form import button
 from z3c.formui import form
-from z3c.pagelet import browser
 from z3c.configurator import configurator
 
 

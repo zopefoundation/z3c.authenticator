@@ -22,7 +22,6 @@ import persistent
 from urllib import urlencode
 
 import zope.interface
-from zope.schema import TextLine
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.session.interfaces import ISession
 from zope.traversing.browser.absoluteurl import absoluteURL

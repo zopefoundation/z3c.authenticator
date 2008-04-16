@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-Version 0.5.1dev (unreleased)
------------------------------
+Version 0.5.1 (2008-04-16)
+--------------------------
 
-- ...
+- Cleanup imports and adjust dependencies
 
 Version 0.5.0 (2008-04-16)
 --------------------------

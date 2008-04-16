@@ -25,7 +25,6 @@ from zope.session.interfaces import IClientId
 from zope.session.interfaces import IClientIdManager
 from zope.session.interfaces import ISession
 from zope.session.interfaces import ISessionDataContainer
-from zope.session.session import ClientId
 from zope.session.session import Session
 from zope.session.session import RAMSessionDataContainer
 from zope.session.http import CookieClientIdManager
