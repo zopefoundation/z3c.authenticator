@@ -1,9 +1,0 @@
-====
-TODO
-====
-
-- implement nickName, email and phone?
-
-- check imports
-
-- check dependency in buildout setup

@@ -442,4 +442,3 @@ and check your authenticated principal:
 
   >>> authenticated.email
   u'max@foobar.com'
-

@@ -1,0 +1,9 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <utility
+      name="z3c.authenticator"
+      provides="zope.app.generations.interfaces.ISchemaManager"
+      component=".schemaManager"
+      />
+
+</configure>
