@@ -2,15 +2,21 @@
 CHANGES
 =======
 
+
 Version 0.5.2dev (unreleased)
 -----------------------------
 
-- ...
+- feature: implemented z3c.form prefix support in SessionCredentialsPlugin. Now 
+  there is an option called prefixes which can be used for define a list of 
+  used z3c.form prefixes. This makes it simpler for supporting different forms 
+  and adjust the credential extraction.
+
 
 Version 0.5.1 (2008-04-16)
 --------------------------
 
 - Cleanup imports and adjust dependencies
+
 
 Version 0.5.0 (2008-04-16)
 --------------------------

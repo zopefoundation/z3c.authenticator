@@ -419,6 +419,16 @@ class ISessionCredentials(zope.interface.Interface):
 class IBrowserFormChallenger(zope.interface.Interface):
     """A challenger that uses a browser form to collect user credentials."""
 
+    prefixes = zope.schema.List(
+        title=u'Form prefixes',
+        description=u'List of prefixes used in different login forms',
+        value_type = zope.schema.TextLine(
+            title=u'Form prefix',
+            description=u'Form prefix',
+            missing_value=u'',
+            required=True),
+        default=[])
+
     loginpagename = zope.schema.TextLine(
         title=u'Loginpagename',
         description=u"""Name of the login form used by challenger.

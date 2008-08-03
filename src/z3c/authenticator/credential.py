@@ -234,12 +234,33 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
 
     Now we build a request that uses the new fields:
 
-      >>> request = TestRequest(my_new_login_field='luke', my_new_password_field='the_force')
+      >>> request = TestRequest(my_new_login_field='luke',
+      ...                       my_new_password_field='the_force')
 
     The plugin now extracts the credentials information from these new fields:
 
       >>> plugin.extractCredentials(request)
       {'login': 'luke', 'password': 'the_force'}
+
+    We can also set prefixes for the fields from which the credentials are 
+    extracted:
+
+      >>> plugin.loginfield = "login"
+      >>> plugin.passwordfield = "password"
+      >>> plugin.prefixes = ['form.widgets.']
+
+    Now we build a request that uses the new fields. Note that we need a
+    browser request which provides a form for this test since we can't setup
+    our prefixes.
+
+      >>> from zope.publisher.browser import TestRequest
+      >>> request = TestRequest(form={'form.widgets.login':'harry',
+      ...                             'form.widgets.password':'potter'})
+
+    The plugin now extracts the credentials information from these new fields:
+
+      >>> plugin.extractCredentials(request)
+      {'login': 'harry', 'password': 'potter'}
 
     Finally, we clear the session credentials using the logout method.
     If the given logout argument doesn't provide IHTTPRequest the
@@ -263,6 +284,7 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
 
     challengeProtocol = None
 
+    prefixes = []
     loginpagename = 'loginForm.html'
     loginfield = 'login'
     passwordfield = 'password'
@@ -275,6 +297,10 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
         sessionData = session.get('z3c.authenticator.credential.session')
         login = request.get(self.loginfield, None)
         password = request.get(self.passwordfield, None)
+        # support z3c.form prefixes
+        for prefix in self.prefixes:
+            login = request.get(prefix + self.loginfield, login)
+            password = request.get(prefix + self.passwordfield, password)
         credentials = None
 
         if login and password:
