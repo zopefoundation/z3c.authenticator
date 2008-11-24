@@ -24,7 +24,6 @@ import zope.schema
 import zope.schema.interfaces
 import zope.app.security.interfaces
 from zope.traversing import api
-from zope.location.interfaces import ILocation
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IPrincipalSource
 
@@ -170,32 +169,6 @@ class PrincipalTerms(object):
         raise NotImplementedError('Source queriable does not provide lenght.')
 
 
-class QueriableAuthenticator(object):
-    """Performs schema-based principal searches on behalf of a PAU.
-
-    Delegates the search to the adapted authenticator (which also provides
-    ISearchable)..
-    """
-    zope.component.adapts(interfaces.ISearchable, interfaces.IAuthenticator)
-
-    zope.interface.implements(interfaces.IQueriableAuthenticator, ILocation)
-
-    def __init__(self, authplugin, pau):
-        # locate them
-        if ILocation.providedBy(authplugin):
-            self.__parent__ = authplugin.__parent__
-            self.__name__ = authplugin.__name__
-        else:
-            self.__parent__ = pau
-            self.__name__ = ""
-        self.authplugin = authplugin
-        self.pau = pau
-
-    def search(self, query, start=None, batch_size=None):
-        for id in self.authplugin.search(query, start, batch_size):
-            yield id
-
-
 class ISearchFormResultsField(zope.schema.interfaces.IList):
     """Search form results field.
 
@@ -334,7 +307,6 @@ class SearchFormMixin(form.Form):
         self.widgets['results'].searchResults = value
         self.widgets['results'].update()
 
-# TODO:add condition
     @button.buttonAndHandler(_('Add'), condition=hasResults)
     def handleAdd(self, action):
         """Set search result"""

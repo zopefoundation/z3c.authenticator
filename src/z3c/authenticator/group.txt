@@ -140,11 +140,11 @@ Adding users to groups
 ----------------------
 
 Now we can set the users on the group but first we need to register the
-IFoundPrincipal adapter for groups. The GroupPrincipal adapter provides this
+IFoundPrincipal adapter for groups. The FoundGroup adapter provides this
 interface:
 
-  >>> from z3c.authenticator.group import GroupPrincipal
-  >>> zope.component.provideAdapter(GroupPrincipal, 
+  >>> from z3c.authenticator.principal import FoundGroup
+  >>> zope.component.provideAdapter(FoundGroup, 
   ...     provides=interfaces.IFoundPrincipal)
 
 And we also need to provide the IFoundPrincipal and IAuthenticatedPrincipal
@@ -329,6 +329,7 @@ Groups cannot contain cycles:
   >>> g1.principals
   (..., ...)
 
+
   >>> g1.principals[0] == p1.__name__
   True
 
@@ -380,6 +381,7 @@ If you don't supply a search key, no results will be returned:
   >>> list(groups.search({}))
   []
 
+
 Identifying groups
 ------------------
 
@@ -401,10 +403,10 @@ Of course, this applies to groups too:
   >>> g1.groups
   [u'groups.G2']
 
-A GroupPrincipal provides IGroupPrincipal which is inherited from 
+A FoundGroup provides IFoundGroup which is inherited from 
 IFoundPrincipal and IGroup:
 
-  >>> interfaces.IGroupPrincipal.providedBy(g1)
+  >>> interfaces.IFoundGroup.providedBy(g1)
   True
 
   >>> interfaces.IFoundPrincipal.providedBy(g1)
@@ -415,14 +417,15 @@ IFoundPrincipal and IGroup:
   True
 
 
-Special groups
---------------
+specialGroups
+-------------
 
-Two special groups, Authenticated, and Everyone may apply to users
-created by the pluggable-authentication utility.  There is a
-subscriber, specialGroups, that will set these groups on any non-group
-users if IAuthenticatedGroup, or IEveryoneGroup utilities are
-provided.
+Two special groups, IAuthenticatedGroup, and IEveryoneGroup may apply to users
+created by the IAuthentication utility.  There is a subscriber called 
+``specialGroups``. This subscriber can set this special groups on any 
+principal if IAuthenticatedGroup, or IEveryoneGroup utilities are 
+provided. The subscriber knows also how to apply local groups to principals.
+Note, principals means IAuthenticatedPrincipal, IFoundPrincipal or IFoundGroup.
 
 If we notify the subscriber with the principal, nothing will happen
 because the groups haven't been defined:
@@ -440,14 +443,13 @@ because the groups haven't been defined:
 Now, if we define the Everybody group:
 
   >>> import zope.app.security.interfaces
-  >>> class EverybodyGroup(GroupPrincipal):
+  >>> class EverybodyGroup(Group):
   ...     zope.interface.implements(
   ...        zope.app.security.interfaces.IEveryoneGroup)
 
-  >>> all = Group('groups.all')
+  >>> all = EverybodyGroup('groups.all')
   >>> groups['groups.all'] = all
-  >>> everybody = EverybodyGroup(all)
-  >>> zope.component.provideUtility(everybody,
+  >>> zope.component.provideUtility(all,
   ...     zope.app.security.interfaces.IEveryoneGroup)
 
 Then the group will be added to the principal:
@@ -458,13 +460,12 @@ Then the group will be added to the principal:
 
 Similarly for the authenticated group:
 
-  >>> class AuthenticatedGroup(GroupPrincipal):
+  >>> class AuthenticatedGroup(Group):
   ...     zope.interface.implements(
   ...         zope.app.security.interfaces.IAuthenticatedGroup)
 
-  >>> authenticated = Group('groups.authenticated')
+  >>> authenticated = AuthenticatedGroup('groups.authenticated')
   >>> groups['groups.authenticated'] = authenticated
-  >>> authenticated = AuthenticatedGroup(authenticated)
   >>> zope.component.provideUtility(authenticated,
   ...     zope.app.security.interfaces.IAuthenticatedGroup)
 
@@ -476,68 +477,54 @@ Then the group will be added to the principal:
   >>> found.groups
   [u'groups.all', u'groups.authenticated']
 
+
+allGroups
+---------
+
 The `allGroups` attribute is a readonly iterable of the full closure of the
-groups in the `groups` attribute--that is, if the principal is a direct member
-of the 'Administrators' group, and the 'Administrators' group is a member of
-the 'Reviewers' group, then p.groups would be ['Administrators'] and 
-list(p.allGroups) would be ['Administrators', 'Reviewers'].
+groups in the `groups` attribute. Let's define a new principal first:
 
-  >>> sorted(found.allGroups)
-  [u'groups.all', u'groups.authenticated']
+  >>> p = User(u'p', u'password', u'Principal')
+  >>> token, p = users.add(p)
 
+And the groups:
 
-These groups are only added to non-group principals:
+  >>> ga = Group("Administrators")
+  >>> gr = Group("Reviewers")
+  >>> gid, ga = groups.addGroup(u'Administrators', ga)
+  >>> gid, gr = groups.addGroup(u'Reviewers', gr)
 
-  >>> found.groups = []
-  >>> zope.interface.directlyProvides(found, zope.security.interfaces.IGroup)
-  >>> specialGroups(event)
-  >>> found.groups
-  []
+If the principal is a direct member of the 'Administrators' group, 
 
-And they are only added to group aware principals:
+  >>> ga.principals = [p.__name__]
 
-  >>> class SolitaryPrincipal:
-  ...     zope.interface.implements(zope.security.interfaces.IPrincipal)
-  ...     id = title = description = ''
+then getGroupsForPrincipal would be ['Administrators']
 
-  >>> event = FoundPrincipalCreated(authenticator, SolitaryPrincipal())
-  >>> specialGroups(event)
-  >>> found.groups
-  []
+  >>> groups.getGroupsForPrincipal(p.__name__)
+  (u'groups.Administrators',)
+  
+and if the 'Administrators' group is a member of the 'Reviewers' group, 
 
+  >>> gr.principals = [ga.id]
 
+then groups would be ['Administrators'] too.
 
-UserAwareGroup
-----------------
+  >>> groups.getGroupsForPrincipal(p.__name__)
+  (u'groups.Administrators',)
 
-We can manages groups via the group getUser and setUser methods:
+now let's use the setGroupsForPrincipal subscriber which knows how to apply
+the groups to the found principal:
 
-  >>> foundGroup = interfaces.IFoundPrincipal(g1)
-  >>> foundGroup.getUsers()
-  (..., ...)
+  >>> pFound = FoundPrincipal(p)
+  >>> event = FoundPrincipalCreated(authenticator, pFound)
+  >>> setGroupsForPrincipal(event)
 
-  >>> foundGroup.getUsers()[0] == p1.__name__
-  True
+As you can see and pFound.groups is ['Administrators'].
 
-  >>> foundGroup.getUsers()[1] == p2.__name__
-  True
+  >>> sorted(pFound.groups)
+  [u'groups.Administrators']
 
-Let's remove a member from the group:
+And pFound.allGroups is ['Administrators', 'Reviewers'].
 
-  >>> foundGroup.setUsers((p2.__name__,))
-  >>> foundGroup.getUsers()
-  (...,)
-
-  >>> foundGroup.getUsers()[0] == p2.__name__
-  True
-
-  >>> foundGroup.members
-  (...,)
-
-  >>> foundGroup.getUsers()[0] == p2.__name__
-  True
-
-Ensure that such a group provides the IMemberAwareGroup interfaces.
-
-  >>> zope.security.interfaces.IMemberAwareGroup.providedBy(foundGroup)
-  True
+  >>> sorted(pFound.allGroups)
+  [u'groups.Administrators', u'groups.Reviewers']

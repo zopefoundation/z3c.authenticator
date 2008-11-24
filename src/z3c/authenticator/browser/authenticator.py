@@ -70,5 +70,6 @@ class AuthenticatorEditForm(form.EditForm):
 
     label = _('Edit Authenticator.')
 
-    fields = field.Fields(interfaces.IAuthenticator).select('credentialsPlugins',
+    fields = field.Fields(interfaces.IAuthenticator).select(
+        'includeNextUtilityForAuthenticate', 'credentialsPlugins',
         'authenticatorPlugins')

@@ -18,6 +18,8 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 import zope.schema
+import zope.deprecation
+import zope.security.interfaces
 
 from zope.security.interfaces import IGroupClosureAwarePrincipal
 from zope.security.interfaces import IMemberAwareGroup
@@ -30,7 +32,7 @@ from zope.app.security.vocabulary import PrincipalSource
 from z3c.i18n import MessageFactory as _
 
 
-# TODO: this shoulld really, really go to another place then 
+# TODO: this should really, really go to another place then
 #       zope.app.authentication
 class IPasswordManager(zope.interface.Interface):
     """Password manager."""
@@ -65,6 +67,28 @@ class IAuthenticatorPlugin(IPlugin):
 
         If the plugin cannot find information for the id, returns None.
         """
+
+class IPrincipalRegistryAuthenticatorPlugin(IAuthenticatorPlugin):
+    """Principal registry authenticator plugin.
+    
+    This plugin is a little bit special since principals get returned from
+    a IAuthentication source next to the root then any other IAuthenticator.
+    
+    By defaut this utility returns global principals and the IAuthenticator
+    forces to wrap then within a IFoundPrincipal. This allows us to apply
+    local groups to gloal defined principals. 
+    
+    You can trun of this feature by set allowQueryPrincipal to False.
+    Anyway, this is just an optional plugin, you don't have to use it.
+    """
+
+    allowQueryPrincipal = zope.schema.Bool(
+        title=_('Allow query principal'),
+        description=_('Allow query principal. This is usefull if an '
+                      'authenticator plugin manages principals for another '
+                      'authenticator.'),
+        default=True,
+        )
 
 
 class ICredentialsPlugin(IPlugin):
@@ -127,7 +151,7 @@ class IAuthenticator(ILogout, IContainer):
     """Authentication utility.
     
     The Authenticator supports NOT IAuthenticatorPlugin plugins defined 
-    in z3c.authenticator.interfaces. Because they use and return a 
+    in zope.app.authentication.interfaces. Because they use and return a 
     IPrincipalInfo object in the authenticateCredentials method.
     
     Note: you have to write your own authenticator plugins because we do not 
@@ -135,6 +159,12 @@ class IAuthenticator(ILogout, IContainer):
     """
 
     contains(IPlugin)
+
+    includeNextUtilityForAuthenticate = zope.schema.Bool(
+        title=_('Include next utility for authenticate'),
+        description=_('Include next utility for authenticate'),
+        default=True,
+        )
 
     credentialsPlugins = zope.schema.List(
         title=_('Credentials Plugins'),
@@ -198,8 +228,8 @@ class IUser(zope.interface.Interface):
         description=_("The password manager will be used"
             " for encode/check the password"),
         default="Plain Text",
-        # TODO: The password manager name may be changed only
-        # if the password changed
+        # TODO: The password manager name may get changed if the password get
+        #       changed!
         readonly=True
         )
 
@@ -236,10 +266,17 @@ class IUserContainer(IContainer, IAuthenticatorPlugin, ISearchable):
 
 
 # principal interfaces
-class IFoundPrincipal(IGroupClosureAwarePrincipal):
-    """A factory adapting IUser and offering read access to the principal.
+class IFoundPrincipal(zope.security.interfaces.IGroupClosureAwarePrincipal):
+    """Provides found principal returned by IAuthenticator.getPrincipal.
     
-    A found principal gets created by the IAuthenticators search method
+    The only goal of this adapter is to provide a none persistent object which
+    we can apply our group of group ids at runtime.
+    
+    This is needed because there is no way to keep the group of group info
+    in sync if we whould store them in a IGroup implementation as persistent 
+    information.
+    
+    A found principal gets also created by the IAuthenticators search method
     for users matching the search critaria.
     """
 
@@ -264,7 +301,8 @@ class IFoundPrincipal(IGroupClosureAwarePrincipal):
         required=False)
 
 
-class IAuthenticatedPrincipal(IGroupClosureAwarePrincipal):
+class IAuthenticatedPrincipal(
+    zope.security.interfaces.IGroupClosureAwarePrincipal):
     """A factory adapting IInternalPrincipal and offering read access to the 
     principal.
     
@@ -295,9 +333,28 @@ class IAuthenticatedPrincipal(IGroupClosureAwarePrincipal):
 
 
 # group interfaces
-class IGroup(zope.interface.Interface):
+class IGroup(zope.security.interfaces.IGroup):
+    """IGroup provides the zope.security.interfaces.IGroup.
+    
+    This let us use such IGroups as local registered IEveryoneGroup or 
+    IAuthenticatedGroup utilities.
+    
+    Note zope.security.interfaces.IGroup implementations are used for store
+    IPrincipal ids of other IPrincipal or IGroup objects.
+    
+    zope.security.interfaces.IGroup implemenations are not used for store
+    group of group informations. Group of gorup information are collected
+    at runtime by the IAuthentication.getPrincipal method via an adapter
+    called IFoundPrincipal. I really hope this is understandable.
+    """
 
     containers('z3c.authenticato.interfaces.IGroupContainer')
+
+    id = zope.schema.TextLine(
+        title=_("Id"),
+        description=_("The unique identification of the principal."),
+        required=True,
+        readonly=True)
 
     title = zope.schema.TextLine(
         title=_("Title"),
@@ -338,10 +395,23 @@ class IGroupContainer(IContainer, IAuthenticatorPlugin, ISearchable):
         """Get principals which belong to the group"""
 
 
-class IGroupPrincipal(IFoundPrincipal, IMemberAwareGroup):
-    """IGroup that acts as a principal representing a group."""
+class IFoundGroup(IFoundPrincipal, zope.security.interfaces.IGroup):
+    """IFoundGroup acts as a IFoundPrincipal representing a group.
+    
+    This group principal is used as IFoundPrincipal adapter which we adhoc
+    apply our inherited groups incouding groups of groups. See IFoundPrincipal
+    for more information.
+    
+    This means both interface z3c.authenticator.interfaces.IGroupPrincipal and 
+    z3c.authenticator.interfaces.IGroup provide zope.security.interfaces.IGroup.
+    """
 
-    members = zope.interface.Attribute('an iterable of members of the group')
+#    members = zope.interface.Attribute('an iterable of members of the group')
+
+# TODO: deprecate and remove later
+IGroupPrincipal = IFoundGroup
+zope.deprecation.deprecated('IGroupPrincipal',
+    'The IGroupPrincipal interface get replaced by IFoundGroup')
 
 
 # principal event interfaces
@@ -359,6 +429,10 @@ class IAuthenticatedPrincipalCreated(IPrincipalCreated):
 
     request = zope.interface.Attribute(
         "The request the user was authenticated against")
+
+
+class IUnauthenticatedPrincipalCreated(IPrincipalCreated):
+    """A unauthenticated principal has been created."""
 
 
 class IFoundPrincipalCreated(IPrincipalCreated):

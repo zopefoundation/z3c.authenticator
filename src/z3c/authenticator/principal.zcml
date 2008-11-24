@@ -2,8 +2,15 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="z3c">
 
+  <!-- z3c.authenticator IUser adapters -->
   <adapter factory=".principal.FoundPrincipal" />
-
   <adapter factory=".principal.AuthenticatedPrincipal" />
+
+  <!-- zope.security IPrincipal adapters -->
+  <adapter factory=".principal.FoundPrincipalForPrincipal" />
+  <adapter factory=".principal.AuthenticatedPrincipalForPrincipal" />
+
+  <!-- IGrup adapters -->
+  <adapter factory=".principal.FoundGroup" />
 
 </configure>

@@ -22,14 +22,9 @@
         />
     <require
         permission="zope.ManageServices"
-        interface=".interfaces.IGroupContainer
-                   zope.app.container.interfaces.INameChooser"
+        interface=".interfaces.IGroupContainer"
         />
   </class>
-
-  <adapter
-      factory=".group.GroupPrincipal"
-      />
 
   <subscriber
       for=".interfaces.IPrincipalCreated"

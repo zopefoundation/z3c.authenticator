@@ -29,7 +29,15 @@
       name="Z3CCredentialsPlugins"
       />
 
+  <adapter
+      for=".interfaces.ISearchable
+           .interfaces.IAuthenticator"
+      factory=".authentication.QueriableAuthenticator"
+      provides=".interfaces.IQueriableAuthenticator"
+      />
+
   <include file="credential.zcml" />
+  <include file="principalregistry.zcml" />
   <include file="group.zcml" />
   <include file="password.zcml" />
   <include file="principal.zcml" />

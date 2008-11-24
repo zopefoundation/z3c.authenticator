@@ -4,13 +4,6 @@
     i18n_domain="zope">
 
   <adapter
-      for=".interfaces.ISearchable
-           .interfaces.IAuthenticator"
-      provides=".interfaces.IQueriableAuthenticator"
-      factory=".widget.QueriableAuthenticator"
-      />
-
-  <adapter
       factory=".widget.PrincipalSourceDataConverter"
       />
   <adapter

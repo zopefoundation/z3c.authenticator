@@ -81,6 +81,37 @@ data, especially groups, to the principal. Typically, if a subscriber adds
 data, it should also add corresponding interface declarations.
 
 
+FAQ
+---
+
+Here some usefull hints.
+
+How should I set permission for principals -- You can apply a roles to groups
+  and apply permissions to roles. Or you can directly apply local permisssions 
+  to groups or to principals. After setup this mappings you can grant roles to 
+  groups. I always recommend a principal - group and permission - role mapping, 
+  then this gives you the most possible abstraction which is usefullif it comes 
+  to manage permission and principals without to invoke directly principals and 
+  permissions itself. but of corse you can grant permissions to groups or the
+  worst thing directly to principals. Grant permission to principals is only 
+  useful if it comes to selective local permission settings for selected 
+  principals e.g. a ownership like permission setup.
+
+How can I set permission for all principals -- You can register one
+  group as IEveryone utility. This IGroup utility get applied to all principals.
+
+Can I apply local groups to unauthenticated principals -- Yes this will work.
+  Since the last refactoring I refactored the IGroup implementation which makes
+  it compatible with the principalregistry API. This means you can now register
+  one local group as a unnamed IUnauthenticatedGroup. You can also register one 
+  local group as an unnamed IAuthenticatedGroup utility which will get applied 
+  to every authenticated principal or a unnamed utility for 
+  IUnauthenticatedGroup.
+
+Can I apply a local group to every principal -- Yes, this is possible if 
+  register a local unnamed utility providing IEveryoneGroup.
+
+
 Principal
 ---------
 

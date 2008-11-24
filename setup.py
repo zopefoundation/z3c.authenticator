@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.authenticator',
-    version='0.5.2dev',
+    version='0.6.0dev',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "IAuthentication implementation for for Zope3",
@@ -56,7 +56,6 @@ setup (
             'zope.publisher',
             'zope.session',
             'zope.testing',
-            'zope.testbrowser',
             ],
         ),
     install_requires = [
@@ -66,11 +65,12 @@ setup (
         'z3c.formui',
         'z3c.i18n',
         'z3c.template',
-        'z3c.contents',
         'zope.app.component',
+        'zope.app.container',
         'zope.app.generations',
         'zope.app.security',
         'zope.component',
+        'zope.deprecation',
         'zope.dublincore',
         'zope.event',
         'zope.i18n',
@@ -82,7 +82,6 @@ setup (
         'zope.security',
         'zope.session',
         'zope.traversing',
-
         ],
     zip_safe = False,
 )

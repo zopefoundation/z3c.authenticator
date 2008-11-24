@@ -22,20 +22,28 @@ import persistent
 import zope.interface
 import zope.component
 import zope.event
+import zope.deprecation
+import zope.deferredimport
+
 from zope.interface import alsoProvides
 from zope.security.interfaces import IGroup
 from zope.security.interfaces import IGroupAwarePrincipal
-from zope.security.interfaces import IMemberAwareGroup
 
 from zope.app.container import btree
 from zope.app.container import contained
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IAuthenticatedGroup
 from zope.app.security.interfaces import IEveryoneGroup
-from zope.app import zapi
+from zope.app.security.interfaces import IUnauthenticatedGroup
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
 
 from z3c.authenticator import interfaces
 from z3c.authenticator import event
+
+zope.deferredimport.deprecated(
+    "FoundPrincipal has moved to z3c.authenticator.group.FoundGroup",
+    FoundPrincipal = 'z3c.authenticator.principal:FoundGroup',
+    )
 
 
 class Group(persistent.Persistent, contained.Contained):
@@ -48,6 +56,11 @@ class Group(persistent.Persistent, contained.Contained):
     def __init__(self, title=u'', description=u''):
         self.title = title
         self.description = description
+
+    @property
+    def id(self):
+        """The id is the name which includes the container prefix (readonly)."""
+        return self.__name__
 
     def setPrincipals(self, prinlist, check=True):
         # method is not a part of the interface
@@ -72,7 +85,8 @@ class Group(persistent.Persistent, contained.Contained):
 
         if check:
             try:
-                nocycles(new, [], zapi.principals().getPrincipal)
+                auth = zope.component.getUtility(IAuthentication)
+                nocycles(new, [], auth.getPrincipal)
             except GroupCycle:
                 # abort
                 self.setPrincipals(old, False)
@@ -204,70 +218,9 @@ class GroupContainer(btree.BTreeContainer):
         return self.get(id, default)
 
 
-class GroupPrincipal(object):
-
-    zope.interface.implements(interfaces.IGroupPrincipal)
-    zope.component.adapts(interfaces.IGroup)
-
-    def __init__(self, group):
-        self.id = group.__name__
-        self._group = group
-        self.groups = []
-
-    @property
-    def allGroups(self):
-        if self.groups:
-            seen = set()
-            auth = zope.component.getUtility(IAuthentication)
-            stack = [iter(self.groups)]
-            while stack:
-                try:
-                    group_id = stack[-1].next()
-                except StopIteration:
-                    stack.pop()
-                else:
-                    if group_id not in seen:
-                        yield group_id
-                        seen.add(group_id)
-                        group = auth.getPrincipal(group_id)
-                        stack.append(iter(group.groups))
-
-    @property
-    def title(self):
-        return self._group.title
-
-    @property
-    def description(self):
-        return self._group.description
-
-    @apply
-    def members():
-        def get(self):
-            return self._group.principals
-        def set(self, value):
-            self._group.principals = value
-        return property(get, set)
-
-    def getUsers(self):
-        return self._group.principals
-
-    def setUsers(self, value):
-        self._group.principals = value
-
-    def __repr__(self):
-        return "<%s %s>" %(self.__class__.__name__, self.id)
-
-
 class GroupCycle(Exception):
     """There is a cyclic relationship among groups."""
 
-class InvalidPrincipalIds(Exception):
-    """A user has a group id for a group that can't be found
-    """
-
-class InvalidGroupId(Exception):
-    """A user has a group id for a group that can't be found
-    """
 
 def nocycles(pids, seen, getPrincipal):
     for pid in pids:
@@ -275,36 +228,66 @@ def nocycles(pids, seen, getPrincipal):
             raise GroupCycle(pid, seen)
         seen.append(pid)
         principal = getPrincipal(pid)
-        nocycles(principal.groups, seen, getPrincipal)
+        # not every principal has groups and there is no consistent marker
+        # interface for mark group aware. See IUnauthenticatedPrincipal
+        groups = getattr(principal, 'groups', ())
+        nocycles(groups, seen, getPrincipal)
         seen.pop()
 
 
+# specialGroups
+@zope.component.adapter(interfaces.IPrincipalCreated)
 def specialGroups(event):
+    """Set groups for IGroupAwarePrincipal."""
+
     principal = event.principal
+    # only apply to non groups because it will end in cycle dependencies
+    # since the principal will have tis role anyway
     if (IGroup.providedBy(principal) or
-        not IGroupAwarePrincipal.providedBy(principal)):
+        not (IGroupAwarePrincipal.providedBy(principal) or
+             IUnauthenticatedPrincipal.providedBy(principal))):
         return
 
+    # global utility registered by everybodyGroup directive
     everyone = zope.component.queryUtility(IEveryoneGroup)
-    if everyone is not None:
+    if everyone is not None and everyone.id != principal.id:
         principal.groups.append(everyone.id)
 
-    auth = zope.component.queryUtility(IAuthenticatedGroup)
-    if auth is not None:
-        principal.groups.append(auth.id)
+    if IUnauthenticatedPrincipal.providedBy(principal):
+        # global utility registered by unauthenticatedGroup directive
+        unAuthGroup = zope.component.queryUtility(IUnauthenticatedGroup)
+        if unAuthGroup is not None and unAuthGroup.id != principal.id:
+            principal.groups.append(unAuthGroup.id)
+    else:
+        # global utility registered by authenticatedGroup directive
+        authGroup = zope.component.queryUtility(IAuthenticatedGroup)
+        if authGroup is not None and authGroup.id != principal.id:
+            principal.groups.append(authGroup.id)
 
 
+@zope.component.adapter(interfaces.IPrincipalCreated)
 def setGroupsForPrincipal(event):
-    """Set group information when a principal is created"""
+    """Set local group information when a principal is created.
+    
+    Note: IUnauthenticatedPrincipal does not provide IGroupAwarePrincipal which
+    is just wrong and makes the conditions a little bit complicated.
+    """
 
     principal = event.principal
-    if not IGroupAwarePrincipal.providedBy(principal):
+    # set only groups for group aware principals or unauthenticated which are
+    # group aware too. This allows us to apply local roles to unautenticated
+    # principals which allows to apply permissions/roles via local groups which
+    # the application does not provide at global level.
+    if not (IGroupAwarePrincipal.providedBy(principal) or
+            IUnauthenticatedPrincipal.providedBy(principal)):
         return
 
     authentication = event.authentication
-
     for name, plugin in authentication.getAuthenticatorPlugins():
         if not interfaces.IGroupContainer.providedBy(plugin):
             continue
+        # set groups for principals but not a group to itself. This could happen
+        # for global defined groups
         principal.groups.extend(
-            [id for id in plugin.getGroupsForPrincipal(principal.id)])
+            [id for id in plugin.getGroupsForPrincipal(principal.id)
+             if id != principal.id])

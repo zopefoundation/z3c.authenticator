@@ -39,6 +39,22 @@ class AuthenticatedPrincipalCreated(object):
         self.request = request
 
 
+class UnauthenticatedPrincipalCreated(object):
+    """
+    >>> from zope.interface.verify import verifyObject
+    >>> event = UnauthenticatedPrincipalCreated('authentication', 'principal',
+    ...     'request')
+    >>> verifyObject(interfaces.IUnauthenticatedPrincipalCreated, event)
+    True
+    """
+
+    zope.interface.implements(interfaces.IUnauthenticatedPrincipalCreated)
+
+    def __init__(self, authentication, principal):
+        self.authentication = authentication
+        self.principal = principal
+
+
 class FoundPrincipalCreated(object):
     """
     >>> from zope.interface.verify import verifyObject
