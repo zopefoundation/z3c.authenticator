@@ -20,6 +20,7 @@ import persistent
 import zope.interface
 import zope.security.management
 import zope.security.interfaces
+from zope.schema.fieldproperty import FieldProperty
 from zope.app.container import contained
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app.security.principalregistry import principalRegistry
