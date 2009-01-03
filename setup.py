@@ -67,6 +67,7 @@ setup (
     install_requires = [
         'setuptools',
         'z3c.configurator',
+        'z3c.contents',
         'z3c.form',
         'z3c.formui',
         'z3c.i18n',
