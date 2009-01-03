@@ -29,6 +29,12 @@ setup (
     description = "IAuthentication implementation for for Zope3",
     long_description=(
         read('README.txt')
+        + '\n\n.. contents::\n\n' +
+        read('src', 'z3c', 'authenticator', 'README.txt')
+        + '\n\n' +
+        read('src', 'z3c', 'authenticator', 'group.txt')
+        + '\n\n' +
+        read('src', 'z3c', 'authenticator', 'vocabulary.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
