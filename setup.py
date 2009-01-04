@@ -25,7 +25,7 @@ setup (
     name='z3c.authenticator',
     version='0.6.0dev',
     author = "Roger Ineichen and the Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "IAuthentication implementation for for Zope3",
     long_description=(
         read('README.txt')
@@ -39,7 +39,7 @@ setup (
         read('CHANGES.txt')
         ),
     license = "ZPL 2.1",
-    keywords = "zope3 z3c json rpc tree",
+    keywords = "zope3 z3c authentication auth group",
     classifiers = [
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
@@ -50,7 +50,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/z3c.authenticator',
+    url = 'http://pypi.python.org/pypi/z3c.authenticator',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},

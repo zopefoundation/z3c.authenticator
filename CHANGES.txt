@@ -3,35 +3,35 @@ CHANGES
 =======
 
 
-Version 0.6.0dev (unreleased)
------------------------------
+Version 0.6.0 (2009-01-04)
+--------------------------
 
-- Feature: added support for local IUnauthenticatedPrincipal. This is usefull 
-  if you need to apply local roles to IUnauthenticatedPrincipal. This was not 
+- Feature: added support for local IUnauthenticatedPrincipal. This is usefull
+  if you need to apply local roles to IUnauthenticatedPrincipal. This was not
   possible before and is not possible in zope.app.authentication
 
 - Feature: implemented initial grant view based on ISource widget. Note, this
   source widget terms implementation which is very complex to understand will
-  get moved to z3c.from if we fixed the ITerm dependency. Which means ITerm 
+  get moved to z3c.from if we fixed the ITerm dependency. Which means ITerm
   needs to get moved out of zope.app.form first.
 
-- Feature: added support for next utility lookup in authenticate call. By 
-  default the principals from the global principalregistry get involved now. 
+- Feature: added support for next utility lookup in authenticate call. By
+  default the principals from the global principalregistry get involved now.
   You can disable this feature by setting includeNextUtilityForAuthenticate to
   False.
 
-- Feature: added PrincipalRegistryAuthenticatorPlugin which allows to  
+- Feature: added PrincipalRegistryAuthenticatorPlugin which allows to
   authenticate principals defined in global principal registry.
 
-- Feature: implemented z3c.form prefix support in SessionCredentialsPlugin. Now 
-  there is an option called prefixes which can be used for define a list of 
-  used z3c.form prefixes. This makes it simpler for supporting different forms 
+- Feature: implemented z3c.form prefix support in SessionCredentialsPlugin. Now
+  there is an option called prefixes which can be used for define a list of
+  used z3c.form prefixes. This makes it simpler for supporting different forms
   and adjust the credential extraction.
 
 - Renamed IGroupPrincipal to IFoundGroup which makes it more understandable
-  why this adapter implementation is needed. The IFoundGroup adapter is now 
-  also used for zope.security.interfaces.IGroup principals. This makes it 
-  possible to use them in the new principalregistry credential. Provide  
+  why this adapter implementation is needed. The IFoundGroup adapter is now
+  also used for zope.security.interfaces.IGroup principals. This makes it
+  possible to use them in the new principalregistry credential. Provide
   deprecation message for the old IGroupPrincipal implementation.
 
 - Removed dependency for zapi. But it's not really gone since other packages
@@ -41,6 +41,8 @@ Version 0.6.0dev (unreleased)
 
 - Removed unused IMemberAwareGroup support. This interface is not used in zope
   at all.
+
+- Added documentation for Pypi home page.
 
 
 Version 0.5.1 (2008-04-16)
