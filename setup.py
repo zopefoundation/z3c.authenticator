@@ -68,7 +68,6 @@ setup (
         'z3c.contents',
         'z3c.form',
         'z3c.formui',
-        'z3c.i18n',
         'z3c.template',
         'zope.app.generations',
         'zope.authentication',

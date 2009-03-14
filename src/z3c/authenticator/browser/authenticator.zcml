@@ -6,7 +6,7 @@
 
   <z3c:pagelet
       name="addAuthenticator.html"
-      for="..interfaces.IAuthenticator"
+      for="zope.container.interfaces.IContainer"
       class=".authenticator.AuthenticatorAddForm"
       permission="zope.ManageServices"
       />

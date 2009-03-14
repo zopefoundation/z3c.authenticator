@@ -23,8 +23,8 @@ import zope.dublincore.interfaces
 from zope.schema import vocabulary
 from zope.schema.interfaces import IVocabularyFactory
 
-from z3c.i18n import MessageFactory as _
 from z3c.authenticator import interfaces
+from z3c.authenticator.interfaces import _
 
 UTILITY_TITLE = _(
     'z3c.authenticator.vocabulary-utility-plugin-title',

@@ -14,6 +14,7 @@ Version 0.6.1 (unreleased)
    * Use ``zope.password`` instead of maintaining a copy of password
      managers.
 
+- Drop dependency on z3c.i18n and recreate a message factory instead.
 
 Version 0.6.0 (2009-01-04)
 --------------------------

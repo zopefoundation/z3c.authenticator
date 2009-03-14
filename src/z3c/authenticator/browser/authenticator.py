@@ -22,7 +22,7 @@ import zope.lifecycleevent
 from zope.traversing.browser import absoluteURL
 import zope.schema
 
-from z3c.i18n import MessageFactory as _
+from z3c.authenticator.authentication import Authenticator
 from z3c.authenticator import interfaces
 from z3c.authenticator import group
 from z3c.authenticator import user
@@ -31,6 +31,7 @@ from z3c.form import button
 from z3c.formui import form
 from z3c.configurator import configurator
 
+from z3c.authenticator.interfaces import _
 
 class IAddName(zope.interface.Interface):
     """Object name."""
@@ -45,13 +46,13 @@ class IAddName(zope.interface.Interface):
 class AuthenticatorAddForm(form.AddForm):
     """Authenticator add form."""
 
-    label = _('Add Authenticatorr.')
+    label = _('Add Authenticator')
     contentName = None
 
     fields = field.Fields(IAddName)
 
     def createAndAdd(self, data):
-        obj = user.UserContainer()
+        obj = Authenticator()
         self.contentName = data.get('__name__', u'')
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
         self.context[self.contentName] = obj
@@ -62,7 +63,7 @@ class AuthenticatorAddForm(form.AddForm):
 
     def nextURL(self):
         obj = self.context[self.contentName]
-        return '%s/index.html' % absoluteURL(obj, self.request)
+        return '%s/contents.html' % absoluteURL(obj, self.request)
 
 
 class AuthenticatorEditForm(form.EditForm):

@@ -16,11 +16,11 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
-from z3c.i18n import MessageFactory as _
 from z3c.form import field
 from z3c.formui import form
 
 from z3c.authenticator import interfaces
+from z3c.authenticator.interfaces import _
 
 
 class SessionCredentialsPluginEditForm(form.EditForm):

@@ -29,7 +29,8 @@ from zope.container.constraints import containers
 from zope.authentication.interfaces import ILogout
 from zope.authentication.principal import PrincipalSource
 
-from z3c.i18n import MessageFactory as _
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory('z3c')
 
 
 class IPlugin(zope.interface.Interface):
@@ -72,7 +73,7 @@ class IPrincipalRegistryAuthenticatorPlugin(IAuthenticatorPlugin):
 
     allowQueryPrincipal = zope.schema.Bool(
         title=_('Allow query principal'),
-        description=_('Allow query principal. This is usefull if an '
+        description=_('Allow query principal. This is useful if an '
                       'authenticator plugin manages principals for another '
                       'authenticator.'),
         default=True,
