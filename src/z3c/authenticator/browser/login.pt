@@ -14,6 +14,7 @@
 </metal:block>
 <div class="linkRow">
   <a href="loginForm.html.html"
-     tal:attributes="href string:${request/URL/-1}/sendPassword.html">Ich habe
-  mein Passwort vergessen.</a>
+     tal:attributes="href string:${request/URL/-1}/sendPassword.html">
+      I've lost my password.
+  </a>
 </div>
