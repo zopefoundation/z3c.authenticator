@@ -29,13 +29,13 @@ from zope.interface import alsoProvides
 from zope.security.interfaces import IGroup
 from zope.security.interfaces import IGroupAwarePrincipal
 
-from zope.app.container import btree
-from zope.app.container import contained
-from zope.app.security.interfaces import IAuthentication
-from zope.app.security.interfaces import IAuthenticatedGroup
-from zope.app.security.interfaces import IEveryoneGroup
-from zope.app.security.interfaces import IUnauthenticatedGroup
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.container import btree
+from zope.container import contained
+from zope.authentication.interfaces import IAuthentication
+from zope.authentication.interfaces import IAuthenticatedGroup
+from zope.authentication.interfaces import IEveryoneGroup
+from zope.authentication.interfaces import IUnauthenticatedGroup
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
 
 from z3c.authenticator import interfaces
 from z3c.authenticator import event

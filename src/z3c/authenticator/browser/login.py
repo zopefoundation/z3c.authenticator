@@ -12,10 +12,10 @@ __docformat__ = "reStructuredText"
 import zope.component
 from zope.publisher.browser import BrowserPage
 from zope.traversing.browser import absoluteURL
-from zope.app.component import hooks
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
-from zope.app.security.interfaces import IAuthentication
-from zope.app.security.interfaces import ILogout
+from zope.site import hooks
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.authentication.interfaces import IAuthentication
+from zope.authentication.interfaces import ILogout
 
 from z3c.form.interfaces import HIDDEN_MODE
 from z3c.form.interfaces import IWidgets

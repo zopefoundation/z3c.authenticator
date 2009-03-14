@@ -23,9 +23,10 @@ import socket
 import persistent
 import zope.interface
 import zope.component
-from zope.app.container import contained
-from zope.app.container import btree
-from zope.app.container.interfaces import DuplicateIDError
+from zope.container import contained
+from zope.container import btree
+from zope.container.interfaces import DuplicateIDError
+from zope.password.interfaces import IPasswordManager
 
 from z3c.authenticator import interfaces
 
@@ -62,7 +63,7 @@ class User(persistent.Persistent, contained.Contained):
     passwordManagerName = property(getPasswordManagerName)
 
     def _getPasswordManager(self):
-        return zope.component.getUtility(interfaces.IPasswordManager, 
+        return zope.component.getUtility(IPasswordManager, 
             self.passwordManagerName)
 
     def getPassword(self):

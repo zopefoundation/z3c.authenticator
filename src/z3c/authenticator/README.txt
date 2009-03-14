@@ -7,7 +7,7 @@ and associating information with them. It uses plugins and subscribers to get
 its work done.
 
 For a simple authentication utility to be used, it should be registered as a
-utility providing the `zope.app.security.interfaces.IAuthentication` interface.
+utility providing the `zope.authentication.interfaces.IAuthentication` interface.
 
 Our target is to support a handy IAuthentication utility which offers a simple
 API for custom IUser implementations and does not depend on the default

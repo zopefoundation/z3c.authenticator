@@ -73,7 +73,7 @@ authentication service, we will setup a Authenticator utility:
 Give them a location and register them as a IAuthentication utility :
 
   >>> import zope.component
-  >>> from zope.app.security.interfaces import IAuthentication
+  >>> from zope.authentication.interfaces import IAuthentication
   >>> rootFolder['authenticator'] = authenticator
   >>> zope.component.provideUtility(authenticator, IAuthentication)
 
@@ -442,15 +442,15 @@ because the groups haven't been defined:
 
 Now, if we define the Everybody group:
 
-  >>> import zope.app.security.interfaces
+  >>> import zope.authentication.interfaces
   >>> class EverybodyGroup(Group):
   ...     zope.interface.implements(
-  ...        zope.app.security.interfaces.IEveryoneGroup)
+  ...        zope.authentication.interfaces.IEveryoneGroup)
 
   >>> all = EverybodyGroup('groups.all')
   >>> groups['groups.all'] = all
   >>> zope.component.provideUtility(all,
-  ...     zope.app.security.interfaces.IEveryoneGroup)
+  ...     zope.authentication.interfaces.IEveryoneGroup)
 
 Then the group will be added to the principal:
 
@@ -462,12 +462,12 @@ Similarly for the authenticated group:
 
   >>> class AuthenticatedGroup(Group):
   ...     zope.interface.implements(
-  ...         zope.app.security.interfaces.IAuthenticatedGroup)
+  ...         zope.authentication.interfaces.IAuthenticatedGroup)
 
   >>> authenticated = AuthenticatedGroup('groups.authenticated')
   >>> groups['groups.authenticated'] = authenticated
   >>> zope.component.provideUtility(authenticated,
-  ...     zope.app.security.interfaces.IAuthenticatedGroup)
+  ...     zope.authentication.interfaces.IAuthenticatedGroup)
 
 Then the group will be added to the principal:
 

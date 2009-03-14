@@ -23,11 +23,11 @@ from zope.schema.fieldproperty import FieldProperty
 from zope.schema.interfaces import ISourceQueriables
 from zope.location.interfaces import ILocation
 
-from zope.app.component import queryNextUtility
-from zope.app.container import btree
-from zope.app.security.interfaces import IAuthentication
-from zope.app.security.interfaces import PrincipalLookupError
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.component import queryNextUtility
+from zope.container import btree
+from zope.authentication.interfaces import IAuthentication
+from zope.authentication.interfaces import PrincipalLookupError
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
 
 from z3c.authenticator import interfaces
 from z3c.authenticator import event
@@ -129,7 +129,7 @@ class Authenticator(btree.BTreeContainer):
         we have in IPrincipalCreated which whould allow to apply groups. And
         there is no way to apply local groups to global unauthenticated
         principals it they get returned by the global IAuthentication or the
-        fallback implementation. See zope.app.security.principalregistry
+        fallback implementation. See zope.principalregistry
         
         Usage:
 

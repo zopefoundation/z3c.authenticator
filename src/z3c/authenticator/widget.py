@@ -22,10 +22,9 @@ import zope.interface
 import zope.i18n
 import zope.schema
 import zope.schema.interfaces
-import zope.app.security.interfaces
 from zope.traversing import api
-from zope.app.security.interfaces import IAuthentication
-from zope.app.security.interfaces import IPrincipalSource
+from zope.authentication.interfaces import IAuthentication
+from zope.authentication.interfaces import IPrincipalSource
 
 from z3c.formui import form
 from z3c.form import field
@@ -361,7 +360,7 @@ class PrincipalSourceWidget(widget.HTMLInputWidget, SequenceWidget):
     """Select widget implementation."""
     zope.interface.implementsOnly(IPrincipalSourceWidget)
     zope.component.adapts(zope.interface.Interface,
-        zope.app.security.interfaces.IPrincipalSource, zope.interface.Interface)
+        IPrincipalSource, zope.interface.Interface)
 
     klass = u'principal-source-widget checkbox-widget'
     value = []

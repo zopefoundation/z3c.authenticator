@@ -43,7 +43,7 @@
       />
 
   <adapter
-      for="zope.app.security.interfaces.IAuthentication
+      for="zope.authentication.interfaces.IAuthentication
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides=".widget.ISourceSearchForm"
       factory=".widget.PrincipalRegistrySearchForm"

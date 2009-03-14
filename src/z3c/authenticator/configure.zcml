@@ -39,7 +39,6 @@
   <include file="credential.zcml" />
   <include file="principalregistry.zcml" />
   <include file="group.zcml" />
-  <include file="password.zcml" />
   <include file="principal.zcml" />
   <include file="user.zcml" />
   <include file="widget.zcml" />

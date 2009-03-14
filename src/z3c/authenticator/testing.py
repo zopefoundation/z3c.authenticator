@@ -29,8 +29,8 @@ from zope.session.session import Session
 from zope.session.session import RAMSessionDataContainer
 from zope.session.http import CookieClientIdManager
 
-from z3c.authenticator.interfaces import IPasswordManager
-from z3c.authenticator.password import PlainTextPasswordManager
+from zope.password.interfaces import IPasswordManager
+from zope.password.password import PlainTextPasswordManager
 
 ###############################################################################
 #

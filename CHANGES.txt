@@ -5,7 +5,14 @@ CHANGES
 Version 0.6.1 (unreleased)
 --------------------------
 
--
+- Update dependencies:
+
+   * Use ``zope.container`` instead of ``zope.app.container``.
+   * Use ``zope.site`` instead of ``zope.app.component``.
+   * Use ``zope.authentication`` and ``zope.principalregistry`` instead
+     of ``zope.app.security``.
+   * Use ``zope.password`` instead of maintaining a copy of password
+     managers.
 
 
 Version 0.6.0 (2009-01-04)

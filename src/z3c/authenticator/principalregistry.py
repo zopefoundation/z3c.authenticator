@@ -20,10 +20,10 @@ import persistent
 import zope.interface
 import zope.security.management
 import zope.security.interfaces
+from zope.authentication.interfaces import PrincipalLookupError
+from zope.container import contained
+from zope.principalregistry.principalregistry import principalRegistry
 from zope.schema.fieldproperty import FieldProperty
-from zope.app.container import contained
-from zope.app.security.interfaces import PrincipalLookupError
-from zope.app.security.principalregistry import principalRegistry
 
 from z3c.authenticator import interfaces
 

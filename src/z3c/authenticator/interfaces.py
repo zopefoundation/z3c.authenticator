@@ -23,25 +23,13 @@ import zope.security.interfaces
 
 from zope.security.interfaces import IGroupClosureAwarePrincipal
 from zope.security.interfaces import IMemberAwareGroup
-from zope.app.container.interfaces import IContainer
-from zope.app.container.constraints import contains
-from zope.app.container.constraints import containers
-from zope.app.security.interfaces import ILogout
-from zope.app.security.vocabulary import PrincipalSource
+from zope.container.interfaces import IContainer
+from zope.container.constraints import contains
+from zope.container.constraints import containers
+from zope.authentication.interfaces import ILogout
+from zope.authentication.principal import PrincipalSource
 
 from z3c.i18n import MessageFactory as _
-
-
-# TODO: this should really, really go to another place then
-#       zope.app.authentication
-class IPasswordManager(zope.interface.Interface):
-    """Password manager."""
-
-    def encodePassword(password):
-        """Return encoded data for the password."""
-
-    def checkPassword(storedPassword, password):
-        """Return whether the password coincide with the storedPassword."""
 
 
 class IPlugin(zope.interface.Interface):
