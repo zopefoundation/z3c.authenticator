@@ -18,8 +18,6 @@ __docformat__ = "reStructuredText"
 
 import persistent
 import zope.interface
-import zope.security.management
-import zope.security.interfaces
 from zope.authentication.interfaces import PrincipalLookupError
 from zope.container import contained
 from zope.principalregistry.principalregistry import principalRegistry

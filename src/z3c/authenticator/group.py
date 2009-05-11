@@ -22,7 +22,6 @@ import persistent
 import zope.interface
 import zope.component
 import zope.event
-import zope.deprecation
 import zope.deferredimport
 
 from zope.interface import alsoProvides
