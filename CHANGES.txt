@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-Version 0.6.1 (unreleased)
+Version 0.7.0 (2009-05-11)
 --------------------------
 
 - Update dependencies:
@@ -15,6 +15,7 @@ Version 0.6.1 (unreleased)
      managers.
 
 - Drop dependency on z3c.i18n and recreate a message factory instead.
+
 
 Version 0.6.0 (2009-01-04)
 --------------------------
