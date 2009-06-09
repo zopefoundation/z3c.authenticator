@@ -444,7 +444,7 @@ adapters:
   ...     provides=interfaces.IFoundPrincipal)
 
 Now we can use them without any other event subscriber or other registration
-in our principal container. Let's add a principal tho this container:
+in our principal container. Let's add a principal to this container:
 
   >>> p = MyUser(u'max', u'password', u'Max', u'', u'max@foobar.com')
   >>> token, max = authPlugin.add(p)
@@ -481,3 +481,43 @@ and check your authenticated principal:
 
   >>> authenticated.email
   u'max@foobar.com'
+
+Check getUserByLogin:
+
+  >>> authPlugin.getUserByLogin('max')
+  <MyUser object at ...>
+
+  >>> authPlugin.getUserByLogin('max').login
+  u'max'
+
+  >>> authPlugin.getUserByLogin('max').__name__ == token
+  True
+
+
+A handy feature for migration is that you can set your own ``token``.
+Usually in z.a.authentication the ``token`` == login and we want to keep it
+that way, unless you want to iterate through all permissions and whatever.
+Note, the __name__ and the id in the container must be the *SAME* object.
+
+  >>> login = u'migrateduser'
+  >>> p = User(login, u'password', u'John')
+
+Preset the ``token``
+
+  >>> p.__name__ = login
+
+Watch out, we use __setitem__ instead of add(), because add() would kill off
+the preset ``token`` in __name__.
+
+  >>> authPlugin[login] = p
+
+Here we are, the user is set with the non-generated token.
+
+  >>> u'migrateduser' in authPlugin.keys()
+  True
+
+  >>> authPlugin['migrateduser']
+  <z3c.authenticator.user.User object at ...>
+
+  >>> authPlugin.getUserByLogin('migrateduser')
+  <z3c.authenticator.user.User object at ...>

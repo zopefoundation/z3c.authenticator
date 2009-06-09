@@ -59,14 +59,14 @@ class IAuthenticatorPlugin(IPlugin):
 
 class IPrincipalRegistryAuthenticatorPlugin(IAuthenticatorPlugin):
     """Principal registry authenticator plugin.
-    
+
     This plugin is a little bit special since principals get returned from
     a IAuthentication source next to the root then any other IAuthenticator.
-    
+
     By defaut this utility returns global principals and the IAuthenticator
     forces to wrap then within a IFoundPrincipal. This allows us to apply
-    local groups to gloal defined principals. 
-    
+    local groups to gloal defined principals.
+
     You can trun of this feature by set allowQueryPrincipal to False.
     Anyway, this is just an optional plugin, you don't have to use it.
     """
@@ -138,12 +138,12 @@ class ISearchable(zope.interface.Interface):
 
 class IAuthenticator(ILogout, IContainer):
     """Authentication utility.
-    
-    The Authenticator supports NOT IAuthenticatorPlugin plugins defined 
-    in zope.app.authentication.interfaces. Because they use and return a 
+
+    The Authenticator supports NOT IAuthenticatorPlugin plugins defined
+    in zope.app.authentication.interfaces. Because they use and return a
     IPrincipalInfo object in the authenticateCredentials method.
-    
-    Note: you have to write your own authenticator plugins because we do not 
+
+    Note: you have to write your own authenticator plugins because we do not
     use the IPrincipalInfo implementation in this authentication module.
     """
 
@@ -160,7 +160,7 @@ class IAuthenticator(ILogout, IContainer):
         description=_("""Used for extracting credentials.
         Names may be of ids of non-utility ICredentialsPlugins contained in
         the IAuthenticator, or names of registered
-        ICredentialsPlugins utilities.  Contained non-utility ids mask 
+        ICredentialsPlugins utilities.  Contained non-utility ids mask
         utility names."""),
         value_type=zope.schema.Choice(vocabulary='Z3CCredentialsPlugins'),
         default=[],
@@ -171,7 +171,7 @@ class IAuthenticator(ILogout, IContainer):
         description=_("""Used for converting credentials to principals.
         Names may be of ids of non-utility IAuthenticatorPlugins contained in
         the IAuthenticator, or names of registered
-        IAuthenticatorPlugins utilities.  Contained non-utility ids mask 
+        IAuthenticatorPlugins utilities.  Contained non-utility ids mask
         utility names."""),
         value_type=zope.schema.Choice(vocabulary='Z3CAuthenticatorPlugins'),
         default=[],
@@ -253,18 +253,21 @@ class IUserContainer(IContainer, IAuthenticatorPlugin, ISearchable):
     def add(user):
         """Add a user and returns a the assigned token (principal id)."""
 
+    def getUserByLogin(login):
+        """Return the User object by looking it up by it's login"""
+
 
 # principal interfaces
 class IFoundPrincipal(zope.security.interfaces.IGroupClosureAwarePrincipal):
     """Provides found principal returned by IAuthenticator.getPrincipal.
-    
+
     The only goal of this adapter is to provide a none persistent object which
     we can apply our group of group ids at runtime.
-    
+
     This is needed because there is no way to keep the group of group info
-    in sync if we whould store them in a IGroup implementation as persistent 
+    in sync if we whould store them in a IGroup implementation as persistent
     information.
-    
+
     A found principal gets also created by the IAuthenticators search method
     for users matching the search critaria.
     """
@@ -292,11 +295,11 @@ class IFoundPrincipal(zope.security.interfaces.IGroupClosureAwarePrincipal):
 
 class IAuthenticatedPrincipal(
     zope.security.interfaces.IGroupClosureAwarePrincipal):
-    """A factory adapting IInternalPrincipal and offering read access to the 
+    """A factory adapting IInternalPrincipal and offering read access to the
     principal.
-    
-    A authenticated principal gets created by the IAuthenticators 
-    authenticateCredentials method for principals matching the credential 
+
+    A authenticated principal gets created by the IAuthenticators
+    authenticateCredentials method for principals matching the credential
     criteria.
     """
 
@@ -324,13 +327,13 @@ class IAuthenticatedPrincipal(
 # group interfaces
 class IGroup(zope.security.interfaces.IGroup):
     """IGroup provides the zope.security.interfaces.IGroup.
-    
-    This let us use such IGroups as local registered IEveryoneGroup or 
+
+    This let us use such IGroups as local registered IEveryoneGroup or
     IAuthenticatedGroup utilities.
-    
+
     Note zope.security.interfaces.IGroup implementations are used for store
     IPrincipal ids of other IPrincipal or IGroup objects.
-    
+
     zope.security.interfaces.IGroup implemenations are not used for store
     group of group informations. Group of gorup information are collected
     at runtime by the IAuthentication.getPrincipal method via an adapter
@@ -386,12 +389,12 @@ class IGroupContainer(IContainer, IAuthenticatorPlugin, ISearchable):
 
 class IFoundGroup(IFoundPrincipal, zope.security.interfaces.IGroup):
     """IFoundGroup acts as a IFoundPrincipal representing a group.
-    
+
     This group principal is used as IFoundPrincipal adapter which we adhoc
     apply our inherited groups incouding groups of groups. See IFoundPrincipal
     for more information.
-    
-    This means both interface z3c.authenticator.interfaces.IGroupPrincipal and 
+
+    This means both interface z3c.authenticator.interfaces.IGroupPrincipal and
     z3c.authenticator.interfaces.IGroup provide zope.security.interfaces.IGroup.
     """
 
@@ -539,4 +542,3 @@ class ILoginSchema(zope.interface.Interface):
 # queriable search interfaces
 class IQueriableAuthenticator(ISearchable):
     """Indicates the authenticator provides a search UI for principals."""
-

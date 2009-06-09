@@ -5,6 +5,10 @@ CHANGES
 Version 0.7.1 (unreleased)
 --------------------------
 
+- Feature: added getUserByLogin to IUserContainer
+
+- Added a test for user migration (that they can keep their ID)
+
 - ...
 
 

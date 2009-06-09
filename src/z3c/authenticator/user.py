@@ -31,7 +31,7 @@ from zope.password.interfaces import IPasswordManager
 from z3c.authenticator import interfaces
 
 # get the IP addresss only once
-try: 
+try:
   ip = socket.getaddrinfo(socket.gethostname(), 0)[-1][-1][0]
 except:
   ip = '127.0.0.1'
@@ -63,7 +63,7 @@ class User(persistent.Persistent, contained.Contained):
     passwordManagerName = property(getPasswordManagerName)
 
     def _getPasswordManager(self):
-        return zope.component.getUtility(IPasswordManager, 
+        return zope.component.getUtility(IPasswordManager,
             self.passwordManagerName)
 
     def getPassword(self):
@@ -145,8 +145,8 @@ class UserContainer(btree.BTreeContainer):
         ...     print e
         There is no user id token given!
 
-        Probabl we do hav a __name__ during copy/paste, so we have to check 
-        if we get a __parent__ as well 
+        Probably we do have a __name__ during copy/paste, so we have to check
+        if we get a __parent__ as well
 
         >>> user = User()
         >>> user.__name__ = u'usertoken'
@@ -228,6 +228,10 @@ class UserContainer(btree.BTreeContainer):
         if not user.checkPassword(credentials["password"]):
             return None
         return user
+
+    def getUserByLogin(self, login):
+        #don't bother catching KeyError, it's the task of the caller
+        return self[self.__id_by_login[login]]
 
     def queryPrincipal(self, id, default=None):
         user = self.get(id)
