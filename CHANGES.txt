@@ -2,9 +2,18 @@
 CHANGES
 =======
 
+0.6.1 (2009-08-19)
+------------------
 
-Version 0.6.0 (2009-01-04)
---------------------------
+- Bugfix: the method specialGroups applied groups everytime the method get
+  called even if the group was already applied. This is a problem if the
+  global shared unauthenticated principal instance is used because it will
+  apply similar groups till the server get restarted and a new principal
+  instance is used.
+
+
+0.6.0 (2009-01-04)
+------------------
 
 - Feature: added support for local IUnauthenticatedPrincipal. This is usefull
   if you need to apply local roles to IUnauthenticatedPrincipal. This was not
@@ -45,13 +54,13 @@ Version 0.6.0 (2009-01-04)
 - Added documentation for Pypi home page.
 
 
-Version 0.5.1 (2008-04-16)
---------------------------
+0.5.1 (2008-04-16)
+------------------
 
 - Cleanup imports and adjust dependencies
 
 
-Version 0.5.0 (2008-04-16)
---------------------------
+0.5.0 (2008-04-16)
+------------------
 
 - Initial Release

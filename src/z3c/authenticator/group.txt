@@ -477,6 +477,14 @@ Then the group will be added to the principal:
   >>> found.groups
   [u'groups.all', u'groups.authenticated']
 
+It is important that we do not apply a group twice since the
+UnauthenticatedPrincipal is a single instance in the securitypolicy. This issue
+is fixed in version 0.6.1 and 0.7.1
+
+  >>> specialGroups(event)
+  >>> found.groups
+  [u'groups.all', u'groups.authenticated']
+
 
 allGroups
 ---------
