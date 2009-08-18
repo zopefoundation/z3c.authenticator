@@ -249,18 +249,21 @@ def specialGroups(event):
 
     # global utility registered by everybodyGroup directive
     everyone = zope.component.queryUtility(IEveryoneGroup)
-    if everyone is not None and everyone.id != principal.id:
+    if everyone is not None and everyone.id != principal.id and \
+        everyone.id not in principal.groups:
         principal.groups.append(everyone.id)
 
     if IUnauthenticatedPrincipal.providedBy(principal):
         # global utility registered by unauthenticatedGroup directive
         unAuthGroup = zope.component.queryUtility(IUnauthenticatedGroup)
-        if unAuthGroup is not None and unAuthGroup.id != principal.id:
+        if unAuthGroup is not None and unAuthGroup.id != principal.id and \
+            unAuthGroup.id not in principal.groups:
             principal.groups.append(unAuthGroup.id)
     else:
         # global utility registered by authenticatedGroup directive
         authGroup = zope.component.queryUtility(IAuthenticatedGroup)
-        if authGroup is not None and authGroup.id != principal.id:
+        if authGroup is not None and authGroup.id != principal.id and \
+            authGroup.id not in principal.groups:
             principal.groups.append(authGroup.id)
 
 

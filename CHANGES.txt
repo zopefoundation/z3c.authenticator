@@ -2,18 +2,22 @@
 CHANGES
 =======
 
-Version 0.7.1 (unreleased)
---------------------------
+0.7.1 (2009-08-19)
+------------------
+
+- Bugfix: the method specialGroups applied groups everytime the method get
+  called even if the group was already applied. This is a problem if the
+  global shared unauthenticated principal instance is used because it will
+  apply similar groups till the server get restarted and a new principal
+  instance is used.
 
 - Feature: added getUserByLogin to IUserContainer
 
-- Added a test for user migration (that they can keep their ID)
-
-- ...
+- Added a test for user migration (that they will keep their ID)
 
 
-Version 0.7.0 (2009-05-11)
---------------------------
+0.7.0 (2009-05-11)
+------------------
 
 - Update dependencies:
 
@@ -27,8 +31,20 @@ Version 0.7.0 (2009-05-11)
 - Drop dependency on z3c.i18n and recreate a message factory instead.
 
 
-Version 0.6.0 (2009-01-04)
---------------------------
+0.6.1 (2009-08-19)
+------------------
+
+- Backport bugfix 0.7.1 to 0.6.1. See branches/roger-0.6.0
+  
+  the method specialGroups applied groups everytime the method get
+  called even if the group was already applied. This is a problem if the
+  global shared unauthenticated principal instance is used because it will
+  apply similar groups till the server get restarted and a new principal
+  instance is used.
+
+
+0.6.0 (2009-01-04)
+------------------
 
 - Feature: added support for local IUnauthenticatedPrincipal. This is usefull
   if you need to apply local roles to IUnauthenticatedPrincipal. This was not
@@ -69,13 +85,13 @@ Version 0.6.0 (2009-01-04)
 - Added documentation for Pypi home page.
 
 
-Version 0.5.1 (2008-04-16)
---------------------------
+0.5.1 (2008-04-16)
+------------------
 
 - Cleanup imports and adjust dependencies
 
 
-Version 0.5.0 (2008-04-16)
---------------------------
+0.5.0 (2008-04-16)
+------------------
 
 - Initial Release

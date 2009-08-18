@@ -88,13 +88,13 @@ Here some useful hints:
 
 How should I set permission for principals?
 
-  You can apply a roles to groups
+  You can apply roles to groups
   and apply permissions to roles. Or you can directly apply local permisssions
   to groups or to principals. After setup this mappings you can grant roles to
   groups. I always recommend a principal - group and permission - role mapping,
   then this gives you the most possible abstraction which is useful if it comes
   to manage permission and principals without to invoke directly principals and
-  permissions itself. but of corse you can grant permissions to groups or the
+  permissions itself. But of corse you can grant permissions to groups or the
   worst thing directly to principals. Grant permission to principals is only
   useful if it comes to selective local permission settings for selected
   principals e.g. a ownership like permission setup.
