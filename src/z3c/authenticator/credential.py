@@ -20,6 +20,7 @@ import base64
 import transaction
 import persistent
 from urllib import urlencode
+from urllib import quote
 
 import zope.interface
 from zope.publisher.interfaces.http import IHTTPRequest
@@ -320,7 +321,15 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
     def challenge(self, request):
         """Challenges by redirecting to a login form.
 
-        To illustrate, we'll create a test request:
+        To illustrate how a session plugin works, we'll first setup some session
+        machinery:
+    
+          >>> from zope.app.testing import placelesssetup
+          >>> from z3c.authenticator.testing import sessionSetUp
+          >>> placelesssetup.setUp()
+          >>> sessionSetUp()
+
+        and we'll create a test request:
 
           >>> from zope.publisher.browser import TestRequest
           >>> request = TestRequest()
@@ -342,7 +351,15 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
           >>> request.response.getStatus()
           302
           >>> request.response.getHeader('location')
-          'http://127.0.0.1/@@loginForm.html?camefrom=%2F'
+          'http://127.0.0.1/@@loginForm.html'
+
+        and the camefrom session contains the camefrom url which is our
+        application root by default:
+
+          >>> session = ISession(request, None)
+          >>> sessionData = session['z3c.authenticator.credential.session']
+          >>> sessionData['camefrom']
+          '/'
 
         The plugin redirects to the page defined by the loginpagename
         attribute:
@@ -351,7 +368,15 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
           >>> plugin.challenge(request)
           True
           >>> request.response.getHeader('location')
-          'http://127.0.0.1/@@mylogin.html?camefrom=%2F'
+          'http://127.0.0.1/@@mylogin.html'
+
+        and the camefrom session contains the camefrom url which is our
+        application root by default:
+
+          >>> session = ISession(request, None)
+          >>> sessionData = session['z3c.authenticator.credential.session']
+          >>> sessionData['camefrom']
+          '/'
 
         It also provides the request URL as a 'camefrom' GET style parameter.
         To illustrate, we'll pretend we've traversed a couple names:
@@ -371,10 +396,17 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
           >>> plugin.challenge(request)
           True
 
-        We see the 'camefrom' points to the requested URL:
+        We see the url points to the login form URL:
 
           >>> request.response.getHeader('location') # doctest: +ELLIPSIS
-          '.../@@mylogin.html?camefrom=%2Ffoo%2Fbar%2Ffolder%2Fpage+1.html%3Fq%3Dvalue'
+          'http://127.0.0.1/@@mylogin.html'
+
+        and the camefrom session contains the camefrom url:
+
+          >>> session = ISession(request, None)
+          >>> sessionData = session['z3c.authenticator.credential.session']
+          >>> sessionData['camefrom']
+          u'/foo/bar/folder/page%201.html?q=value'
 
         If the given challenge argument doesn't provide IHTTPRequest the
         result will always be False:
@@ -398,10 +430,14 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
         camefrom = '/'.join([request.getURL(path_only=True)] + stack)
         if query:
             camefrom = camefrom + '?' + query
-        url = '%s/@@%s?%s' % (absoluteURL(site, request),
-                              self.loginpagename,
-                              urlencode({'camefrom': camefrom}))
+        url = '%s/@@%s' % (absoluteURL(site, request), self.loginpagename)
+        # only redirect to the login form
         request.response.redirect(url)
+        # and store the camefrom url into a session variable, then this url
+        # should not get exposed in the login form url.
+        session = ISession(request, None)
+        sessionData = session['z3c.authenticator.credential.session']
+        sessionData['camefrom'] = camefrom.replace(' ', '%20')
         return True
 
     def logout(self, request):
@@ -411,5 +447,6 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
 
         sessionData = ISession(request)['z3c.authenticator.credential.session']
         sessionData['credentials'] = None
+        sessionData['camefrom'] = None
         transaction.commit()
         return True

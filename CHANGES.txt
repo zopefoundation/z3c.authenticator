@@ -2,10 +2,22 @@
 CHANGES
 =======
 
-0.7.2 (unreleased)
+0.8.0 (unreleased)
 ------------------
 
-- ...
+- Security Fix: move camefrom url to a session variable instead of exposing
+  the url in the login form. Because the camefrom url is built at server side
+  based on local information and will always only use internal traversal names.
+  Exposing this camefrom query in the login url gives others only a point to
+  attack because it could be simply set by a unfriendly domain with a custom
+  url. This is much better since such a unfriendly 3rd party domain url doesn't
+  get redirected by default based on the changes in zope.publisher's redirect
+  method. (zope.publisher 3.9.3 does only redirect to urls located in the same
+  domain by default)
+  
+  Remove all camefrom widgets and queries in our custom forms if you use any.
+  You can just set and get the camefrom session variable in you rcustom forms
+  if you need to.
 
 
 0.7.1 (2009-08-19)

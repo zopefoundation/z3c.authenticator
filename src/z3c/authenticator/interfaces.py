@@ -534,10 +534,6 @@ class ILoginSchema(zope.interface.Interface):
         title=_(u'Password'),
         description=_(u'Your password.'))
 
-    camefrom = zope.schema.TextLine(
-        title=_(u'Camefrom'),
-        description=_(u'The url which the user came form.'))
-
 
 # queriable search interfaces
 class IQueriableAuthenticator(ISearchable):
