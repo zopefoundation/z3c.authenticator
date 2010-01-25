@@ -22,7 +22,6 @@ import persistent
 import zope.interface
 import zope.component
 import zope.event
-import zope.deferredimport
 
 from zope.interface import alsoProvides
 from zope.security.interfaces import IGroup
@@ -38,12 +37,6 @@ from zope.authentication.interfaces import IUnauthenticatedPrincipal
 
 from z3c.authenticator import interfaces
 from z3c.authenticator import event
-
-zope.deferredimport.deprecated(
-    "FoundPrincipal has moved to z3c.authenticator.group.FoundGroup",
-    FoundPrincipal = 'z3c.authenticator.principal:FoundGroup',
-    )
-
 
 class Group(persistent.Persistent, contained.Contained):
     """An implementation of IGroup used by the group container."""
@@ -202,7 +195,7 @@ class GroupContainer(btree.BTreeContainer):
             search = search.lower()
             for i, (id, groupinfo) in enumerate(self.items()):
                 if (search in groupinfo.title.lower() or
-                    (groupinfo.description and 
+                    (groupinfo.description and
                      search in groupinfo.description.lower())):
                     if not ((start is not None and i < start) or
                             (batch_size is not None and n >= batch_size)):
@@ -270,7 +263,7 @@ def specialGroups(event):
 @zope.component.adapter(interfaces.IPrincipalCreated)
 def setGroupsForPrincipal(event):
     """Set local group information when a principal is created.
-    
+
     Note: IUnauthenticatedPrincipal does not provide IGroupAwarePrincipal which
     is just wrong and makes the conditions a little bit complicated.
     """
