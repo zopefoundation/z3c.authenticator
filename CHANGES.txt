@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.8.0 (unreleased)
+0.8.0 (2010-01-25)
 ------------------
 
 - Security Fix: move camefrom url to a session variable instead of exposing
@@ -14,7 +14,7 @@ CHANGES
   get redirected by default based on the changes in zope.publisher's redirect
   method. (zope.publisher 3.9.3 does only redirect to urls located in the same
   domain by default)
-  
+
   Remove all camefrom widgets and queries in our custom forms if you use any.
   You can just set and get the camefrom session variable in you rcustom forms
   if you need to.
@@ -53,7 +53,7 @@ CHANGES
 ------------------
 
 - Backport bugfix 0.7.1 to 0.6.1. See branches/roger-0.6.0
-  
+
   the method specialGroups applied groups everytime the method get
   called even if the group was already applied. This is a problem if the
   global shared unauthenticated principal instance is used because it will
