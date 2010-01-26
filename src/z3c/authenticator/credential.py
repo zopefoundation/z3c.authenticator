@@ -243,7 +243,7 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
       >>> plugin.extractCredentials(request)
       {'login': 'luke', 'password': 'the_force'}
 
-    We can also set prefixes for the fields from which the credentials are 
+    We can also set prefixes for the fields from which the credentials are
     extracted:
 
       >>> plugin.loginfield = "login"
@@ -323,7 +323,7 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
 
         To illustrate how a session plugin works, we'll first setup some session
         machinery:
-    
+
           >>> from zope.app.testing import placelesssetup
           >>> from z3c.authenticator.testing import sessionSetUp
           >>> placelesssetup.setUp()
@@ -437,6 +437,7 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
         # should not get exposed in the login form url.
         session = ISession(request, None)
         sessionData = session['z3c.authenticator.credential.session']
+        # XXX: this might be problematic with non-ASCII html page names
         sessionData['camefrom'] = camefrom.replace(' ', '%20')
         return True
 
