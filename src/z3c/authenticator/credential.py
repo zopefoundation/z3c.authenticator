@@ -20,6 +20,7 @@ import base64
 import transaction
 import persistent
 from urllib import urlencode
+from urllib import quote
 
 import zope.interface
 from zope.publisher.interfaces.http import IHTTPRequest
@@ -31,6 +32,7 @@ from zope.app.container import contained
 
 from z3c.authenticator import interfaces
 
+_safe = '@+' # Characters that we don't want to have quoted
 
 class HTTPBasicAuthCredentialsPlugin(persistent.Persistent,
     contained.Contained):
@@ -242,7 +244,7 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
       >>> plugin.extractCredentials(request)
       {'login': 'luke', 'password': 'the_force'}
 
-    We can also set prefixes for the fields from which the credentials are 
+    We can also set prefixes for the fields from which the credentials are
     extracted:
 
       >>> plugin.loginfield = "login"
@@ -398,9 +400,18 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
         camefrom = '/'.join([request.getURL(path_only=True)] + stack)
         if query:
             camefrom = camefrom + '?' + query
+
+        try:
+            camefrom = str(camefrom)
+            query = urlencode({'camefrom': camefrom})
+        except UnicodeEncodeError:
+            #urlencode does just too much
+            camefrom = quote(camefrom.encode('utf-8'), _safe)
+            query = "camefrom=%s" % camefrom
+
         url = '%s/@@%s?%s' % (absoluteURL(site, request),
                               self.loginpagename,
-                              urlencode({'camefrom': camefrom}))
+                              query)
         request.response.redirect(url)
         return True
 

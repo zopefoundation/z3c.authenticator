@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+0.6.2 (2010-01-26)
+------------------
+
+- Bugfix: Failed miserably on challenge on pages having non-ASCII names.
+  (Backport from 0.7.2)
+
 0.6.1 (2009-08-19)
 ------------------
 
