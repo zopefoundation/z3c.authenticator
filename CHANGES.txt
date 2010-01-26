@@ -21,9 +21,13 @@ CHANGES
   domain by default)
 
   Remove all camefrom widgets and queries in our custom forms if you use any.
-  You can just set and get the camefrom session variable in you rcustom forms
+  You can just set and get the camefrom session variable in your custom forms
   if you need to.
 
+0.7.2 (2010-01-26)
+------------------
+
+- Bugfix: Failed miserably on challenge on pages having non-ASCII names.
 
 0.7.1 (2009-08-19)
 ------------------
@@ -53,6 +57,11 @@ CHANGES
 
 - Drop dependency on z3c.i18n and recreate a message factory instead.
 
+0.6.2 (2010-01-26)
+------------------
+
+- Bugfix: Failed miserably on challenge on pages having non-ASCII names.
+  (Backport from 0.7.2)
 
 0.6.1 (2009-08-19)
 ------------------
