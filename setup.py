@@ -88,6 +88,7 @@ setup (
         'zope.session',
         'zope.site',
         'zope.traversing',
+        'zope.deferredimport',
         ],
     zip_safe = False,
 )
