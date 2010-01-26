@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+0.7.2 (2010-01-26)
+------------------
+
+- Bugfix: Failed miserably on challenge on pages having non-ASCII names.
+
 0.7.1 (2009-08-19)
 ------------------
 
@@ -35,7 +40,7 @@ CHANGES
 ------------------
 
 - Backport bugfix 0.7.1 to 0.6.1. See branches/roger-0.6.0
-  
+
   the method specialGroups applied groups everytime the method get
   called even if the group was already applied. This is a problem if the
   global shared unauthenticated principal instance is used because it will
