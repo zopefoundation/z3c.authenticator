@@ -32,15 +32,19 @@ from z3c.authenticator import interfaces
 
 # get the IP addresss only once
 try:
-  ip = socket.getaddrinfo(socket.gethostname(), 0)[-1][-1][0]
+    ip = socket.getaddrinfo(socket.gethostname(), 0)[-1][-1][0]
 except:
-  ip = '127.0.0.1'
+    ip = '127.0.0.1'
 
 def generateUserIDToken(id):
     """Generates a unique user id token."""
     t = long(time.time() * 1000)
     r = long(random.random()*100000000000000000L)
-    data = str(ip)+' '+str(t)+' '+str(r)+' '+str(id)
+    try:
+        id = str(id)
+    except UnicodeEncodeError:
+        id = id.encode('utf-8')
+    data = str(ip)+' '+str(t)+' '+str(r)+' '+id
     return unicode(md5.md5(data).hexdigest())
 
 

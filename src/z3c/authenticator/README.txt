@@ -521,3 +521,15 @@ Here we are, the user is set with the non-generated token.
 
   >>> authPlugin.getUserByLogin('migrateduser')
   <z3c.authenticator.user.User object at ...>
+
+
+Edge cases
+----------
+
+We can have Users with unicode login, as we allow this with TextLine in IUser.
+
+  >>> p = User(u'bob'+unichr(233), 'password', 'title')
+
+Adding it should not fail:
+
+  >>> uid, user = authPlugin.add(p)
