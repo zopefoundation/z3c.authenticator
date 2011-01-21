@@ -11,24 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
-import unittest
-from zope.testing import doctest
-from zope.app.testing import placelesssetup
-
-from z3c.testing import InterfaceBaseTest
-from z3c.testing import BaseTestIContainer
-from z3c.authenticator import interfaces
 from z3c.authenticator import authentication
 from z3c.authenticator import credential
 from z3c.authenticator import group
-from z3c.authenticator import user
+from z3c.authenticator import interfaces
 from z3c.authenticator import principal
 from z3c.authenticator import testing
+from z3c.authenticator import user
+from z3c.testing import BaseTestIContainer
+from z3c.testing import InterfaceBaseTest
+from zope.app.testing import placelesssetup
+import doctest
+import unittest
 
 
 class AuthenticatorTest(BaseTestIContainer):

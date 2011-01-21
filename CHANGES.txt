@@ -7,6 +7,9 @@ CHANGES
 
 - Bugfix: Did not handle unicode IUser.login values.
 
+- Fixed DeprecationWarnings.
+
+
 0.8.0 (2010-01-25)
 ------------------
 

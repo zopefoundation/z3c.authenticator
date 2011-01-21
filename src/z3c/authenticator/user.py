@@ -16,7 +16,10 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
-import md5
+try:
+    from hashlib import md5
+except ImportError: # BBB for Python 2.4
+    from md5 import md5
 import random
 import time
 import socket
@@ -45,7 +48,7 @@ def generateUserIDToken(id):
     except UnicodeEncodeError:
         id = id.encode('utf-8')
     data = str(ip)+' '+str(t)+' '+str(r)+' '+id
-    return unicode(md5.md5(data).hexdigest())
+    return unicode(md5(data).hexdigest())
 
 
 class User(persistent.Persistent, contained.Contained):
