@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.9.0 (unreleased)
+0.8.1 (2011-01-21)
 ------------------
 
 - Bugfix: Did not handle unicode IUser.login values.
