@@ -20,7 +20,7 @@ from z3c.authenticator import testing
 from z3c.authenticator import user
 from z3c.testing import BaseTestIContainer
 from z3c.testing import InterfaceBaseTest
-from zope.app.testing import placelesssetup
+from zope.component import testing import as placelesssetup
 import doctest
 import unittest
 
@@ -137,14 +137,20 @@ class SessionCredentialsPluginFormTest(InterfaceBaseTest):
     def getTestClass(self):
         return credential.SessionCredentialsPlugin
 
+def placefulSetUp(test):
+    zope.site.testing.siteSetUp(True)
+    zope.traversing.testing.setUp()
+
+def placefulTearDown(test):
+    zope.site.testing.siteTearDown()
 
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('README.txt',
-            setUp=testing.placefulSetUp, tearDown=testing.placefulSetUp,
+            setUp=placefulSetUp, tearDown=placefulTearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         doctest.DocFileSuite('group.txt',
-            setUp=testing.placefulSetUp, tearDown=testing.placefulSetUp,
+            setUp=placefulSetUp, tearDown=placefulTearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         doctest.DocTestSuite('z3c.authenticator.credential',
             setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown),
