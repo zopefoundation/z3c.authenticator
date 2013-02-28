@@ -22,6 +22,7 @@ from z3c.authenticator import interfaces
 
 
 # principal events
+@zope.interface.implementer(interfaces.IAuthenticatedPrincipalCreated)
 class AuthenticatedPrincipalCreated(object):
     """
     >>> from zope.interface.verify import verifyObject
@@ -31,7 +32,6 @@ class AuthenticatedPrincipalCreated(object):
     True
     """
 
-    zope.interface.implements(interfaces.IAuthenticatedPrincipalCreated)
 
     def __init__(self, authentication, principal, request):
         self.authentication = authentication
@@ -39,6 +39,7 @@ class AuthenticatedPrincipalCreated(object):
         self.request = request
 
 
+@zope.interface.implementer(interfaces.IUnauthenticatedPrincipalCreated)
 class UnauthenticatedPrincipalCreated(object):
     """
     >>> from zope.interface.verify import verifyObject
@@ -48,13 +49,13 @@ class UnauthenticatedPrincipalCreated(object):
     True
     """
 
-    zope.interface.implements(interfaces.IUnauthenticatedPrincipalCreated)
 
     def __init__(self, authentication, principal):
         self.authentication = authentication
         self.principal = principal
 
 
+@zope.interface.implementer(interfaces.IFoundPrincipalCreated)
 class FoundPrincipalCreated(object):
     """
     >>> from zope.interface.verify import verifyObject
@@ -63,7 +64,6 @@ class FoundPrincipalCreated(object):
     True
     """
 
-    zope.interface.implements(interfaces.IFoundPrincipalCreated)
 
     def __init__(self, authentication, principal):
         self.authentication = authentication
@@ -71,6 +71,7 @@ class FoundPrincipalCreated(object):
 
 
 # group events
+@zope.interface.implementer(interfaces.IGroupAdded)
 class GroupAdded(object):
     """Group added event
 
@@ -80,7 +81,6 @@ class GroupAdded(object):
     True
     """
 
-    zope.interface.implements(interfaces.IGroupAdded)
 
     def __init__(self, group):
         self.group = group
@@ -100,9 +100,10 @@ class AbstractUsersChanged(object):
             self.__class__.__name__, sorted(self.principal_ids), self.group_id)
 
 
+@zope.interface.implementer(interfaces.IPrincipalsAddedToGroup)
 class PrincipalsAddedToGroup(AbstractUsersChanged):
-    zope.interface.implements(interfaces.IPrincipalsAddedToGroup)
+    pass
 
-
+@zope.interface.implementer(interfaces.IPrincipalsRemovedFromGroup)
 class PrincipalsRemovedFromGroup(AbstractUsersChanged):
-    zope.interface.implements(interfaces.IPrincipalsRemovedFromGroup)
+    pass

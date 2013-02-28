@@ -38,10 +38,10 @@ from zope.authentication.interfaces import IUnauthenticatedPrincipal
 from z3c.authenticator import interfaces
 from z3c.authenticator import event
 
+
+@zope.interface.implementer(interfaces.IGroup)
 class Group(persistent.Persistent, contained.Contained):
     """An implementation of IGroup used by the group container."""
-
-    zope.interface.implements(interfaces.IGroup)
 
     _principals = ()
 
@@ -97,9 +97,8 @@ class Group(persistent.Persistent, contained.Contained):
         return "<%s %s>" %(self.__class__.__name__, self.__name__)
 
 
+@zope.interface.implementer(interfaces.IGroupContainer)
 class GroupContainer(btree.BTreeContainer):
-
-    zope.interface.implements(interfaces.IGroupContainer)
 
     def __init__(self, prefix=u''):
         self.prefix = prefix

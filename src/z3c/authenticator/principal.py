@@ -60,42 +60,34 @@ class PrincipalBase(object):
         return "<%s %s>" %(self.__class__.__name__, self.id)
 
 
+@zope.component.adapter(interfaces.IUser)
+@zope.interface.implementer(interfaces.IAuthenticatedPrincipal)
 class AuthenticatedPrincipal(PrincipalBase):
     """Default IAuthenticatedPrincipal principal."""
 
-    zope.component.adapts(interfaces.IUser)
 
-    zope.interface.implements(interfaces.IAuthenticatedPrincipal)
-
-
+@zope.component.adapter(interfaces.IUser)
+@zope.interface.implementer(interfaces.IFoundPrincipal)
 class FoundPrincipal(PrincipalBase):
     """Default IFoundPrincipal principal."""
 
-    zope.component.adapts(interfaces.IUser)
 
-    zope.interface.implements(interfaces.IFoundPrincipal)
-
-
+@zope.component.adapter(IPrincipal)
+@zope.interface.implementer(interfaces.IAuthenticatedPrincipal)
 class AuthenticatedPrincipalForPrincipal(PrincipalBase):
     """IAuthenticatedPrincipal principal for IPrincipal."""
 
-    zope.component.adapts(IPrincipal)
-
-    zope.interface.implements(interfaces.IAuthenticatedPrincipal)
 
 
+@zope.component.adapter(IPrincipal)
+@zope.interface.implementer(interfaces.IFoundPrincipal)
 class FoundPrincipalForPrincipal(PrincipalBase):
     """IFoundPrincipal principal for IPrincipal."""
 
-    zope.component.adapts(IPrincipal)
 
-    zope.interface.implements(interfaces.IFoundPrincipal)
-
-
+@zope.interface.implementer(interfaces.IFoundGroup)
+@zope.component.adapter(zope.security.interfaces.IGroup)
 class FoundGroup(object):
-
-    zope.interface.implements(interfaces.IFoundGroup)
-    zope.component.adapts(zope.security.interfaces.IGroup)
 
     def __init__(self, group):
         self.id = group.__name__

@@ -19,8 +19,6 @@ __docformat__ = "reStructuredText"
 import base64
 import transaction
 import persistent
-from urllib import urlencode
-from urllib import quote
 
 import zope.interface
 from zope.publisher.interfaces.http import IHTTPRequest
@@ -33,11 +31,11 @@ from zope.container import contained
 from z3c.authenticator import interfaces
 
 
+@zope.interface.implementer(interfaces.IHTTPBasicAuthCredentialsPlugin)
 class HTTPBasicAuthCredentialsPlugin(persistent.Persistent,
     contained.Contained):
 
 
-    zope.interface.implements(interfaces.IHTTPBasicAuthCredentialsPlugin)
 
     realm = 'Zope Application Management'
 
@@ -139,6 +137,7 @@ class HTTPBasicAuthCredentialsPlugin(persistent.Persistent,
         return False
 
 
+@zope.interface.implementer(interfaces.ISessionCredentials)
 class SessionCredentials(object):
     """Credentials class for use with sessions.
 
@@ -156,7 +155,6 @@ class SessionCredentials(object):
       'tiger'
 
     """
-    zope.interface.implements(interfaces.ISessionCredentials)
 
     def __init__(self, login, password):
         self.login = login
@@ -169,6 +167,7 @@ class SessionCredentials(object):
     def __str__(self): return self.getLogin() + ':' + self.getPassword()
 
 
+@zope.interface.implementer(interfaces.ISessionCredentialsPlugin)
 class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
     """A credentials plugin that uses Zope sessions to get/store credentials.
 
@@ -281,7 +280,6 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
       None
 
     """
-    zope.interface.implements(interfaces.ISessionCredentialsPlugin)
 
     challengeProtocol = None
 

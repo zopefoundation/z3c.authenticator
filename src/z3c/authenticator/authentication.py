@@ -33,11 +33,11 @@ from z3c.authenticator import interfaces
 from z3c.authenticator import event
 
 
+@zope.interface.implementer(IAuthentication,
+                            interfaces.IAuthenticator, ISourceQueriables)
 class Authenticator(btree.BTreeContainer):
     """See z3c.authentication.interfaces.IAuthenticator."""
 
-    zope.interface.implements(IAuthentication, 
-        interfaces.IAuthenticator, ISourceQueriables)
 
     authenticatorPlugins = ()
     credentialsPlugins = ()
@@ -182,6 +182,8 @@ class Authenticator(btree.BTreeContainer):
                 next.logout(request)
 
 
+@zope.component.adapter(interfaces.ISearchable, interfaces.IAuthenticator)
+@zope.interface.implementer(interfaces.IQueriableAuthenticator, ILocation)
 class QueriableAuthenticator(object):
     """Performs schema-based principal searches adapting ISearchable and
     IAuthenticator.
@@ -189,9 +191,6 @@ class QueriableAuthenticator(object):
     Delegates the search to the adapted authenticator which also provides
     ISearchable. See IAuthenticator.getQueriables for more infos.
     """
-    zope.component.adapts(interfaces.ISearchable, interfaces.IAuthenticator)
-
-    zope.interface.implements(interfaces.IQueriableAuthenticator, ILocation)
 
     def __init__(self, authplugin, pau):
         # locate them
