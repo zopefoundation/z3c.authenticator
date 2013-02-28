@@ -116,8 +116,8 @@ class GroupContainer(btree.BTreeContainer):
         Try to add something not providing IGroup
         >>> try:
         ...     gc.__setitem__(u'groups.members', object())
-        ... except Exception, e:
-        ...     print e
+        ... except Exception as e:
+        ...     print(e)
         Group does not support IGroup!
 
         Create a group and add them with a wrong prefix:
@@ -125,8 +125,8 @@ class GroupContainer(btree.BTreeContainer):
         >>> group = Group(u'users')
         >>> try:
         ...     gc.__setitem__(u'123', group)
-        ... except Exception, e:
-        ...     print e
+        ... except Exception as e:
+        ...     print(e)
         'Wrong prefix used in group id!'
 
         Add a login attr since __setitem__ is in need of one

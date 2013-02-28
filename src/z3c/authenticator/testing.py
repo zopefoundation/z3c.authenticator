@@ -18,8 +18,8 @@ __docformat__ = "reStructuredText"
 
 import zope.component
 import zope.interface
+import zope.traversing
 from zope.publisher.interfaces import IRequest
-from zope.app.testing import setup
 
 from zope.session.interfaces import IClientId
 from zope.session.interfaces import IClientIdManager
@@ -43,8 +43,8 @@ def setUpPasswordManager():
         IPasswordManager, "Plain Text")
 
 
+@zope.interface.implementer(IClientId)
 class TestClientId(object):
-    zope.interface.implements(IClientId)
     def __new__(cls, request):
         return 'dummyclientidfortesting'
 
@@ -64,10 +64,10 @@ def sessionSetUp(session_data_container_class=RAMSessionDataContainer):
 ###############################################################################
 
 def placefulSetUp(test):
-    site = setup.placefulSetUp(site=True)
+    site = zope.site.testing.siteSetUp(site=True)
     test.globs['rootFolder'] = site
+    zope.traversing.testing.setUp()
     setUpPasswordManager()
 
-
 def placefulTearDown(test):
-    setup.placefulTearDown()
+    zope.site.testing.siteTearDown()

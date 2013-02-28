@@ -46,7 +46,7 @@ class PrincipalBase(object):
             stack = [iter(self.groups)]
             while stack:
                 try:
-                    group_id = stack[-1].next()
+                    group_id = next(stack[-1])
                 except StopIteration:
                     stack.pop()
                 else:

@@ -16,6 +16,7 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
+import base64
 import zope.interface
 import zope.component
 import zope.i18n
@@ -35,6 +36,11 @@ CONTAINED_TITLE = _(
 MISSING_TITLE = _(
     'z3c.authenticator.vocabulary-missing-plugin-title',
     '${name} (not found; deselecting will remove)')
+
+
+def mktok(s):
+    tok = base64.encodestring(s.encode('utf-8')).decode('utf-8')
+    return tok.strip()
 
 
 def _pluginVocabulary(context, interface, attr_name):
@@ -67,19 +73,19 @@ def _pluginVocabulary(context, interface, attr_name):
                 else:
                     title = k
                 terms[k] = vocabulary.SimpleTerm(
-                    k, k.encode('base64').strip(), zope.i18n.Message(
+                    k, mktok(k), zope.i18n.Message(
                         CONTAINED_TITLE, mapping={'name': title}))
     utils = zope.component.getUtilitiesFor(interface, context)
     for nm, util in utils:
         if nm not in terms:
             terms[nm] = vocabulary.SimpleTerm(
-                nm, nm.encode('base64').strip(), zope.i18n.Message(
+                nm, mktok(nm), zope.i18n.Message(
                     UTILITY_TITLE, mapping={'name': nm}))
     if auth:
         for nm in set(getattr(context, attr_name)):
             if nm not in terms:
                 terms[nm] = vocabulary.SimpleTerm(
-                    nm, nm.encode('base64').strip(), zope.i18n.Message(
+                    nm, mktok(nm), zope.i18n.Message(
                         MISSING_TITLE, mapping={'name': nm}))
     return vocabulary.SimpleVocabulary(
         [term for nm, term in sorted(terms.items())])

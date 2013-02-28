@@ -16,14 +16,14 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
-try:
-    from hashlib import md5
-except ImportError: # BBB for Python 2.4
-    from md5 import md5
+from hashlib import md5
 import random
 import time
 import socket
+
+
 import persistent
+import six
 import zope.interface
 import zope.component
 from zope.container import contained
@@ -33,7 +33,7 @@ from zope.password.interfaces import IPasswordManager
 
 from z3c.authenticator import interfaces
 
-# get the IP addresss only once
+# get the IP address only once
 try:
     ip = socket.getaddrinfo(socket.gethostname(), 0)[-1][-1][0]
 except:
@@ -41,20 +41,15 @@ except:
 
 def generateUserIDToken(id):
     """Generates a unique user id token."""
-    t = long(time.time() * 1000)
-    r = long(random.random()*100000000000000000L)
-    try:
-        id = str(id)
-    except UnicodeEncodeError:
-        id = id.encode('utf-8')
-    data = str(ip)+' '+str(t)+' '+str(r)+' '+id
-    return unicode(md5(data).hexdigest())
+    t = int(time.time() * 1000)
+    r = int(random.random()*100000000000000000)
+    data = "%s %s %s %s" % (ip, t, r, id)
+    return md5(data.encode('utf-8')).hexdigest()
 
 
+@zope.interface.implementer(interfaces.IUser)
 class User(persistent.Persistent, contained.Contained):
     """User stored in IUserContainer."""
-
-    zope.interface.implements(interfaces.IUser)
 
     def __init__(self, login, password, title, description=u'',
             passwordManagerName="Plain Text"):
@@ -104,13 +99,13 @@ class User(persistent.Persistent, contained.Contained):
     login = property(getLogin, setLogin)
 
 
+@zope.interface.implementer(interfaces.IUserContainer)
 class UserContainer(btree.BTreeContainer):
     """A Persistent User Container and authenticator plugin.
 
     See principalfolder.txt for details.
     """
 
-    zope.interface.implements(interfaces.IUserContainer)
 
     def __init__(self):
         super(UserContainer, self).__init__()

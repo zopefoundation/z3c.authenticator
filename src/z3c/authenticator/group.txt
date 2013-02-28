@@ -93,9 +93,8 @@ plugin and add them to the authentication utility:
   >>> import zope.interface
   >>> from z3c.authenticator import interfaces
 
-  >>> class MyCredentialsPlugin(object):
-  ...
-  ...     zope.interface.implements(interfaces.ICredentialsPlugin)
+  >>> @zope.interface.implementer(interfaces.ICredentialsPlugin)
+  ... class MyCredentialsPlugin(object):
   ...
   ...     def extractCredentials(self, request):
   ...         return {'login':request.get('login', ''), 
@@ -443,9 +442,10 @@ because the groups haven't been defined:
 Now, if we define the Everybody group:
 
   >>> import zope.authentication.interfaces
-  >>> class EverybodyGroup(Group):
-  ...     zope.interface.implements(
+  >>> @zope.interface.implementer(
   ...        zope.authentication.interfaces.IEveryoneGroup)
+  ... class EverybodyGroup(Group):
+  ...     pass
 
   >>> all = EverybodyGroup('groups.all')
   >>> groups['groups.all'] = all
@@ -460,9 +460,10 @@ Then the group will be added to the principal:
 
 Similarly for the authenticated group:
 
-  >>> class AuthenticatedGroup(Group):
-  ...     zope.interface.implements(
+  >>> @zope.interface.implementer(
   ...         zope.authentication.interfaces.IAuthenticatedGroup)
+  ... class AuthenticatedGroup(Group):
+  ...     pass
 
   >>> authenticated = AuthenticatedGroup('groups.authenticated')
   >>> groups['groups.authenticated'] = authenticated

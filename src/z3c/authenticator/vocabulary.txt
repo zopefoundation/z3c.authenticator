@@ -25,8 +25,8 @@ others in a faux Authenticator.
     >>> from z3c.authenticator import interfaces
     >>> import zope.interface
     >>> import zope.component
-    >>> class DemoPlugin(object):
-    ...     zope.interface.implements(interfaces.IAuthenticatorPlugin)
+    >>> @zope.interface.implementer(interfaces.IAuthenticatorPlugin)
+    ... class DemoPlugin(object):
     ...     def __init__(self, name):
     ...         self.name = name
     ...
@@ -41,8 +41,8 @@ others in a faux Authenticator.
     ...
     >>> sorted(contained_plugins.keys()) # 1 will mask utility plugin 1
     [1, 2, 3, 4]
-    >>> class DemoAuth(dict):
-    ...     zope.interface.implements(interfaces.IAuthenticator)
+    >>> @zope.interface.implementer(interfaces.IAuthenticator)
+    ... class DemoAuth(dict):
     ...     def __init__(self, *args, **kwargs):
     ...         super(DemoAuth, self).__init__(*args, **kwargs)
     ...         self.authenticatorPlugins = (u'Plugin 3', u'Plugin X')
@@ -112,9 +112,9 @@ functionality.
     ...     pass
     ...
     >>> zope.interface.directlyProvides(contained_plugins[1], ISpecial)
-    >>> class DemoDCAdapter(object):
-    ...     zope.interface.implements(
+    >>> @zope.interface.implementer(
     ...         zope.dublincore.interfaces.IDCDescriptiveProperties)
+    ... class DemoDCAdapter(object):
     ...     zope.component.adapts(ISpecial)
     ...     def __init__(self, context):
     ...         pass
@@ -146,8 +146,8 @@ credentialsPlugins
 
 For completeness, we'll do the same review of the credentialsPlugins.
 
-    >>> class DemoPlugin(object):
-    ...     zope.interface.implements(interfaces.ICredentialsPlugin)
+    >>> @zope.interface.implementer(interfaces.ICredentialsPlugin)
+    ... class DemoPlugin(object):
     ...     def __init__(self, name):
     ...         self.name = name
     ...

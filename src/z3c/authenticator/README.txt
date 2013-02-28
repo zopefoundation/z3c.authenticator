@@ -137,8 +137,8 @@ Such a principal provides the following attributes be default
   >>> p.login
   u'bob'
 
-  >>> p.password
-  'secret'
+  >>> p.password.decode('utf-8')
+  u'secret'
 
   >>> p.title
   u'Bob'
@@ -189,8 +189,8 @@ The returned user is still our previous added IUser
   >>> user.login
   u'bob'
 
-  >>> user.password
-  'secret'
+  >>> user.password.decode('utf-8')
+  u'secret'
 
   >>> user.title
   u'Bob'
@@ -212,9 +212,9 @@ plugin:
   >>> import zope.interface
   >>> import zope.component
 
-  >>> class MyCredentialsPlugin(object):
+  >>> @zope.interface.implementer(interfaces.ICredentialsPlugin)
+  ... class MyCredentialsPlugin(object):
   ...
-  ...     zope.interface.implements(interfaces.ICredentialsPlugin)
   ...
   ...     def extractCredentials(self, request):
   ...         return {'login': request.get('login', ''),
@@ -270,14 +270,14 @@ Authenticate
 We can now use the Authenticator to authenticate a sample request:
 
   >>> from zope.publisher.browser import TestRequest
-  >>> print auth.authenticate(TestRequest())
+  >>> print(auth.authenticate(TestRequest()))
   None
 
 In this case, we cannot authenticate an empty request. In the same way, we
 will not be able to authenticate a request with the wrong credentials:
 
   >>> request = TestRequest(form={'login': 'let me in!', 'password': 'secret'})
-  >>> print auth.authenticate(request)
+  >>> print(auth.authenticate(request))
   None
 
 However, if we provide the proper credentials:
@@ -407,8 +407,8 @@ First we have to define the interfaces declaring the email attribute:
 After the schema, we define a custom principal implementation implementing
 this interface:
 
-  >>> class MyUser(User):
-  ...     zope.interface.implements(IMyUser)
+  >>> @zope.interface.implementer(IMyUser)
+  ... class MyUser(User):
   ...     def __init__(self, login, password, title, description, email):
   ...         super(MyUser, self).__init__(login, password, title,
   ...                                           description)
@@ -416,16 +416,16 @@ this interface:
 
 Now we have to define the AuthenticatedPrincipal for MyUser:
 
-  >>> class MyAuthenticatedPrincipal(AuthenticatedPrincipal):
-  ...     zope.interface.implements(IMyAuthenticatedPrincipal)
+  >>> @zope.interface.implementer(IMyAuthenticatedPrincipal)
+  ... class MyAuthenticatedPrincipal(AuthenticatedPrincipal):
   ...     def __init__(self, principal):
   ...         super(MyAuthenticatedPrincipal, self).__init__(principal)
   ...         self.email = principal.email
 
 And we have to define the FoundPrincipal for MyUser:
 
-  >>> class MyFoundPrincipal(FoundPrincipal):
-  ...     zope.interface.implements(IMyFoundPrincipal)
+  >>> @zope.interface.implementer(IMyFoundPrincipal)
+  ... class MyFoundPrincipal(FoundPrincipal):
   ...     def __init__(self, principal):
   ...         super(MyFoundPrincipal, self).__init__(principal)
   ...         self.email = principal.email
@@ -454,8 +454,8 @@ in our principal container. Let's add a principal to this container:
   >>> max.__name__ == token
   True
 
-  >>> max.password
-  'password'
+  >>> max.password.decode('utf-8')
+  u'password'
 
   >>> max.title
   u'Max'
@@ -528,6 +528,10 @@ Edge cases
 
 We can have Users with unicode logins, as we allow this with TextLine in IUser.
 
+  >>> try:
+  ...     unichr = unichr
+  ... except NameError:
+  ...     unichr = chr # PY3
   >>> p = User(u'bob'+unichr(233), 'password', 'title')
 
 Adding it should not fail:

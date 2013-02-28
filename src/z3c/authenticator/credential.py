@@ -20,6 +20,7 @@ import base64
 import transaction
 import persistent
 
+import six
 import zope.interface
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.session.interfaces import ISession
@@ -53,25 +54,25 @@ class HTTPBasicAuthCredentialsPlugin(persistent.Persistent,
         Now create the plugin and get the credentials.
 
           >>> plugin = HTTPBasicAuthCredentialsPlugin()
-          >>> plugin.extractCredentials(request)
-          {'login': u'mgr', 'password': u'mgrpw'}
+          >>> sorted(plugin.extractCredentials(request).items())
+          [('login', 'mgr'), ('password', 'mgrpw')]
 
         Make sure we return `None`, if no authentication header has been
         specified.
 
-          >>> print plugin.extractCredentials(TestRequest())
+          >>> print(plugin.extractCredentials(TestRequest()))
           None
 
         Also, this plugin can *only* handle basic authentication.
 
           >>> request = TestRequest(environ={'HTTP_AUTHORIZATION': 'foo bar'})
-          >>> print plugin.extractCredentials(TestRequest())
+          >>> print(plugin.extractCredentials(TestRequest()))
           None
 
         This plugin only works with HTTP requests.
 
           >>> from zope.publisher.base import TestRequest
-          >>> print plugin.extractCredentials(TestRequest('/'))
+          >>> print(plugin.extractCredentials(TestRequest('/')))
           None
 
         """
@@ -81,7 +82,9 @@ class HTTPBasicAuthCredentialsPlugin(persistent.Persistent,
         if request._auth:
             if request._auth.lower().startswith(u'basic '):
                 credentials = request._auth.split()[-1]
-                login, password = base64.decodestring(credentials).split(':')
+                if isinstance(credentials, six.text_type):
+                    credentials = credentials.encode('utf-8')
+                login, password = base64.decodestring(credentials).split(b':')
                 return {'login': login.decode('utf-8'),
                         'password': password.decode('utf-8')}
         return None
@@ -113,7 +116,7 @@ class HTTPBasicAuthCredentialsPlugin(persistent.Persistent,
           >>> from zope.publisher.base import TestRequest
           >>> request = TestRequest('/')
           >>> response = request.response
-          >>> print plugin.challenge(request)
+          >>> print(plugin.challenge(request))
           False
 
         """
@@ -174,9 +177,7 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
     To illustrate how a session plugin works, we'll first setup some session
     machinery:
 
-      >>> from zope.app.testing import placelesssetup
       >>> from z3c.authenticator.testing import sessionSetUp
-      >>> placelesssetup.setUp()
       >>> sessionSetUp()
 
     This lets us retrieve the same session info from any test request, which
@@ -193,39 +194,39 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
     If the given extractCredentials argument doesn't provide IHTTPRequest the
     result will always be None:
 
-      >>> print plugin.extractCredentials(None)
+      >>> print(plugin.extractCredentials(None))
       None
 
     Our test environment is initially configured without credentials:
 
-      >>> from zope.publisher.tests.httprequest import TestRequest
+      >>> from zope.publisher.browser import TestRequest
       >>> request = TestRequest()
-      >>> print plugin.extractCredentials(request)
+      >>> print(plugin.extractCredentials(request))
       None
 
     We must explicitly provide credentials once so the plugin can store
     them in a session:
 
-      >>> request = TestRequest(login='scott', password='tiger')
-      >>> plugin.extractCredentials(request)
-      {'login': 'scott', 'password': 'tiger'}
+      >>> request = TestRequest(form=dict(login='scott', password='tiger'))
+      >>> sorted(plugin.extractCredentials(request).items())
+      [('login', 'scott'), ('password', 'tiger')]
 
     Subsequent requests now have access to the credentials even if they're
     not explicitly in the request:
 
-      >>> plugin.extractCredentials(TestRequest())
-      {'login': 'scott', 'password': 'tiger'}
+      >>> sorted(plugin.extractCredentials(request).items())
+      [('login', 'scott'), ('password', 'tiger')]
 
     We can always provide new credentials explicitly in the request:
 
-      >>> plugin.extractCredentials(TestRequest(
-      ...     login='harry', password='hirsch'))
-      {'login': 'harry', 'password': 'hirsch'}
+      >>> sorted(plugin.extractCredentials(TestRequest(
+      ...     login='harry', password='hirsch')).items())
+      [('login', 'harry'), ('password', 'hirsch')]
 
     and these will be used on subsequent requests:
 
-      >>> plugin.extractCredentials(TestRequest())
-      {'login': 'harry', 'password': 'hirsch'}
+      >>> sorted(plugin.extractCredentials(TestRequest()).items())
+      [('login', 'harry'), ('password', 'hirsch')]
 
     We can also change the fields from which the credentials are extracted:
 
@@ -239,8 +240,8 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
 
     The plugin now extracts the credentials information from these new fields:
 
-      >>> plugin.extractCredentials(request)
-      {'login': 'luke', 'password': 'the_force'}
+      >>> sorted(plugin.extractCredentials(request).items())
+      [('login', 'luke'), ('password', 'the_force')]
 
     We can also set prefixes for the fields from which the credentials are
     extracted:
@@ -259,8 +260,8 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
 
     The plugin now extracts the credentials information from these new fields:
 
-      >>> plugin.extractCredentials(request)
-      {'login': 'harry', 'password': 'potter'}
+      >>> sorted(plugin.extractCredentials(request).items())
+      [('login', 'harry'), ('password', 'potter')]
 
     Finally, we clear the session credentials using the logout method.
     If the given logout argument doesn't provide IHTTPRequest the
@@ -276,7 +277,7 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
 
     After logout we can not logaout again:
 
-      >>> print plugin.extractCredentials(TestRequest())
+      >>> print(plugin.extractCredentials(TestRequest()))
       None
 
     """
@@ -322,9 +323,7 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
         To illustrate how a session plugin works, we'll first setup some session
         machinery:
 
-          >>> from zope.app.testing import placelesssetup
           >>> from z3c.authenticator.testing import sessionSetUp
-          >>> placelesssetup.setUp()
           >>> sessionSetUp()
 
         and we'll create a test request:

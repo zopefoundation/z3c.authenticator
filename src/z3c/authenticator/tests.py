@@ -12,6 +12,7 @@
 #
 ##############################################################################
 import doctest
+import re
 import unittest
 
 import zope.site.testing
@@ -19,6 +20,7 @@ import zope.password.testing
 import zope.component.testing
 from z3c.testing import BaseTestIContainer
 from z3c.testing import InterfaceBaseTest
+from zope.testing.renormalizing import RENormalizing
 
 from z3c.authenticator import authentication
 from z3c.authenticator import credential
@@ -150,24 +152,27 @@ def placefulTearDown(test):
     zope.site.testing.siteTearDown()
 
 def test_suite():
+    checker = RENormalizing((
+            (re.compile("u'(.*?)'"), "'\\1'"),
+            (re.compile("z3c.authenticator.group.GroupCycle"), "GroupCycle"),
+            ))
     return unittest.TestSuite((
-        doctest.DocFileSuite('README.txt',
-            setUp=placefulSetUp, tearDown=placefulTearDown,
+        doctest.DocFileSuite('README.txt', checker=checker,
+            setUp=testing.placefulSetUp, tearDown=testing.placefulTearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         doctest.DocFileSuite(
-                'group.txt',
-                setUp=placefulSetUp, tearDown=placefulTearDown,
+                'group.txt', checker=checker,
+                setUp=testing.placefulSetUp, tearDown=testing.placefulTearDown,
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         doctest.DocTestSuite(
-                'z3c.authenticator.credential',
-                setUp=zope.component.testing.setUp,
-                tearDown=zope.component.testing.tearDown),
+                'z3c.authenticator.credential', checker=checker,
+                setUp=testing.placefulSetUp, tearDown=testing.placefulTearDown),
         doctest.DocTestSuite(
                 'z3c.authenticator.group',
-                setUp=zope.component.testing.setUp,
-                tearDown=zope.component.testing.tearDown),
+                setUp=testing.placefulSetUp,
+                tearDown=testing.placefulTearDown),
         doctest.DocFileSuite(
-                'vocabulary.txt',
+                'vocabulary.txt', checker=checker,
                 setUp=zope.component.testing.setUp,
                 tearDown=zope.component.testing.tearDown),
         unittest.makeSuite(AuthenticatorTest),
