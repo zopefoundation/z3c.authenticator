@@ -58,7 +58,6 @@ setup (
     extras_require = dict(
         test = [
             'z3c.testing',
-            'zope.app.testing',
             'zope.testing',
             ],
         ),
@@ -69,7 +68,7 @@ setup (
         'z3c.form',
         'z3c.formui',
         'z3c.template',
-        'zope.app.generations',
+        'zope.generations',
         'zope.authentication',
         'zope.component',
         'zope.container',

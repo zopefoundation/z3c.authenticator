@@ -138,7 +138,7 @@ Such a principal provides the following attributes be default
   u'bob'
 
   >>> p.password
-  u'secret'
+  'secret'
 
   >>> p.title
   u'Bob'
@@ -190,7 +190,7 @@ The returned user is still our previous added IUser
   u'bob'
 
   >>> user.password
-  u'secret'
+  'secret'
 
   >>> user.title
   u'Bob'
@@ -455,7 +455,7 @@ in our principal container. Let's add a principal to this container:
   True
 
   >>> max.password
-  u'password'
+  'password'
 
   >>> max.title
   u'Max'

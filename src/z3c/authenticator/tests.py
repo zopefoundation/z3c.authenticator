@@ -11,6 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+import doctest
+import unittest
+
+import zope.site.testing
+import zope.password.testing
+import zope.component.testing
+from z3c.testing import BaseTestIContainer
+from z3c.testing import InterfaceBaseTest
+
 from z3c.authenticator import authentication
 from z3c.authenticator import credential
 from z3c.authenticator import group
@@ -18,11 +27,6 @@ from z3c.authenticator import interfaces
 from z3c.authenticator import principal
 from z3c.authenticator import testing
 from z3c.authenticator import user
-from z3c.testing import BaseTestIContainer
-from z3c.testing import InterfaceBaseTest
-from zope.component import testing import as placelesssetup
-import doctest
-import unittest
 
 
 class AuthenticatorTest(BaseTestIContainer):
@@ -138,8 +142,9 @@ class SessionCredentialsPluginFormTest(InterfaceBaseTest):
         return credential.SessionCredentialsPlugin
 
 def placefulSetUp(test):
-    zope.site.testing.siteSetUp(True)
+    test.globs['rootFolder'] = zope.site.testing.siteSetUp(True)
     zope.traversing.testing.setUp()
+    zope.password.testing.setUpPasswordManagers()
 
 def placefulTearDown(test):
     zope.site.testing.siteTearDown()
@@ -149,15 +154,22 @@ def test_suite():
         doctest.DocFileSuite('README.txt',
             setUp=placefulSetUp, tearDown=placefulTearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
-        doctest.DocFileSuite('group.txt',
-            setUp=placefulSetUp, tearDown=placefulTearDown,
-            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
-        doctest.DocTestSuite('z3c.authenticator.credential',
-            setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown),
-        doctest.DocTestSuite('z3c.authenticator.group',
-            setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown),
-        doctest.DocFileSuite('vocabulary.txt',
-            setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown),
+        doctest.DocFileSuite(
+                'group.txt',
+                setUp=placefulSetUp, tearDown=placefulTearDown,
+                optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
+        doctest.DocTestSuite(
+                'z3c.authenticator.credential',
+                setUp=zope.component.testing.setUp,
+                tearDown=zope.component.testing.tearDown),
+        doctest.DocTestSuite(
+                'z3c.authenticator.group',
+                setUp=zope.component.testing.setUp,
+                tearDown=zope.component.testing.tearDown),
+        doctest.DocFileSuite(
+                'vocabulary.txt',
+                setUp=zope.component.testing.setUp,
+                tearDown=zope.component.testing.tearDown),
         unittest.makeSuite(AuthenticatorTest),
         unittest.makeSuite(UserContainerTest),
         unittest.makeSuite(UserTest),
