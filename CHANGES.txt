@@ -5,7 +5,9 @@ CHANGES
 0.8.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Dropped support for Python 2.4 and 2.5, added Python 3.3 support.
+
+- Removed dependencies on ``zope.app`` packages.
 
 
 0.8.1 (2011-01-21)
