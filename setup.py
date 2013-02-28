@@ -57,7 +57,7 @@ setup (
     namespace_packages = ['z3c'],
     extras_require = dict(
         test = [
-            'z3c.testing',
+            'z3c.testing >= 1.0.0a2',
             'zope.testing',
             ],
         ),
