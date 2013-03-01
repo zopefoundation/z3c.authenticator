@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-1.0.0a3 (unreleased)
+1.0.0a3 (2013-02-28)
 --------------------
 
-- Nothing changed yet.
+- Changed manifest to actually include the page templates.
 
 
 1.0.0a2 (2013-02-28)
