@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.0.0a4 (unreleased)
+1.0.0a4 (2013-02-28)
 --------------------
 
 - Removed support for Zope generations. It was not used and application-wide
