@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.0.0a2 (unreleased)
+1.0.0a2 (2013-02-28)
 --------------------
 
 - Added version Trove classifiers.
