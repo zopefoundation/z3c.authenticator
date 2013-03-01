@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Group Folders
 """
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 import BTrees.OOBTree
 import persistent
 

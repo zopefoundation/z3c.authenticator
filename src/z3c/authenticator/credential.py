@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Credential Plugins
 """
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 import base64
 import transaction
 import persistent

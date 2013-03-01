@@ -12,11 +12,7 @@
 #
 ##############################################################################
 """Principal Source Widget Implementation
-
-$Id: select.py 78513 2007-07-31 23:03:47Z srichter $
 """
-__docformat__ = "reStructuredText"
-
 import zope.component
 import zope.interface
 import zope.i18n

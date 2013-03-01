@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Authentication
 """
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 import zope.interface
 import zope.component
 import zope.event

@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""User Forms
 """
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 import zope.interface
 import zope.event
 import zope.lifecycleevent
@@ -28,14 +25,19 @@ from z3c.authenticator import user
 from z3c.form import field
 from z3c.form import button
 from z3c.formui import form
-from z3c.configurator import configurator
+
+# Make z3c.configurator optional.
+try:
+    from z3c.configurator import configurator
+except ImportError:
+    configurator = None
 
 from z3c.authenticator.interfaces import _
 
 class IAddName(zope.interface.Interface):
     """Object name."""
 
-    __name__ = zope.schema.TextLine( 
+    __name__ = zope.schema.TextLine(
         title=u'Object Name',
         description=u'Object Name',
         required=True)
@@ -56,8 +58,9 @@ class UserContainerAddForm(form.AddForm):
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
         self.context[self.contentName] = obj
 
-        #configure
-        configurator.configure(obj, data)
+        # configure
+        if configurator is not None:
+            configurator.configure(obj, data)
         return obj
 
     def nextURL(self):
@@ -71,7 +74,7 @@ class UserAddForm(form.AddForm):
 
     label = _('Add User.')
 
-    fields = field.Fields(interfaces.IUser).select('login', 'password', 
+    fields = field.Fields(interfaces.IUser).select('login', 'password',
         'title', 'description', 'passwordManagerName')
 
     def createAndAdd(self, data):
@@ -80,13 +83,14 @@ class UserAddForm(form.AddForm):
         title = data.get('title', u'')
         description = data.get('description', u'')
         passwordManagerName = data.get('passwordManagerName', u'')
-        obj = user.User(login, password, title, description, 
+        obj = user.User(login, password, title, description,
             passwordManagerName)
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
         self.contentName, usr = self.context.add(obj)
 
-        #configure
-        configurator.configure(obj, data)
+        # configure
+        if configurator is not None:
+            configurator.configure(obj, data)
         return obj
 
     def nextURL(self):
@@ -99,5 +103,5 @@ class UserEditForm(form.EditForm):
 
     label = _('Edit User.')
 
-    fields = field.Fields(interfaces.IUser).select('login', 'password', 
+    fields = field.Fields(interfaces.IUser).select('login', 'password',
         'title', 'description', 'passwordManagerName')

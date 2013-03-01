@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Events
 """
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 import zope.interface
 
 from z3c.authenticator import interfaces

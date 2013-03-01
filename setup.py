@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Setup
-
-$Id:$
 """
 import os
 from setuptools import setup, find_packages
@@ -66,15 +64,16 @@ setup (
             'z3c.testing >= 1.0.0a3',
             'zope.testing',
             ],
+        configurator = [
+            'z3c.configurator',
+            ],
         ),
     install_requires = [
         'setuptools',
-        'z3c.configurator',
         'z3c.contents',
         'z3c.form',
         'z3c.formui',
         'z3c.template',
-        'zope.generations',
         'zope.authentication',
         'zope.component',
         'zope.container',

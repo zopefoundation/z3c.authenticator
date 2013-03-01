@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Credential Forms.
 """
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 from z3c.form import field
 from z3c.formui import form
 

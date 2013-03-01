@@ -60,6 +60,6 @@
       layer="z3c.form.interfaces.IFormLayer"
       template="widget_search_form.pt"
       />
-      
+
 
 </configure>

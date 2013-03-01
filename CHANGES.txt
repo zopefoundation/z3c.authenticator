@@ -5,7 +5,13 @@ CHANGES
 1.0.0a4 (unreleased)
 --------------------
 
-- Nothing changed yet.
+- Removed support for Zope generations. It was not used and application-wide
+  generations make more sense anyways. This removed the
+  ``zope.app.generations`` and ``zope.generations`` dependencies.
+
+- Made ``z3c.configurator`` support optional.
+
+- Cleaned up source code a little bit.
 
 
 1.0.0a3 (2013-02-28)

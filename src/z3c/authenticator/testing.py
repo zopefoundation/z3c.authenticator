@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Testing Support
 """
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 import zope.component
 import zope.interface
 import zope.traversing

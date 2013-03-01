@@ -4,11 +4,8 @@
 # All Rights Reserved.
 #
 ##############################################################################
+"""Login Form
 """
-$Id: login.py 357 2007-03-15 17:17:37Z roger.ineichen $
-"""
-__docformat__ = "reStructuredText"
-
 import zope.component
 from zope.authentication.interfaces import IAuthentication
 from zope.authentication.interfaces import ILogout

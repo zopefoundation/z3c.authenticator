@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Interfaces
 """
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 import zope.interface
 import zope.schema
 import zope.deprecation

@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Users
 """
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 from hashlib import md5
 import random
 import time

@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Principal
 """
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 import zope.interface
 import zope.component
 from zope.security.interfaces import IPrincipal

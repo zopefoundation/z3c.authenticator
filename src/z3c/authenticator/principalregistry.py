@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Principal Registry
 """
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 import persistent
 import zope.interface
 from zope.authentication.interfaces import PrincipalLookupError
@@ -29,7 +26,7 @@ from z3c.authenticator import interfaces
 class PrincipalRegistryAuthenticatorPlugin(persistent.Persistent,
     contained.Contained):
     """Authenticator Plugin for PrincipalREgistry defined principals.
-    
+
     This allows us to authenticate principals defined in principal registry.
     """
 

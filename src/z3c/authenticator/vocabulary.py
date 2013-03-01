@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Vocabularies
 """
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 import base64
 import zope.interface
 import zope.component

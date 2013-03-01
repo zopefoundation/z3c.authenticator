@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Group Forms
 """
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 import zope.interface
 import zope.event
 import zope.lifecycleevent
@@ -29,7 +26,12 @@ from z3c.authenticator.widget import getSourceInputWidget
 from z3c.form import field
 from z3c.form import button
 from z3c.formui import form
-from z3c.configurator import configurator
+
+# Make z3c.configurator optional.
+try:
+    from z3c.configurator import configurator
+except ImportError:
+    configurator = None
 
 from z3c.authenticator.interfaces import _
 
@@ -37,7 +39,7 @@ from z3c.authenticator.interfaces import _
 class IAddName(zope.interface.Interface):
     """Object name."""
 
-    __name__ = zope.schema.TextLine( 
+    __name__ = zope.schema.TextLine(
         title=u'Object Name',
         description=u'Object Name',
         required=True)
@@ -60,8 +62,9 @@ class GroupContainerAddForm(form.AddForm):
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
         self.context[self.contentName] = obj
 
-        #configure
-        configurator.configure(obj, data)
+        # configure
+        if configurator is not None:
+            configurator.configure(obj, data)
         return obj
 
     def nextURL(self):
@@ -90,8 +93,9 @@ class GroupAddForm(form.AddForm):
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
         self.context[self.contentName] = obj
 
-        #configure
-        configurator.configure(obj, data)
+        # configure
+        if configurator is not None:
+            configurator.configure(obj, data)
         return obj
 
     def nextURL(self):
