@@ -5,7 +5,7 @@ CHANGES
 1.0.0a5 (unreleased)
 --------------------
 
-- Nothing changed yet.
+- More Py3 compatibility bugs in untested code.
 
 
 1.0.0a4 (2013-02-28)
