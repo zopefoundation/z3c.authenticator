@@ -122,7 +122,7 @@ class GroupEditForm(form.EditForm):
             return
         try:
             changes = self.applyChanges(data)
-        except group.GroupCycle, e:
+        except group.GroupCycle as e:
             self.status = self.groupCycleErrorMessage
             return
         if changes:

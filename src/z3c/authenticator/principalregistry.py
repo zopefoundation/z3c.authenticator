@@ -23,6 +23,7 @@ from zope.schema.fieldproperty import FieldProperty
 from z3c.authenticator import interfaces
 
 
+@zope.interface.implementer(interfaces.IPrincipalRegistryAuthenticatorPlugin)
 class PrincipalRegistryAuthenticatorPlugin(persistent.Persistent,
     contained.Contained):
     """Authenticator Plugin for PrincipalREgistry defined principals.
@@ -30,7 +31,6 @@ class PrincipalRegistryAuthenticatorPlugin(persistent.Persistent,
     This allows us to authenticate principals defined in principal registry.
     """
 
-    zope.interface.implements(interfaces.IPrincipalRegistryAuthenticatorPlugin)
 
     allowQueryPrincipal = FieldProperty(
         interfaces.IPrincipalRegistryAuthenticatorPlugin['allowQueryPrincipal'])
@@ -48,9 +48,9 @@ class PrincipalRegistryAuthenticatorPlugin(persistent.Persistent,
             p = principalRegistry.getPrincipalByLogin(credentials['login'])
             if p.validate(credentials["password"]):
                 return p
-        except KeyError, e:
+        except KeyError as e:
             return None
-        except AttributeError, e:
+        except AttributeError as e:
             return None
 
     def queryPrincipal(self, id, default=None):
@@ -60,6 +60,6 @@ class PrincipalRegistryAuthenticatorPlugin(persistent.Persistent,
         if self.allowQueryPrincipal:
             try:
                 return principalRegistry.getPrincipal(id) or default
-            except PrincipalLookupError, e:
+            except PrincipalLookupError as e:
                 pass
         return default

@@ -22,6 +22,7 @@ from zope.traversing import api
 from zope.authentication.interfaces import IAuthentication
 from zope.authentication.interfaces import IPrincipalSource
 
+import six
 from z3c.formui import form
 from z3c.form import field
 from z3c.form import button
@@ -114,15 +115,15 @@ class PrincipalTerm(object):
         self.title = title
 
 
+@zope.interface.implementer(ITerms)
+@zope.component.adapter(
+    zope.interface.Interface,
+    IFormLayer,
+    zope.interface.Interface,
+    zope.schema.interfaces.IList,
+    IPrincipalSourceWidget)
 class PrincipalTerms(object):
 
-    zope.interface.implements(ITerms)
-    zope.component.adapts(
-        zope.interface.Interface,
-        IFormLayer,
-        zope.interface.Interface,
-        zope.schema.interfaces.IList,
-        IPrincipalSourceWidget)
 
     def __init__(self, context, request, form, field, widget):
         self.context = context
@@ -170,16 +171,14 @@ class ISearchFormResultsField(zope.schema.interfaces.IList):
     Marker for the right widget.
     """
 
+@zope.interface.implementer(ISearchFormResultsField)
 class SearchFormResultsField(zope.schema.List):
     """Search form results field."""
 
-    zope.interface.implements(ISearchFormResultsField)
 
-
+@zope.interface.implementer(ISourceResultWidget)
 class SourceResultWidget(widget.HTMLInputWidget, SequenceWidget):
     """Knows how to catch the right terms."""
-
-    zope.interface.implements(ISourceResultWidget)
 
     klass = u'search-form-widget checkbox-widget'
     searchResults = []
@@ -237,15 +236,15 @@ class SourceSearchWidget(text.TextWidget):
 
     style = u'border-color: gray; width:100px;'
 
-    @apply
-    def label():
-        def get(self):
-            txt = _('search in: ')
-            prefix = zope.i18n.translate(txt, context=self.request, default=txt)
-            return '%s%s' % (prefix, self.form.title)
-        def set(self, value):
-            pass
-        return property(get, set)
+    @property
+    def label(self):
+        txt = _('search in: ')
+        prefix = zope.i18n.translate(txt, context=self.request, default=txt)
+        return '%s%s' % (prefix, self.form.title)
+
+    @label.setter
+    def label(self, value):
+        pass
 
 def getSourceSearchWidget(field, request):
     """IFieldWidget factory for TextWidget."""
@@ -267,10 +266,10 @@ def hasResults(form):
     return bool(form.widgets['search'].value)
 
 
+@zope.interface.implementer(ISourceSearchForm)
 class SearchFormMixin(form.Form):
     """Source Query View search form."""
 
-    zope.interface.implements(ISourceSearchForm)
 
     layout = getLayoutTemplate('subform')
 
@@ -352,11 +351,11 @@ class PrincipalRegistrySearchForm(SearchFormMixin):
         return value
 
 
+@zope.interface.implementer_only(IPrincipalSourceWidget)
+@zope.component.adapter(zope.interface.Interface,
+                        IPrincipalSource, zope.interface.Interface)
 class PrincipalSourceWidget(widget.HTMLInputWidget, SequenceWidget):
     """Select widget implementation."""
-    zope.interface.implementsOnly(IPrincipalSourceWidget)
-    zope.component.adapts(zope.interface.Interface,
-        IPrincipalSource, zope.interface.Interface)
 
     klass = u'principal-source-widget checkbox-widget'
     value = []
@@ -403,7 +402,7 @@ class PrincipalSourceWidget(widget.HTMLInputWidget, SequenceWidget):
         else:
             queriables = [
                 (self.name + '.' +
-                 unicode(i).encode('base64').strip().replace('=', '_'), s)
+                 six.text_type(i).encode('base64').strip().replace('=', '_'), s)
                           for (i, s) in queriables.getQueriables()]
 
         self.searchForms = []
