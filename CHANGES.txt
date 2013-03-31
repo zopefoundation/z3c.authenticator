@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.0.0a5 (unreleased)
+1.0.0a5 (2013-03-31)
 --------------------
 
 - More Py3 compatibility bugs in untested code.
