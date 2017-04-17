@@ -27,6 +27,7 @@ from zope.site import hooks
 from zope.container import contained
 
 from z3c.authenticator import interfaces
+from z3c.authenticator._compat import base64_decode
 
 
 @zope.interface.implementer(interfaces.IHTTPBasicAuthCredentialsPlugin)
@@ -81,7 +82,7 @@ class HTTPBasicAuthCredentialsPlugin(persistent.Persistent,
                 credentials = request._auth.split()[-1]
                 if isinstance(credentials, six.text_type):
                     credentials = credentials.encode('utf-8')
-                login, password = base64.decodestring(credentials).split(b':')
+                login, password = base64_decode(credentials).split(b':')
                 return {'login': login.decode('utf-8'),
                         'password': password.decode('utf-8')}
         return None

@@ -23,6 +23,7 @@ from zope.schema.interfaces import IVocabularyFactory
 
 from z3c.authenticator import interfaces
 from z3c.authenticator.interfaces import _
+from z3c.authenticator._compat import base64_encode
 
 UTILITY_TITLE = _(
     'z3c.authenticator.vocabulary-utility-plugin-title',
@@ -36,7 +37,7 @@ MISSING_TITLE = _(
 
 
 def mktok(s):
-    tok = base64.encodestring(s.encode('utf-8')).decode('utf-8')
+    tok = base64_encode(s.encode('utf-8')).decode('utf-8')
     return tok.strip()
 
 

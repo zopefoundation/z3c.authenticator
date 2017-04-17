@@ -21,7 +21,7 @@ def read(*rnames):
 
 setup (
     name='z3c.authenticator',
-    version='1.0.0a6.dev0',
+    version='1.0.0.dev0',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "IAuthentication implementation for for Zope3",
@@ -45,11 +45,12 @@ setup (
         'License :: OSI Approved :: Zope Public License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: Implementation :: PyPy',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
@@ -93,5 +94,6 @@ setup (
         'zope.site',
         'zope.traversing',
         ],
+    test_suite='z3c.authenticator.tests.test_suite',
     zip_safe = False,
 )

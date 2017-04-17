@@ -484,8 +484,9 @@ and check your authenticated principal:
 
 Check getUserByLogin:
 
-  >>> authPlugin.getUserByLogin('max')
-  <MyUser object at ...>
+  >>> max = authPlugin.getUserByLogin('max')
+  >>> max.__class__.__name__
+  'MyUser'
 
   >>> authPlugin.getUserByLogin('max').login
   u'max'

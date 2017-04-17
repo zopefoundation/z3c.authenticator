@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-1.0.0a6 (unreleased)
---------------------
+1.0.0 (unreleased)
+------------------
 
-- Nothing changed yet.
+- Ping Python support to 2.7, 3.5, 3.6 and PyPy.
 
 
 1.0.0a5 (2013-03-31)
