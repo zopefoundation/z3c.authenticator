@@ -7,15 +7,14 @@
 """Login Form
 """
 import zope.component
+from zope.component import hooks
 from zope.authentication.interfaces import IAuthentication
 from zope.authentication.interfaces import ILogout
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
 from zope.publisher.browser import BrowserPage
 from zope.session.interfaces import ISession
-from zope.site import hooks
 from zope.traversing.browser import absoluteURL
 
-from z3c.form.interfaces import HIDDEN_MODE
 from z3c.form.interfaces import IWidgets
 from z3c.form import field
 from z3c.form import button
@@ -68,7 +67,7 @@ class LoginForm(form.Form):
         self.update()
         if self.nextURL is not None:
             # the redirect method will prevent us to redirect to a 3rd party
-            # domains since zope.publisher version 3.9.3 
+            # domains since zope.publisher version 3.9.3
             self.request.response.redirect(self.nextURL)
             return ""
         else:

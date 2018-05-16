@@ -2,10 +2,21 @@
 CHANGES
 =======
 
-1.0.1 (unreleased)
+1.0.1 (2018-05-16)
 ------------------
 
-- Nothing changed yet.
+- bugfix: remove None from queryNextUtiliy because getNextUtility signature got
+  changed and None was used as name argument.
+
+- cleanup, removed unused imports
+
+- Get rid of deprecation warning. Switch hooks import from zope.site to
+  zope.component
+
+- skip test_exception_in_subscriber_leaves_item_in_place for IAuthenticator
+  container. This zope.container test method left over an event subscriber with
+  zope.container version 4.2.1 which raises an error in other methods. Needs
+  review and probably a tear down in zope.container test method.
 
 
 1.0.0 (2017-04-17)

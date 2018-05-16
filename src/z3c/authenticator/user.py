@@ -20,7 +20,6 @@ import socket
 
 
 import persistent
-import six
 import zope.interface
 import zope.component
 from zope.container import contained

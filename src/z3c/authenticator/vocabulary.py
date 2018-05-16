@@ -13,7 +13,7 @@
 ##############################################################################
 """Vocabularies
 """
-import base64
+
 import zope.interface
 import zope.component
 import zope.i18n
@@ -49,14 +49,14 @@ def _pluginVocabulary(context, interface, attr_name):
     which is expected to be a pluggable authentication utility, hereafter
     referred to as a Authenticator).
 
-    These plugins may be objects contained within the Authenticator 
+    These plugins may be objects contained within the Authenticator
     ("contained plugins"), or may be utilities registered for the specified
-    interface, found in the context of the Authenticator 
-    ("utility plugins"). Contained plugins mask utility plugins of the same 
+    interface, found in the context of the Authenticator
+    ("utility plugins"). Contained plugins mask utility plugins of the same
     name.
 
-    The vocabulary also includes the current values of the 
-    Authenticator even if they do not correspond to a contained or 
+    The vocabulary also includes the current values of the
+    Authenticator even if they do not correspond to a contained or
     utility plugin.
     """
     terms = {}

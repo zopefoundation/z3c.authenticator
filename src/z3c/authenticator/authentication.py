@@ -46,13 +46,13 @@ class Authenticator(btree.BTreeContainer):
         for name in names:
             plugin = self.get(name)
             if not interface.providedBy(plugin):
-                plugin = zope.component.queryUtility(interface, name, 
+                plugin = zope.component.queryUtility(interface, name,
                     context=self)
             if plugin is not None:
                 yield name, plugin
 
     def getAuthenticatorPlugins(self):
-        return self._plugins(self.authenticatorPlugins, 
+        return self._plugins(self.authenticatorPlugins,
             interfaces.IAuthenticatorPlugin)
 
     def getCredentialsPlugins(self):
@@ -83,7 +83,7 @@ class Authenticator(btree.BTreeContainer):
                 return authenticated
 
         if self.includeNextUtilityForAuthenticate:
-            next = queryNextUtility(self, IAuthentication, None)
+            next = queryNextUtility(self, IAuthentication)
             if next is not None:
                 principal = next.authenticate(request)
                 if principal is not None:
@@ -118,7 +118,7 @@ class Authenticator(btree.BTreeContainer):
 
     def unauthenticatedPrincipal(self):
         """Return unauthenticated principal or None.
-        
+
         This allows you to return an unauthenticated principal. This could be
         usefull if you don't like to fallback to the global unauthenticated
         principal usage. Why is this usefull. The reason is, if a global
@@ -127,15 +127,15 @@ class Authenticator(btree.BTreeContainer):
         there is no way to apply local groups to global unauthenticated
         principals it they get returned by the global IAuthentication or the
         fallback implementation. See zope.principalregistry
-        
+
         Usage:
 
         Return an unauthenticated principal within this method if you need to
-        apply local groups. This allows to apply local groups for the returned 
-        unauthenticated principal if you use a custom subscriber for 
-        IPrincipalCreated. Note, the local group must define the global 
+        apply local groups. This allows to apply local groups for the returned
+        unauthenticated principal if you use a custom subscriber for
+        IPrincipalCreated. Note, the local group must define the global
         unauthenticated principals id in the principals list. Use the zcml
-        directive called unauthenticatedPrincipal for define the global 
+        directive called unauthenticatedPrincipal for define the global
         unauthenticated principal.
         """
         principal = zope.component.queryUtility(IUnauthenticatedPrincipal)

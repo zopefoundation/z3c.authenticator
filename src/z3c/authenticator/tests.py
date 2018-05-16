@@ -39,6 +39,10 @@ class AuthenticatorTest(BaseTestIContainer):
     def getTestClass(self):
         return authentication.Authenticator
 
+    def test_exception_in_subscriber_leaves_item_in_place(self):
+        # does the container test register a subscribe handler and not tear down?
+        pass
+
 
 class UserContainerTest(InterfaceBaseTest):
 

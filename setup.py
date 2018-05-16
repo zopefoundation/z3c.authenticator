@@ -21,7 +21,7 @@ def read(*rnames):
 
 setup (
     name='z3c.authenticator',
-    version='1.0.1.dev0',
+    version='1.0.1',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "IAuthentication implementation for for Zope3",
