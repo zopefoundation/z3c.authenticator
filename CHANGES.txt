@@ -5,7 +5,9 @@ CHANGES
 1.0.2 (unreleased)
 ------------------
 
-- ...
+- Add Python 3.7 support.
+
+- Drop Python 2.6 from Travis CI.
 
 
 1.0.1 (2018-05-16)
