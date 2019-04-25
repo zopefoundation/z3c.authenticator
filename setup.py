@@ -57,7 +57,7 @@ setup (
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope :: 3',
     ],
-    url = 'http://pypi.python.org/pypi/z3c.authenticator',
+    url='https://github.com/zopefoundation/z3c.authenticator',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
