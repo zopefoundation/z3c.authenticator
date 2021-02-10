@@ -32,13 +32,14 @@ from z3c.authenticator import interfaces
 # get the IP address only once
 try:
     ip = socket.getaddrinfo(socket.gethostname(), 0)[-1][-1][0]
-except:
+except BaseException:
     ip = '127.0.0.1'
+
 
 def generateUserIDToken(id):
     """Generates a unique user id token."""
     t = int(time.time() * 1000)
-    r = int(random.random()*100000000000000000)
+    r = int(random.random() * 100000000000000000)
     data = "%s %s %s %s" % (ip, t, r, id)
     return md5(data.encode('utf-8')).hexdigest()
 
@@ -48,7 +49,7 @@ class User(persistent.Persistent, contained.Contained):
     """User stored in IUserContainer."""
 
     def __init__(self, login, password, title, description=u'',
-            passwordManagerName="Plain Text"):
+                 passwordManagerName="Plain Text"):
         self._login = login
         self._passwordManagerName = passwordManagerName
         self.password = password
@@ -62,7 +63,7 @@ class User(persistent.Persistent, contained.Contained):
 
     def _getPasswordManager(self):
         return zope.component.getUtility(IPasswordManager,
-            self.passwordManagerName)
+                                         self.passwordManagerName)
 
     def getPassword(self):
         return self._password
@@ -101,7 +102,6 @@ class UserContainer(btree.BTreeContainer):
 
     See principalfolder.txt for details.
     """
-
 
     def __init__(self):
         super(UserContainer, self).__init__()
@@ -228,7 +228,7 @@ class UserContainer(btree.BTreeContainer):
         return user
 
     def getUserByLogin(self, login):
-        #don't bother catching KeyError, it's the task of the caller
+        # don't bother catching KeyError, it's the task of the caller
         return self[self.__id_by_login[login]]
 
     def queryPrincipal(self, id, default=None):
@@ -247,7 +247,7 @@ class UserContainer(btree.BTreeContainer):
         for i, value in enumerate(self.values()):
             if (search in value.title.lower() or
                 search in value.description.lower() or
-                search in value.login.lower()):
+                    search in value.login.lower()):
                 if not ((start is not None and i < start)
                         or (batch_size is not None and n > batch_size)):
                     n += 1

@@ -21,7 +21,6 @@ import zope.schema
 
 from z3c.authenticator import interfaces
 from z3c.authenticator import group
-from z3c.authenticator import user
 from z3c.authenticator.widget import getSourceInputWidget
 from z3c.form import field
 from z3c.form import button
@@ -110,7 +109,7 @@ class GroupEditForm(form.EditForm):
     groupCycleErrorMessage = _('There is a cyclic relationship among groups.')
 
     fields = field.Fields(interfaces.IGroup).select('title', 'description',
-        'principals')
+                                                    'principals')
 
     fields['principals'].widgetFactory = getSourceInputWidget
 
@@ -122,7 +121,7 @@ class GroupEditForm(form.EditForm):
             return
         try:
             changes = self.applyChanges(data)
-        except group.GroupCycle as e:
+        except group.GroupCycle:
             self.status = self.groupCycleErrorMessage
             return
         if changes:

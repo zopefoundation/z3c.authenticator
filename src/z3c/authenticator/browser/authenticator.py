@@ -21,10 +21,7 @@ import zope.schema
 
 from z3c.authenticator.authentication import Authenticator
 from z3c.authenticator import interfaces
-from z3c.authenticator import group
-from z3c.authenticator import user
 from z3c.form import field
-from z3c.form import button
 from z3c.formui import form
 
 # Make z3c.configurator optional.
@@ -34,6 +31,7 @@ except ImportError:
     configurator = None
 
 from z3c.authenticator.interfaces import _
+
 
 class IAddName(zope.interface.Interface):
     """Object name."""

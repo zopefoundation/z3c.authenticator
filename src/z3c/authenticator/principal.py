@@ -54,7 +54,7 @@ class PrincipalBase(object):
                         stack.append(iter(group.groups))
 
     def __repr__(self):
-        return "<%s %s>" %(self.__class__.__name__, self.id)
+        return "<%s %s>" % (self.__class__.__name__, self.id)
 
 
 @zope.component.adapter(interfaces.IUser)
@@ -73,7 +73,6 @@ class FoundPrincipal(PrincipalBase):
 @zope.interface.implementer(interfaces.IAuthenticatedPrincipal)
 class AuthenticatedPrincipalForPrincipal(PrincipalBase):
     """IAuthenticatedPrincipal principal for IPrincipal."""
-
 
 
 @zope.component.adapter(IPrincipal)
@@ -118,4 +117,4 @@ class FoundGroup(object):
         return self._group.description
 
     def __repr__(self):
-        return "<%s %s>" %(self.__class__.__name__, self.id)
+        return "<%s %s>" % (self.__class__.__name__, self.id)

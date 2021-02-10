@@ -35,7 +35,6 @@ from z3c.authenticator import event
 class Authenticator(btree.BTreeContainer):
     """See z3c.authentication.interfaces.IAuthenticator."""
 
-
     authenticatorPlugins = ()
     credentialsPlugins = ()
 
@@ -47,17 +46,17 @@ class Authenticator(btree.BTreeContainer):
             plugin = self.get(name)
             if not interface.providedBy(plugin):
                 plugin = zope.component.queryUtility(interface, name,
-                    context=self)
+                                                     context=self)
             if plugin is not None:
                 yield name, plugin
 
     def getAuthenticatorPlugins(self):
         return self._plugins(self.authenticatorPlugins,
-            interfaces.IAuthenticatorPlugin)
+                             interfaces.IAuthenticatorPlugin)
 
     def getCredentialsPlugins(self):
         return self._plugins(self.credentialsPlugins,
-            interfaces.ICredentialsPlugin)
+                             interfaces.ICredentialsPlugin)
 
     def authenticate(self, request):
         authenticatorPlugins = [p for n, p in self.getAuthenticatorPlugins()]
@@ -111,8 +110,8 @@ class Authenticator(btree.BTreeContainer):
 
     def getQueriables(self):
         for name, authplugin in self.getAuthenticatorPlugins():
-            queriable = zope.component.queryMultiAdapter((authplugin, self),
-                interfaces.IQueriableAuthenticator)
+            queriable = zope.component.queryMultiAdapter(
+                (authplugin, self), interfaces.IQueriableAuthenticator)
             if queriable is not None:
                 yield name, queriable
 
@@ -141,7 +140,7 @@ class Authenticator(btree.BTreeContainer):
         principal = zope.component.queryUtility(IUnauthenticatedPrincipal)
         if principal is not None:
             zope.event.notify(event.UnauthenticatedPrincipalCreated(self,
-                principal))
+                                                                    principal))
         return principal
 
     def unauthorized(self, id, request):

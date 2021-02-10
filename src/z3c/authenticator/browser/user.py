@@ -20,10 +20,8 @@ from zope.traversing.browser import absoluteURL
 import zope.schema
 
 from z3c.authenticator import interfaces
-from z3c.authenticator import group
 from z3c.authenticator import user
 from z3c.form import field
-from z3c.form import button
 from z3c.formui import form
 
 # Make z3c.configurator optional.
@@ -33,6 +31,7 @@ except ImportError:
     configurator = None
 
 from z3c.authenticator.interfaces import _
+
 
 class IAddName(zope.interface.Interface):
     """Object name."""
@@ -74,8 +73,12 @@ class UserAddForm(form.AddForm):
 
     label = _('Add User.')
 
-    fields = field.Fields(interfaces.IUser).select('login', 'password',
-        'title', 'description', 'passwordManagerName')
+    fields = field.Fields(interfaces.IUser).select(
+        'login',
+        'password',
+        'title',
+        'description',
+        'passwordManagerName')
 
     def createAndAdd(self, data):
         login = data.get('login', u'')
@@ -84,7 +87,7 @@ class UserAddForm(form.AddForm):
         description = data.get('description', u'')
         passwordManagerName = data.get('passwordManagerName', u'')
         obj = user.User(login, password, title, description,
-            passwordManagerName)
+                        passwordManagerName)
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
         self.contentName, usr = self.context.add(obj)
 
@@ -103,5 +106,10 @@ class UserEditForm(form.EditForm):
 
     label = _('Edit User.')
 
-    fields = field.Fields(interfaces.IUser).select('login', 'password',
-        'title', 'description', 'passwordManagerName')
+    fields = field.Fields(
+        interfaces.IUser).select(
+        'login',
+        'password',
+        'title',
+        'description',
+        'passwordManagerName')

@@ -18,8 +18,6 @@ import zope.schema
 import zope.deprecation
 import zope.security.interfaces
 
-from zope.security.interfaces import IGroupClosureAwarePrincipal
-from zope.security.interfaces import IMemberAwareGroup
 from zope.container.interfaces import IContainer
 from zope.container.constraints import contains
 from zope.container.constraints import containers
@@ -54,6 +52,7 @@ class IAuthenticatorPlugin(IPlugin):
         If the plugin cannot find information for the id, returns None.
         """
 
+
 class IPrincipalRegistryAuthenticatorPlugin(IAuthenticatorPlugin):
     """Principal registry authenticator plugin.
 
@@ -74,7 +73,7 @@ class IPrincipalRegistryAuthenticatorPlugin(IAuthenticatorPlugin):
                       'authenticator plugin manages principals for another '
                       'authenticator.'),
         default=True,
-        )
+    )
 
 
 class ICredentialsPlugin(IPlugin):
@@ -150,7 +149,7 @@ class IAuthenticator(ILogout, IContainer):
         title=_('Include next utility for authenticate'),
         description=_('Include next utility for authenticate'),
         default=True,
-        )
+    )
 
     credentialsPlugins = zope.schema.List(
         title=_('Credentials Plugins'),
@@ -161,7 +160,7 @@ class IAuthenticator(ILogout, IContainer):
         utility names."""),
         value_type=zope.schema.Choice(vocabulary='Z3CCredentialsPlugins'),
         default=[],
-        )
+    )
 
     authenticatorPlugins = zope.schema.List(
         title=_('Authenticator Plugins'),
@@ -172,7 +171,7 @@ class IAuthenticator(ILogout, IContainer):
         utility names."""),
         value_type=zope.schema.Choice(vocabulary='Z3CAuthenticatorPlugins'),
         default=[],
-        )
+    )
 
     def getCredentialsPlugins():
         """Return iterable of (plugin name, actual credentials plugin) pairs.
@@ -190,7 +189,6 @@ class IAuthenticator(ILogout, IContainer):
 
     def logout(request):
         """Performs a logout by delegating to its authenticator plugins."""
-
 
 
 # user interfaces
@@ -212,12 +210,12 @@ class IUser(zope.interface.Interface):
         title=_("Password Manager"),
         vocabulary="Password Manager Names",
         description=_("The password manager will be used"
-            " for encode/check the password"),
+                      " for encode/check the password"),
         default="Plain Text",
         # TODO: The password manager name may get changed if the password get
         #       changed!
         readonly=True
-        )
+    )
 
     title = zope.schema.TextLine(
         title=_("Title"),
@@ -291,7 +289,7 @@ class IFoundPrincipal(zope.security.interfaces.IGroupClosureAwarePrincipal):
 
 
 class IAuthenticatedPrincipal(
-    zope.security.interfaces.IGroupClosureAwarePrincipal):
+        zope.security.interfaces.IGroupClosureAwarePrincipal):
     """A factory adapting IInternalPrincipal and offering read access to the
     principal.
 
@@ -375,7 +373,7 @@ class IGroupContainer(IContainer, IAuthenticatorPlugin, ISearchable):
         default=u'',
         required=True,
         readonly=True,
-        )
+    )
 
     def getGroupsForPrincipal(principalid):
         """Get groups the given principal belongs to"""
@@ -392,14 +390,17 @@ class IFoundGroup(IFoundPrincipal, zope.security.interfaces.IGroup):
     for more information.
 
     This means both interface z3c.authenticator.interfaces.IGroupPrincipal and
-    z3c.authenticator.interfaces.IGroup provide zope.security.interfaces.IGroup.
+    z3c.authenticator.interfaces.IGroup provide
+    zope.security.interfaces.IGroup.
     """
 
 #    members = zope.interface.Attribute('an iterable of members of the group')
 
+
 # TODO: deprecate and remove later
 IGroupPrincipal = IFoundGroup
-zope.deprecation.deprecated('IGroupPrincipal',
+zope.deprecation.deprecated(
+    'IGroupPrincipal',
     'The IGroupPrincipal interface get replaced by IFoundGroup')
 
 
@@ -485,7 +486,7 @@ class IBrowserFormChallenger(zope.interface.Interface):
     prefixes = zope.schema.List(
         title=u'Form prefixes',
         description=u'List of prefixes used in different login forms',
-        value_type = zope.schema.TextLine(
+        value_type=zope.schema.TextLine(
             title=u'Form prefix',
             description=u'Form prefix',
             missing_value=u'',
@@ -502,12 +503,15 @@ class IBrowserFormChallenger(zope.interface.Interface):
 
     loginfield = zope.schema.TextLine(
         title=u'Loginfield',
-        description=u"Field of the login page in which is looked for the login user name.",
+        description=(
+            u"Field of the login page in which is looked for the login user"
+            u" name."),
         default=u"login")
 
     passwordfield = zope.schema.TextLine(
         title=u'Passwordfield',
-        description=u"Field of the login page in which is looked for the password.",
+        description=(
+            u"Field of the login page in which is looked for the password."),
         default=u"password")
 
 
