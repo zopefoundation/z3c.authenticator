@@ -124,56 +124,62 @@ class UserContainer(btree.BTreeContainer):
 
         Create a UserContainer
 
-        >>> mc = UserContainer('users.')
+        >>> mc = UserContainer()
 
         Try to add something not providing IUser
         >>> try:
         ...     mc.__setitem__(u'max', object())
-        ... except Exception, e:
-        ...     print e
+        ... except Exception as e:
+        ...     print(e)
         Item does not support IUser!
 
         Create a user with no __name__, this should be added via the add
         method
 
-        >>> user = User()
+        >>> user = User(u'max', u'passwd', u'sir')
         >>> try:
         ...     mc.__setitem__(u'max', user)
-        ... except Exception, e:
-        ...     print e
+        ... except Exception as e:
+        ...     print(e)
         There is no user id token given!
 
         Probably we do have a __name__ during copy/paste, so we have to check
         if we get a __parent__ as well
 
-        >>> user = User()
+        >>> user = User(u'usertoken', u'passwd', u'sir')
         >>> user.__name__ = u'usertoken'
+        >>> user.__parent__ = u'parent'
         >>> try:
-        ...     mc.__setitem__(u'max', user)
-        ... except Exception, e:
-        ...     print e
+        ...     mc.__setitem__(u'usertoken', user)
+        ... except Exception as e:
+        ...     print(e)
         Paste a object is not supported!
 
         Try to use a user with no login:
 
+        >>> user = User(u'', u'passwd', u'sir')
+        >>> user.__name__ = u''
         >>> try:
-        ...     mc.__setitem__(u'max', user)
-        ... except Exception, e:
-        ...     print e
+        ...     mc.__setitem__(u'', user)
+        ... except Exception as e:
+        ...     print(e)
         User does not provide a login value!
 
         Add a login attr since __setitem__ is in need of one
 
-        >>> user.login = u'max'
-        >>> mc.__setitem__(u'users.max', principal)
+        >>> user = User(u'max', u'passwd', u'sir')
+        >>> user.__name__ = u'max'
+        >>> mc.__setitem__(u'max', user)
 
         Now try to use the same login:
 
+        >>> user2 = User(u'max', u'passwd', u'sir')
+        >>> user2.__name__ = u'max'
         >>> try:
-        ...     mc.__setitem__(u'max', user)
-        ... except Exception, e:
-        ...     print e
-        Login already taken!
+        ...     mc.__setitem__(u'max', user2)
+        ... except Exception as e:
+        ...     print(e)
+        'Login already taken!'
         """
 
         # check if we store correct implementations
@@ -181,7 +187,7 @@ class UserContainer(btree.BTreeContainer):
             raise TypeError('Item does not support IUser!')
 
         # check if there is a user id given
-        if user.__name__ is not id:
+        if user.__name__ != id:
             raise ValueError('There is no user id token given!')
 
         # check if there is a user id given in we store correct implementations

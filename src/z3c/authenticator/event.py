@@ -39,8 +39,7 @@ class AuthenticatedPrincipalCreated(object):
 class UnauthenticatedPrincipalCreated(object):
     """
     >>> from zope.interface.verify import verifyObject
-    >>> event = UnauthenticatedPrincipalCreated('authentication', 'principal',
-    ...     'request')
+    >>> event = UnauthenticatedPrincipalCreated('authentication', 'principal')
     >>> verifyObject(interfaces.IUnauthenticatedPrincipalCreated, event)
     True
     """
@@ -71,7 +70,7 @@ class GroupAdded(object):
 
     >>> from zope.interface.verify import verifyObject
     >>> event = GroupAdded(u'group')
-    >>> verifyObject(IGroupAdded, event)
+    >>> verifyObject(interfaces.IGroupAdded, event)
     True
     """
 
