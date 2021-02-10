@@ -93,10 +93,13 @@ def authenticatorPlugins(context):
     return _pluginVocabulary(
         context, interfaces.IAuthenticatorPlugin, 'authenticatorPlugins')
 
+
 zope.interface.alsoProvides(authenticatorPlugins, IVocabularyFactory)
+
 
 def credentialsPlugins(context):
     return _pluginVocabulary(
         context, interfaces.ICredentialsPlugin, 'credentialsPlugins')
+
 
 zope.interface.alsoProvides(credentialsPlugins, IVocabularyFactory)

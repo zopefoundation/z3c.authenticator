@@ -29,7 +29,6 @@ class AuthenticatedPrincipalCreated(object):
     True
     """
 
-
     def __init__(self, authentication, principal, request):
         self.authentication = authentication
         self.principal = principal
@@ -46,7 +45,6 @@ class UnauthenticatedPrincipalCreated(object):
     True
     """
 
-
     def __init__(self, authentication, principal):
         self.authentication = authentication
         self.principal = principal
@@ -60,7 +58,6 @@ class FoundPrincipalCreated(object):
     >>> verifyObject(interfaces.IFoundPrincipalCreated, event)
     True
     """
-
 
     def __init__(self, authentication, principal):
         self.authentication = authentication
@@ -77,7 +74,6 @@ class GroupAdded(object):
     >>> verifyObject(IGroupAdded, event)
     True
     """
-
 
     def __init__(self, group):
         self.group = group
@@ -100,6 +96,7 @@ class AbstractUsersChanged(object):
 @zope.interface.implementer(interfaces.IPrincipalsAddedToGroup)
 class PrincipalsAddedToGroup(AbstractUsersChanged):
     pass
+
 
 @zope.interface.implementer(interfaces.IPrincipalsRemovedFromGroup)
 class PrincipalsRemovedFromGroup(AbstractUsersChanged):

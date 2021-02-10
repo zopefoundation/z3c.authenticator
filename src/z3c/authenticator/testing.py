@@ -35,9 +35,10 @@ from zope.password.password import PlainTextPasswordManager
 #
 ###############################################################################
 
+
 def setUpPasswordManager():
-    zope.component.provideUtility(PlainTextPasswordManager(), 
-        IPasswordManager, "Plain Text")
+    zope.component.provideUtility(PlainTextPasswordManager(),
+                                  IPasswordManager, "Plain Text")
 
 
 @zope.interface.implementer(IClientId)
@@ -65,6 +66,7 @@ def placefulSetUp(test):
     test.globs['rootFolder'] = site
     zope.traversing.testing.setUp()
     setUpPasswordManager()
+
 
 def placefulTearDown(test):
     zope.site.testing.siteTearDown()

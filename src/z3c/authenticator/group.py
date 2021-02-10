@@ -20,7 +20,6 @@ import zope.interface
 import zope.component
 import zope.event
 
-from zope.interface import alsoProvides
 from zope.security.interfaces import IGroup
 from zope.security.interfaces import IGroupAwarePrincipal
 
@@ -48,7 +47,7 @@ class Group(persistent.Persistent, contained.Contained):
 
     @property
     def id(self):
-        """The id is the name which includes the container prefix (readonly)."""
+        """Id is the name which includes the container prefix (readonly)."""
         return self.__name__
 
     def setPrincipals(self, prinlist, check=True):
@@ -91,7 +90,7 @@ class Group(persistent.Persistent, contained.Contained):
     principals = property(lambda self: self._principals, setPrincipals)
 
     def __repr__(self):
-        return "<%s %s>" %(self.__class__.__name__, self.__name__)
+        return "<%s %s>" % (self.__class__.__name__, self.__name__)
 
 
 @zope.interface.implementer(interfaces.IGroupContainer)
@@ -99,7 +98,7 @@ class GroupContainer(btree.BTreeContainer):
 
     def __init__(self, prefix=u''):
         self.prefix = prefix
-        super(GroupContainer,self).__init__()
+        super(GroupContainer, self).__init__()
         # __inversemapping is used to map principals to groups
         self.__inverseMapping = BTrees.OOBTree.OOBTree()
 
@@ -239,20 +238,20 @@ def specialGroups(event):
     # global utility registered by everybodyGroup directive
     everyone = zope.component.queryUtility(IEveryoneGroup)
     if everyone is not None and everyone.id != principal.id and \
-        everyone.id not in principal.groups:
+            everyone.id not in principal.groups:
         principal.groups.append(everyone.id)
 
     if IUnauthenticatedPrincipal.providedBy(principal):
         # global utility registered by unauthenticatedGroup directive
         unAuthGroup = zope.component.queryUtility(IUnauthenticatedGroup)
         if unAuthGroup is not None and unAuthGroup.id != principal.id and \
-            unAuthGroup.id not in principal.groups:
+                unAuthGroup.id not in principal.groups:
             principal.groups.append(unAuthGroup.id)
     else:
         # global utility registered by authenticatedGroup directive
         authGroup = zope.component.queryUtility(IAuthenticatedGroup)
         if authGroup is not None and authGroup.id != principal.id and \
-            authGroup.id not in principal.groups:
+                authGroup.id not in principal.groups:
             principal.groups.append(authGroup.id)
 
 
@@ -277,8 +276,8 @@ def setGroupsForPrincipal(event):
     for name, plugin in authentication.getAuthenticatorPlugins():
         if not interfaces.IGroupContainer.providedBy(plugin):
             continue
-        # set groups for principals but not a group to itself. This could happen
-        # for global defined groups
+        # set groups for principals but not a group to itself. This could
+        # happen for global defined groups
         principal.groups.extend(
             [id for id in plugin.getGroupsForPrincipal(principal.id)
              if id != principal.id])

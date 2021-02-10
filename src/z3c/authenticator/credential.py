@@ -31,9 +31,7 @@ from z3c.authenticator._compat import base64_decode
 
 @zope.interface.implementer(interfaces.IHTTPBasicAuthCredentialsPlugin)
 class HTTPBasicAuthCredentialsPlugin(persistent.Persistent,
-    contained.Contained):
-
-
+                                     contained.Contained):
 
     realm = 'Zope Application Management'
 
@@ -160,11 +158,14 @@ class SessionCredentials(object):
         self.login = login
         self.password = password
 
-    def getLogin(self): return self.login
+    def getLogin(self):
+        return self.login
 
-    def getPassword(self): return self.password
+    def getPassword(self):
+        return self.password
 
-    def __str__(self): return self.getLogin() + ':' + self.getPassword()
+    def __str__(self):
+        return self.getLogin() + ':' + self.getPassword()
 
 
 @zope.interface.implementer(interfaces.ISessionCredentialsPlugin)
@@ -317,8 +318,8 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
     def challenge(self, request):
         """Challenges by redirecting to a login form.
 
-        To illustrate how a session plugin works, we'll first setup some session
-        machinery:
+        To illustrate how a session plugin works, we'll first setup some
+        session machinery:
 
           >>> from z3c.authenticator.testing import sessionSetUp
           >>> sessionSetUp()

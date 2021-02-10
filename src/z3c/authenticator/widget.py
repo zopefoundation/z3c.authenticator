@@ -32,10 +32,7 @@ from z3c.form.browser import widget
 from z3c.form.browser import text
 from z3c.form import converter
 from z3c.form.interfaces import IFieldWidget
-from z3c.form.interfaces import IWidget
 from z3c.form.interfaces import ISequenceWidget
-from z3c.form.interfaces import ICheckBoxWidget
-from z3c.form.interfaces import IWidgets
 from z3c.form.interfaces import IFormLayer
 from z3c.form.interfaces import ITerms
 from z3c.template.template import getLayoutTemplate
@@ -81,7 +78,8 @@ class PrincipalSourceDataConverter(converter.CollectionSequenceDataConverter):
         collectionType = self.field._type
         if isinstance(collectionType, tuple):
             collectionType = collectionType[-1]
-        return collectionType([widget.terms.getValue(token) for token in value])
+        return collectionType([widget.terms.getValue(token)
+                               for token in value])
 
 
 # TODO: remove this if we have a fixed version of z3c.form
@@ -105,7 +103,8 @@ class SourceSearchDataConverter(converter.CollectionSequenceDataConverter):
         collectionType = self.field._type
         if isinstance(collectionType, tuple):
             collectionType = collectionType[-1]
-        return collectionType([widget.terms.getValue(token) for token in value])
+        return collectionType([widget.terms.getValue(token)
+                               for token in value])
 
 
 class PrincipalTerm(object):
@@ -123,7 +122,6 @@ class PrincipalTerm(object):
     zope.schema.interfaces.IList,
     IPrincipalSourceWidget)
 class PrincipalTerms(object):
-
 
     def __init__(self, context, request, form, field, widget):
         self.context = context
@@ -144,7 +142,7 @@ class PrincipalTerms(object):
             raise LookupError(pid)
 
         return PrincipalTerm(pid.encode('base64').strip().replace('=', '_'),
-                    principal.title)
+                             principal.title)
 
     def getTermByToken(self, token):
         pid = token.replace('_', '=').decode('base64')
@@ -171,6 +169,7 @@ class ISearchFormResultsField(zope.schema.interfaces.IList):
     Marker for the right widget.
     """
 
+
 @zope.interface.implementer(ISearchFormResultsField)
 class SearchFormResultsField(zope.schema.List):
     """Search form results field."""
@@ -192,10 +191,10 @@ class SourceResultWidget(widget.HTMLInputWidget, SequenceWidget):
         term = self.terms.getTerm(value)
         checked = self.isChecked(term)
         label = zope.i18n.translate(term.title, context=self.request,
-                          default=term.title)
+                                    default=term.title)
         id = '%s-%s' % (self.id, term.token)
-        item = {'id':id, 'name':self.name + ':list', 'value':term.token,
-                'label':label, 'checked':checked}
+        item = {'id': id, 'name': self.name + ':list', 'value': term.token,
+                'label': label, 'checked': checked}
         if item not in self.items:
             self.items.append(item)
 
@@ -246,6 +245,7 @@ class SourceSearchWidget(text.TextWidget):
     def label(self, value):
         pass
 
+
 def getSourceSearchWidget(field, request):
     """IFieldWidget factory for TextWidget."""
     return FieldWidget(field, SourceSearchWidget(request))
@@ -259,9 +259,11 @@ class ISearchResult(zope.interface.Interface):
         description=_("Principal ids"),
         default=[],
         required=False
-        )
+    )
 
 # conditions
+
+
 def hasResults(form):
     return bool(form.widgets['search'].value)
 
@@ -269,7 +271,6 @@ def hasResults(form):
 @zope.interface.implementer(ISourceSearchForm)
 class SearchFormMixin(form.Form):
     """Source Query View search form."""
-
 
     layout = getLayoutTemplate('subform')
 
@@ -373,10 +374,10 @@ class PrincipalSourceWidget(widget.HTMLInputWidget, SequenceWidget):
         term = self.terms.getTerm(value)
         checked = self.isChecked(term)
         label = zope.i18n.translate(term.title, context=self.request,
-            default=term.title)
+                                    default=term.title)
         id = '%s-%s' % (self.id, term.token)
-        item = {'id':id, 'name':self.name + ':list', 'value':term.token,
-                'label':label, 'checked':checked}
+        item = {'id': id, 'name': self.name + ':list', 'value': term.token,
+                'label': label, 'checked': checked}
         if item not in self.items:
             self.items.append(item)
 
@@ -395,21 +396,23 @@ class PrincipalSourceWidget(widget.HTMLInputWidget, SequenceWidget):
             self.addValue(value)
 
     def updateSearchForms(self):
-        queriables = zope.schema.interfaces.ISourceQueriables(self.source, None)
+        queriables = zope.schema.interfaces.ISourceQueriables(
+            self.source, None)
         if queriables is None:
             # treat the source itself as a queriable
             queriables = ((self.name + '.query', self.source), )
         else:
             queriables = [
                 (self.name + '.' +
-                 six.text_type(i).encode('base64').strip().replace('=', '_'), s)
-                          for (i, s) in queriables.getQueriables()]
+                 six.text_type(i).encode('base64').strip().replace('=', '_'),
+                 s)
+                for (i, s) in queriables.getQueriables()]
 
         self.searchForms = []
         append = self.searchForms.append
         for (name, source) in queriables:
             searchForm = zope.component.getMultiAdapter((source, self.request),
-                ISourceSearchForm)
+                                                        ISourceSearchForm)
             # ignore views which do not follow the update/render pattern
             if hasattr(searchForm, 'update'):
                 searchForm.prefix = name
@@ -428,5 +431,5 @@ def getSourceInputWidget(field, request):
     """Sequence IFieldWidget factory for ISource."""
     source = field.value_type.vocabulary
     widget = zope.component.getMultiAdapter((field, source, request),
-        IFieldWidget)
+                                            IFieldWidget)
     return widget

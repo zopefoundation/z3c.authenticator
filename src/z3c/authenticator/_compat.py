@@ -16,7 +16,7 @@
 import base64
 import sys
 
-if sys.version_info[0] < 3: #pragma NO COVER
+if sys.version_info[0] < 3:  # pragma: PY2
 
     base64_decode = base64.decodestring
     base64_encode = base64.encodestring
@@ -24,7 +24,7 @@ if sys.version_info[0] < 3: #pragma NO COVER
     PYTHON3 = False
     PYTHON2 = True
 
-else: #pragma NO COVER
+else:  # pragma: PY3
 
     base64_decode = base64.decodebytes
     base64_encode = base64.encodebytes

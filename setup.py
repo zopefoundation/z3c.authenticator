@@ -16,15 +16,17 @@
 import os
 from setuptools import setup, find_packages
 
+
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup (
+
+setup(
     name='z3c.authenticator',
-    version='1.0.2.dev0',
-    author = "Roger Ineichen and the Zope Community",
-    author_email = "zope-dev@zope.org",
-    description = "IAuthentication implementation for for Zope3",
+    version='1.1.0.dev0',
+    author="Roger Ineichen and the Zope Community",
+    author_email="zope-dev@zope.org",
+    description="IAuthentication implementation for for Zope3",
     long_description=(
         read('README.txt')
         + '\n\n.. contents::\n\n' +
@@ -35,10 +37,10 @@ setup (
         read('src', 'z3c', 'authenticator', 'vocabulary.txt')
         + '\n\n' +
         read('CHANGES.txt')
-        ),
-    license = "ZPL 2.1",
-    keywords = "zope3 z3c authentication auth group",
-    classifiers = [
+    ),
+    license="ZPL 2.1",
+    keywords="zope3 z3c authentication auth group",
+    classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
@@ -50,6 +52,8 @@ setup (
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Natural Language :: English',
@@ -58,20 +62,20 @@ setup (
         'Framework :: Zope :: 3',
     ],
     url='https://github.com/zopefoundation/z3c.authenticator',
-    packages = find_packages('src'),
-    include_package_data = True,
-    package_dir = {'':'src'},
-    namespace_packages = ['z3c'],
-    extras_require = dict(
-        test = [
+    packages=find_packages('src'),
+    include_package_data=True,
+    package_dir={'': 'src'},
+    namespace_packages=['z3c'],
+    extras_require=dict(
+        test=[
             'z3c.testing >= 1.0.0a3',
             'zope.testing',
-            ],
-        configurator = [
+        ],
+        configurator=[
             'z3c.configurator',
-            ],
-        ),
-    install_requires = [
+        ],
+    ),
+    install_requires=[
         'setuptools',
         'z3c.contents',
         'z3c.form',
@@ -95,7 +99,7 @@ setup (
         'zope.session',
         'zope.site',
         'zope.traversing',
-        ],
+    ],
     test_suite='z3c.authenticator.tests.test_suite',
-    zip_safe = False,
+    zip_safe=False,
 )

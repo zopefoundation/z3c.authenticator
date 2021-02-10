@@ -40,7 +40,8 @@ class AuthenticatorTest(BaseTestIContainer):
         return authentication.Authenticator
 
     def test_exception_in_subscriber_leaves_item_in_place(self):
-        # does the container test register a subscribe handler and not tear down?
+        # does the container test register a subscribe handler and not tear
+        # down?
         pass
 
 
@@ -80,7 +81,7 @@ class AuthenticatedPrincipalTest(InterfaceBaseTest):
         return principal.AuthenticatedPrincipal
 
     def makeTestObject(self):
-        usr =  user.User(u'login', u'password', u'Title')
+        usr = user.User(u'login', u'password', u'Title')
         return principal.AuthenticatedPrincipal(usr)
 
 
@@ -96,7 +97,7 @@ class FoundPrincipalTest(InterfaceBaseTest):
         return principal.FoundPrincipal
 
     def makeTestObject(self):
-        usr =  user.User(u'login', u'password', u'Title')
+        usr = user.User(u'login', u'password', u'Title')
         return principal.FoundPrincipal(usr)
 
 
@@ -147,38 +148,49 @@ class SessionCredentialsPluginFormTest(InterfaceBaseTest):
     def getTestClass(self):
         return credential.SessionCredentialsPlugin
 
-def placefulSetUp(test):
-    test.globs['rootFolder'] = zope.site.testing.siteSetUp(True)
-    zope.traversing.testing.setUp()
-    zope.password.testing.setUpPasswordManagers()
-
-def placefulTearDown(test):
-    zope.site.testing.siteTearDown()
 
 def test_suite():
     checker = RENormalizing((
-            (re.compile("u'(.*?)'"), "'\\1'"),
-            (re.compile("z3c.authenticator.group.GroupCycle"), "GroupCycle"),
-            ))
+        (re.compile("u'(.*?)'"), "'\\1'"),
+        (re.compile("z3c.authenticator.group.GroupCycle"), "GroupCycle"),
+    ))
     return unittest.TestSuite((
-        doctest.DocFileSuite('README.txt', checker=checker,
-            setUp=testing.placefulSetUp, tearDown=testing.placefulTearDown,
-            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         doctest.DocFileSuite(
-                'group.txt', checker=checker,
-                setUp=testing.placefulSetUp, tearDown=testing.placefulTearDown,
-                optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
-        doctest.DocTestSuite(
-                'z3c.authenticator.credential', checker=checker,
-                setUp=testing.placefulSetUp, tearDown=testing.placefulTearDown),
-        doctest.DocTestSuite(
-                'z3c.authenticator.group',
-                setUp=testing.placefulSetUp,
-                tearDown=testing.placefulTearDown),
+            'README.txt',
+            checker=checker,
+            setUp=testing.placefulSetUp,
+            tearDown=testing.placefulTearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS),
         doctest.DocFileSuite(
-                'vocabulary.txt', checker=checker,
-                setUp=zope.component.testing.setUp,
-                tearDown=zope.component.testing.tearDown),
+            'group.txt',
+            checker=checker,
+            setUp=testing.placefulSetUp,
+            tearDown=testing.placefulTearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS),
+        doctest.DocTestSuite(
+            'z3c.authenticator.credential',
+            checker=checker,
+            setUp=testing.placefulSetUp,
+            tearDown=testing.placefulTearDown),
+        doctest.DocTestSuite(
+            'z3c.authenticator.user',
+            checker=checker,
+            setUp=testing.placefulSetUp,
+            tearDown=testing.placefulTearDown),
+        doctest.DocTestSuite(
+            'z3c.authenticator.event',
+            checker=checker,
+            setUp=testing.placefulSetUp,
+            tearDown=testing.placefulTearDown),
+        doctest.DocTestSuite(
+            'z3c.authenticator.group',
+            setUp=testing.placefulSetUp,
+            tearDown=testing.placefulTearDown),
+        doctest.DocFileSuite(
+            'vocabulary.txt',
+            checker=checker,
+            setUp=zope.component.testing.setUp,
+            tearDown=zope.component.testing.tearDown),
         unittest.makeSuite(AuthenticatorTest),
         unittest.makeSuite(UserContainerTest),
         unittest.makeSuite(UserTest),
@@ -189,7 +201,4 @@ def test_suite():
         unittest.makeSuite(SessionCredentialsTest),
         unittest.makeSuite(SessionCredentialsPluginTest),
         unittest.makeSuite(SessionCredentialsPluginFormTest),
-        ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    ))
