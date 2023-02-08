@@ -40,8 +40,8 @@ class LoginForm(form.Form):
     @property
     def message(self):
         if IUnauthenticatedPrincipal.providedBy(self.request.principal):
-            return _(u'Please provide Login Information')
-        return u''
+            return _('Please provide Login Information')
+        return ''
 
     def updateWidgets(self):
         self.widgets = zope.component.getMultiAdapter(

@@ -179,7 +179,7 @@ class Authenticator(btree.BTreeContainer):
 
 @zope.component.adapter(interfaces.ISearchable, interfaces.IAuthenticator)
 @zope.interface.implementer(interfaces.IQueriableAuthenticator, ILocation)
-class QueriableAuthenticator(object):
+class QueriableAuthenticator:
     """Performs schema-based principal searches adapting ISearchable and
     IAuthenticator.
 
@@ -199,5 +199,4 @@ class QueriableAuthenticator(object):
         self.pau = pau
 
     def search(self, query, start=None, batch_size=None):
-        for id in self.authplugin.search(query, start, batch_size):
-            yield id
+        yield from self.authplugin.search(query, start, batch_size)

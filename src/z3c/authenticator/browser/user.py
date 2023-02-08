@@ -38,8 +38,8 @@ class IAddName(zope.interface.Interface):
     """Object name."""
 
     __name__ = zope.schema.TextLine(
-        title=u'Object Name',
-        description=u'Object Name',
+        title='Object Name',
+        description='Object Name',
         required=True)
 
 
@@ -54,7 +54,7 @@ class UserContainerAddForm(form.AddForm):
 
     def createAndAdd(self, data):
         obj = user.UserContainer()
-        self.contentName = data.get('__name__', u'')
+        self.contentName = data.get('__name__', '')
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
         self.context[self.contentName] = obj
 
@@ -82,11 +82,11 @@ class UserAddForm(form.AddForm):
         'passwordManagerName')
 
     def createAndAdd(self, data):
-        login = data.get('login', u'')
-        password = data.get('password', u'')
-        title = data.get('title', u'')
-        description = data.get('description', u'')
-        passwordManagerName = data.get('passwordManagerName', u'')
+        login = data.get('login', '')
+        password = data.get('password', '')
+        title = data.get('title', '')
+        description = data.get('description', '')
+        passwordManagerName = data.get('passwordManagerName', '')
         obj = user.User(login, password, title, description,
                         passwordManagerName)
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))

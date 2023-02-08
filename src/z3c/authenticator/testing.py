@@ -41,7 +41,7 @@ def setUpPasswordManager():
 
 
 @zope.interface.implementer(IClientId)
-class TestClientId(object):
+class TestClientId:
     def __new__(cls, request):
         return 'dummyclientidfortesting'
 

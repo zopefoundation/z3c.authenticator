@@ -38,7 +38,7 @@ class Group(persistent.Persistent, contained.Contained):
 
     _principals = ()
 
-    def __init__(self, title=u'', description=u''):
+    def __init__(self, title='', description=''):
         self.title = title
         self.description = description
 
@@ -87,15 +87,15 @@ class Group(persistent.Persistent, contained.Contained):
     principals = property(lambda self: self._principals, setPrincipals)
 
     def __repr__(self):
-        return "<%s %s>" % (self.__class__.__name__, self.__name__)
+        return "<{} {}>".format(self.__class__.__name__, self.__name__)
 
 
 @zope.interface.implementer(interfaces.IGroupContainer)
 class GroupContainer(btree.BTreeContainer):
 
-    def __init__(self, prefix=u''):
+    def __init__(self, prefix=''):
         self.prefix = prefix
-        super(GroupContainer, self).__init__()
+        super().__init__()
         # __inversemapping is used to map principals to groups
         self.__inverseMapping = BTrees.OOBTree.OOBTree()
 
@@ -134,7 +134,7 @@ class GroupContainer(btree.BTreeContainer):
         if not name.startswith(self.prefix):
             raise KeyError('Wrong prefix used in group id!')
 
-        super(GroupContainer, self).__setitem__(name, group)
+        super().__setitem__(name, group)
         gid = group.__name__
         self._addPrincipalsToGroup(group.principals, gid)
         if group.principals:
@@ -153,7 +153,7 @@ class GroupContainer(btree.BTreeContainer):
         if group.principals:
             zope.event.notify(
                 event.PrincipalsRemovedFromGroup(group.principals, gid))
-        super(GroupContainer, self).__delitem__(gid)
+        super().__delitem__(gid)
 
     def _addPrincipalsToGroup(self, pids, gid):
         for pid in pids:

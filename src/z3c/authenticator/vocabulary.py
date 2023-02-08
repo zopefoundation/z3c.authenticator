@@ -14,6 +14,8 @@
 """Vocabularies
 """
 
+import base64
+
 import zope.component
 import zope.dublincore.interfaces
 import zope.i18n
@@ -22,7 +24,6 @@ from zope.schema import vocabulary
 from zope.schema.interfaces import IVocabularyFactory
 
 from z3c.authenticator import interfaces
-from z3c.authenticator._compat import base64_encode
 from z3c.authenticator.interfaces import _
 
 
@@ -38,7 +39,7 @@ MISSING_TITLE = _(
 
 
 def mktok(s):
-    tok = base64_encode(s.encode('utf-8')).decode('utf-8')
+    tok = base64.encodebytes(s.encode('utf-8')).decode('utf-8')
     return tok.strip()
 
 

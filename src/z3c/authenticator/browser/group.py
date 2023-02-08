@@ -40,8 +40,8 @@ class IAddName(zope.interface.Interface):
     """Object name."""
 
     __name__ = zope.schema.TextLine(
-        title=u'Object Name',
-        description=u'Object Name',
+        title='Object Name',
+        description='Object Name',
         required=True)
 
 
@@ -57,8 +57,8 @@ class GroupContainerAddForm(form.AddForm):
 
     def createAndAdd(self, data):
         obj = group.GroupContainer()
-        obj.prefix = data.get('prefix', u'')
-        self.contentName = data.get('__name__', u'')
+        obj.prefix = data.get('prefix', '')
+        self.contentName = data.get('__name__', '')
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
         self.context[self.contentName] = obj
 
@@ -82,10 +82,10 @@ class GroupAddForm(form.AddForm):
     fields += field.Fields(interfaces.IGroup).select('title', 'description')
 
     def createAndAdd(self, data):
-        title = data.get('title', u'')
-        description = data.get('description', u'')
+        title = data.get('title', '')
+        description = data.get('description', '')
         obj = group.Group(title, description)
-        name = data.get('__name__', u'')
+        name = data.get('__name__', '')
         prefix = self.context.prefix
         if not name.startswith(prefix):
             name = prefix + name

@@ -21,7 +21,7 @@ from zope.security.interfaces import IPrincipal
 from z3c.authenticator import interfaces
 
 
-class PrincipalBase(object):
+class PrincipalBase:
     """Base class for IAuthenticatedPrincipal and IFoundPrincipal principals.
     """
 
@@ -54,7 +54,7 @@ class PrincipalBase(object):
                         stack.append(iter(group.groups))
 
     def __repr__(self):
-        return "<%s %s>" % (self.__class__.__name__, self.id)
+        return "<{} {}>".format(self.__class__.__name__, self.id)
 
 
 @zope.component.adapter(interfaces.IUser)
@@ -83,7 +83,7 @@ class FoundPrincipalForPrincipal(PrincipalBase):
 
 @zope.interface.implementer(interfaces.IFoundGroup)
 @zope.component.adapter(zope.security.interfaces.IGroup)
-class FoundGroup(object):
+class FoundGroup:
 
     def __init__(self, group):
         self.id = group.__name__
@@ -117,4 +117,4 @@ class FoundGroup(object):
         return self._group.description
 
     def __repr__(self):
-        return "<%s %s>" % (self.__class__.__name__, self.id)
+        return "<{} {}>".format(self.__class__.__name__, self.id)

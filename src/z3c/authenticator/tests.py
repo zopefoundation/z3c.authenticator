@@ -12,7 +12,6 @@
 #
 ##############################################################################
 import doctest
-import re
 import unittest
 
 import zope.component.testing
@@ -20,7 +19,6 @@ import zope.password.testing
 import zope.site.testing
 from z3c.testing import BaseTestIContainer
 from z3c.testing import InterfaceBaseTest
-from zope.testing.renormalizing import RENormalizing
 
 from z3c.authenticator import authentication
 from z3c.authenticator import credential
@@ -66,7 +64,7 @@ class UserTest(InterfaceBaseTest):
         return user.User
 
     def getTestPos(self):
-        return (u'login', u'password', u'Title')
+        return ('login', 'password', 'Title')
 
 
 class AuthenticatedPrincipalTest(InterfaceBaseTest):
@@ -81,7 +79,7 @@ class AuthenticatedPrincipalTest(InterfaceBaseTest):
         return principal.AuthenticatedPrincipal
 
     def makeTestObject(self):
-        usr = user.User(u'login', u'password', u'Title')
+        usr = user.User('login', 'password', 'Title')
         return principal.AuthenticatedPrincipal(usr)
 
 
@@ -97,7 +95,7 @@ class FoundPrincipalTest(InterfaceBaseTest):
         return principal.FoundPrincipal
 
     def makeTestObject(self):
-        usr = user.User(u'login', u'password', u'Title')
+        usr = user.User('login', 'password', 'Title')
         return principal.FoundPrincipal(usr)
 
 
@@ -128,7 +126,7 @@ class SessionCredentialsTest(InterfaceBaseTest):
         return credential.SessionCredentials
 
     def getTestPos(self):
-        return (u'login', u'password')
+        return ('login', 'password')
 
 
 class SessionCredentialsPluginTest(InterfaceBaseTest):
@@ -150,36 +148,28 @@ class SessionCredentialsPluginFormTest(InterfaceBaseTest):
 
 
 def test_suite():
-    checker = RENormalizing((
-        (re.compile("u'(.*?)'"), "'\\1'"),
-        (re.compile("z3c.authenticator.group.GroupCycle"), "GroupCycle"),
-    ))
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
         doctest.DocFileSuite(
             'README.txt',
-            checker=checker,
             setUp=testing.placefulSetUp,
             tearDown=testing.placefulTearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS),
         doctest.DocFileSuite(
             'group.txt',
-            checker=checker,
             setUp=testing.placefulSetUp,
             tearDown=testing.placefulTearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS),
         doctest.DocTestSuite(
             'z3c.authenticator.credential',
-            checker=checker,
             setUp=testing.placefulSetUp,
             tearDown=testing.placefulTearDown),
         doctest.DocTestSuite(
             'z3c.authenticator.user',
-            checker=checker,
             setUp=testing.placefulSetUp,
             tearDown=testing.placefulTearDown),
         doctest.DocTestSuite(
             'z3c.authenticator.event',
-            checker=checker,
             setUp=testing.placefulSetUp,
             tearDown=testing.placefulTearDown),
         doctest.DocTestSuite(
@@ -188,17 +178,16 @@ def test_suite():
             tearDown=testing.placefulTearDown),
         doctest.DocFileSuite(
             'vocabulary.txt',
-            checker=checker,
             setUp=zope.component.testing.setUp,
             tearDown=zope.component.testing.tearDown),
-        unittest.makeSuite(AuthenticatorTest),
-        unittest.makeSuite(UserContainerTest),
-        unittest.makeSuite(UserTest),
-        unittest.makeSuite(AuthenticatedPrincipalTest),
-        unittest.makeSuite(FoundPrincipalTest),
-        unittest.makeSuite(GroupContainerTest),
-        unittest.makeSuite(GroupTest),
-        unittest.makeSuite(SessionCredentialsTest),
-        unittest.makeSuite(SessionCredentialsPluginTest),
-        unittest.makeSuite(SessionCredentialsPluginFormTest),
+        loadTestsFromTestCase(AuthenticatorTest),
+        loadTestsFromTestCase(UserContainerTest),
+        loadTestsFromTestCase(UserTest),
+        loadTestsFromTestCase(AuthenticatedPrincipalTest),
+        loadTestsFromTestCase(FoundPrincipalTest),
+        loadTestsFromTestCase(GroupContainerTest),
+        loadTestsFromTestCase(GroupTest),
+        loadTestsFromTestCase(SessionCredentialsTest),
+        loadTestsFromTestCase(SessionCredentialsPluginTest),
+        loadTestsFromTestCase(SessionCredentialsPluginFormTest),
     ))

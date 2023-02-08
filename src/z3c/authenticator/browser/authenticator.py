@@ -38,8 +38,8 @@ class IAddName(zope.interface.Interface):
     """Object name."""
 
     __name__ = zope.schema.TextLine(
-        title=u'Object Name',
-        description=u'Object Name',
+        title='Object Name',
+        description='Object Name',
         required=True)
 
 
@@ -54,7 +54,7 @@ class AuthenticatorAddForm(form.AddForm):
 
     def createAndAdd(self, data):
         obj = Authenticator()
-        self.contentName = data.get('__name__', u'')
+        self.contentName = data.get('__name__', '')
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
         self.context[self.contentName] = obj
 
