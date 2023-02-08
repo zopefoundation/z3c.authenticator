@@ -14,16 +14,17 @@
 """Vocabularies
 """
 
-import zope.interface
 import zope.component
-import zope.i18n
 import zope.dublincore.interfaces
+import zope.i18n
+import zope.interface
 from zope.schema import vocabulary
 from zope.schema.interfaces import IVocabularyFactory
 
 from z3c.authenticator import interfaces
-from z3c.authenticator.interfaces import _
 from z3c.authenticator._compat import base64_encode
+from z3c.authenticator.interfaces import _
+
 
 UTILITY_TITLE = _(
     'z3c.authenticator.vocabulary-utility-plugin-title',

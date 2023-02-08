@@ -13,18 +13,19 @@
 ##############################################################################
 """Group Forms
 """
-import zope.interface
 import zope.event
+import zope.interface
 import zope.lifecycleevent
-from zope.traversing.browser import absoluteURL
 import zope.schema
-
-from z3c.authenticator import interfaces
-from z3c.authenticator import group
-from z3c.authenticator.widget import getSourceInputWidget
-from z3c.form import field
 from z3c.form import button
+from z3c.form import field
 from z3c.formui import form
+from zope.traversing.browser import absoluteURL
+
+from z3c.authenticator import group
+from z3c.authenticator import interfaces
+from z3c.authenticator.widget import getSourceInputWidget
+
 
 # Make z3c.configurator optional.
 try:

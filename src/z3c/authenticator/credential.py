@@ -14,16 +14,16 @@
 """Credential Plugins
 """
 
-import transaction
-import persistent
-
 import six
+
+import persistent
+import transaction
 import zope.interface
 from zope.component import hooks
+from zope.container import contained
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.session.interfaces import ISession
 from zope.traversing.browser.absoluteurl import absoluteURL
-from zope.container import contained
 
 from z3c.authenticator import interfaces
 from z3c.authenticator._compat import base64_decode

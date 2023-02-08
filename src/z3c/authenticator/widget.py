@@ -13,29 +13,31 @@
 ##############################################################################
 """Principal Source Widget Implementation
 """
+import six
+
 import zope.component
-import zope.interface
 import zope.i18n
+import zope.interface
 import zope.schema
 import zope.schema.interfaces
-from zope.traversing import api
+from z3c.form import button
+from z3c.form import converter
+from z3c.form import field
+from z3c.form.browser import text
+from z3c.form.browser import widget
+from z3c.form.i18n import MessageFactory as _
+from z3c.form.interfaces import IFieldWidget
+from z3c.form.interfaces import IFormLayer
+from z3c.form.interfaces import ISequenceWidget
+from z3c.form.interfaces import ITerms
+from z3c.form.widget import FieldWidget
+from z3c.form.widget import SequenceWidget
+from z3c.formui import form
+from z3c.template.template import getLayoutTemplate
 from zope.authentication.interfaces import IAuthentication
 from zope.authentication.interfaces import IPrincipalSource
+from zope.traversing import api
 
-import six
-from z3c.formui import form
-from z3c.form import field
-from z3c.form import button
-from z3c.form.i18n import MessageFactory as _
-from z3c.form.widget import SequenceWidget, FieldWidget
-from z3c.form.browser import widget
-from z3c.form.browser import text
-from z3c.form import converter
-from z3c.form.interfaces import IFieldWidget
-from z3c.form.interfaces import ISequenceWidget
-from z3c.form.interfaces import IFormLayer
-from z3c.form.interfaces import ITerms
-from z3c.template.template import getLayoutTemplate
 from z3c.authenticator import interfaces
 
 

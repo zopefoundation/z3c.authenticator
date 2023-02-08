@@ -13,10 +13,10 @@
 ##############################################################################
 """Principal
 """
-import zope.interface
 import zope.component
-from zope.security.interfaces import IPrincipal
+import zope.interface
 from zope.authentication.interfaces import IAuthentication
+from zope.security.interfaces import IPrincipal
 
 from z3c.authenticator import interfaces
 

@@ -7,20 +7,19 @@
 """Login Form
 """
 import zope.component
-from zope.component import hooks
+from z3c.form import button
+from z3c.form import field
+from z3c.form.interfaces import IWidgets
+from z3c.formui import form
+from z3c.template.template import getLayoutTemplate
+from z3c.template.template import getPageTemplate
 from zope.authentication.interfaces import IAuthentication
 from zope.authentication.interfaces import ILogout
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.component import hooks
 from zope.publisher.browser import BrowserPage
 from zope.session.interfaces import ISession
 from zope.traversing.browser import absoluteURL
-
-from z3c.form.interfaces import IWidgets
-from z3c.form import field
-from z3c.form import button
-from z3c.formui import form
-from z3c.template.template import getPageTemplate
-from z3c.template.template import getLayoutTemplate
 
 from z3c.authenticator import interfaces
 from z3c.authenticator.interfaces import _

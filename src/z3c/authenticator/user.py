@@ -13,21 +13,21 @@
 ##############################################################################
 """Users
 """
-from hashlib import md5
 import random
-import time
 import socket
-
+import time
+from hashlib import md5
 
 import persistent
-import zope.interface
 import zope.component
-from zope.container import contained
+import zope.interface
 from zope.container import btree
+from zope.container import contained
 from zope.container.interfaces import DuplicateIDError
 from zope.password.interfaces import IPasswordManager
 
 from z3c.authenticator import interfaces
+
 
 # get the IP address only once
 try:

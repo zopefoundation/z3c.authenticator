@@ -13,21 +13,20 @@
 ##############################################################################
 """Authentication
 """
-import zope.interface
 import zope.component
 import zope.event
-from zope.schema.fieldproperty import FieldProperty
-from zope.schema.interfaces import ISourceQueriables
-from zope.location.interfaces import ILocation
-
+import zope.interface
+from zope.authentication.interfaces import IAuthentication
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.authentication.interfaces import PrincipalLookupError
 from zope.component import queryNextUtility
 from zope.container import btree
-from zope.authentication.interfaces import IAuthentication
-from zope.authentication.interfaces import PrincipalLookupError
-from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.location.interfaces import ILocation
+from zope.schema.fieldproperty import FieldProperty
+from zope.schema.interfaces import ISourceQueriables
 
-from z3c.authenticator import interfaces
 from z3c.authenticator import event
+from z3c.authenticator import interfaces
 
 
 @zope.interface.implementer(IAuthentication,

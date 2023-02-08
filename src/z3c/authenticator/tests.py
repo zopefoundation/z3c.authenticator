@@ -15,9 +15,9 @@ import doctest
 import re
 import unittest
 
-import zope.site.testing
-import zope.password.testing
 import zope.component.testing
+import zope.password.testing
+import zope.site.testing
 from z3c.testing import BaseTestIContainer
 from z3c.testing import InterfaceBaseTest
 from zope.testing.renormalizing import RENormalizing

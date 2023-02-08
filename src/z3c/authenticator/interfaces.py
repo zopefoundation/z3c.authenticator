@@ -13,18 +13,18 @@
 ##############################################################################
 """Interfaces
 """
+import zope.deprecation
 import zope.interface
 import zope.schema
-import zope.deprecation
 import zope.security.interfaces
-
-from zope.container.interfaces import IContainer
-from zope.container.constraints import contains
-from zope.container.constraints import containers
 from zope.authentication.interfaces import ILogout
 from zope.authentication.principal import PrincipalSource
-
+from zope.container.constraints import containers
+from zope.container.constraints import contains
+from zope.container.interfaces import IContainer
 from zope.i18nmessageid import MessageFactory
+
+
 _ = MessageFactory('z3c')
 
 

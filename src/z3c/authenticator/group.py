@@ -15,24 +15,21 @@
 """
 import BTrees.OOBTree
 import persistent
-
-import zope.interface
 import zope.component
 import zope.event
-
-from zope.security.interfaces import IGroup
-from zope.security.interfaces import IGroupAwarePrincipal
-
-from zope.container import btree
-from zope.container import contained
-from zope.authentication.interfaces import IAuthentication
+import zope.interface
 from zope.authentication.interfaces import IAuthenticatedGroup
+from zope.authentication.interfaces import IAuthentication
 from zope.authentication.interfaces import IEveryoneGroup
 from zope.authentication.interfaces import IUnauthenticatedGroup
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.container import btree
+from zope.container import contained
+from zope.security.interfaces import IGroup
+from zope.security.interfaces import IGroupAwarePrincipal
 
-from z3c.authenticator import interfaces
 from z3c.authenticator import event
+from z3c.authenticator import interfaces
 
 
 @zope.interface.implementer(interfaces.IGroup)

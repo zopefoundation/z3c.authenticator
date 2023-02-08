@@ -16,6 +16,7 @@
 import base64
 import sys
 
+
 if sys.version_info[0] < 3:  # pragma: PY2
 
     base64_decode = base64.decodestring
