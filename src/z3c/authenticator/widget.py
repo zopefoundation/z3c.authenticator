@@ -14,28 +14,28 @@
 """Principal Source Widget Implementation
 """
 import zope.component
-import zope.interface
 import zope.i18n
+import zope.interface
 import zope.schema
 import zope.schema.interfaces
-from zope.traversing import api
+from z3c.form import button
+from z3c.form import converter
+from z3c.form import field
+from z3c.form.browser import text
+from z3c.form.browser import widget
+from z3c.form.i18n import MessageFactory as _
+from z3c.form.interfaces import IFieldWidget
+from z3c.form.interfaces import IFormLayer
+from z3c.form.interfaces import ISequenceWidget
+from z3c.form.interfaces import ITerms
+from z3c.form.widget import FieldWidget
+from z3c.form.widget import SequenceWidget
+from z3c.formui import form
+from z3c.template.template import getLayoutTemplate
 from zope.authentication.interfaces import IAuthentication
 from zope.authentication.interfaces import IPrincipalSource
+from zope.traversing import api
 
-import six
-from z3c.formui import form
-from z3c.form import field
-from z3c.form import button
-from z3c.form.i18n import MessageFactory as _
-from z3c.form.widget import SequenceWidget, FieldWidget
-from z3c.form.browser import widget
-from z3c.form.browser import text
-from z3c.form import converter
-from z3c.form.interfaces import IFieldWidget
-from z3c.form.interfaces import ISequenceWidget
-from z3c.form.interfaces import IFormLayer
-from z3c.form.interfaces import ITerms
-from z3c.template.template import getLayoutTemplate
 from z3c.authenticator import interfaces
 
 
@@ -107,7 +107,7 @@ class SourceSearchDataConverter(converter.CollectionSequenceDataConverter):
                                for token in value])
 
 
-class PrincipalTerm(object):
+class PrincipalTerm:
 
     def __init__(self, token, title):
         self.token = token
@@ -121,7 +121,7 @@ class PrincipalTerm(object):
     zope.interface.Interface,
     zope.schema.interfaces.IList,
     IPrincipalSourceWidget)
-class PrincipalTerms(object):
+class PrincipalTerms:
 
     def __init__(self, context, request, form, field, widget):
         self.context = context
@@ -179,7 +179,7 @@ class SearchFormResultsField(zope.schema.List):
 class SourceResultWidget(widget.HTMLInputWidget, SequenceWidget):
     """Knows how to catch the right terms."""
 
-    klass = u'search-form-widget checkbox-widget'
+    klass = 'search-form-widget checkbox-widget'
     searchResults = []
     value = []
     items = []
@@ -192,7 +192,7 @@ class SourceResultWidget(widget.HTMLInputWidget, SequenceWidget):
         checked = self.isChecked(term)
         label = zope.i18n.translate(term.title, context=self.request,
                                     default=term.title)
-        id = '%s-%s' % (self.id, term.token)
+        id = '{}-{}'.format(self.id, term.token)
         item = {'id': id, 'name': self.name + ':list', 'value': term.token,
                 'label': label, 'checked': checked}
         if item not in self.items:
@@ -204,7 +204,7 @@ class SourceResultWidget(widget.HTMLInputWidget, SequenceWidget):
 
     def extract(self, default=[]):
         """See z3c.form.interfaces.IWidget."""
-        tokens = super(SourceResultWidget, self).extract(default)
+        tokens = super().extract(default)
         for value in self.searchResults:
             token = self.terms.getTerm(value).token
             if token not in tokens:
@@ -213,7 +213,7 @@ class SourceResultWidget(widget.HTMLInputWidget, SequenceWidget):
 
     def update(self):
         """See z3c.form.interfaces.IWidget."""
-        super(SourceResultWidget, self).update()
+        super().update()
         widget.addFieldClass(self)
 
         # update search forms
@@ -233,13 +233,13 @@ def getSourceResultWidget(field, request):
 class SourceSearchWidget(text.TextWidget):
     """Source search widget."""
 
-    style = u'border-color: gray; width:100px;'
+    style = 'border-color: gray; width:100px;'
 
     @property
     def label(self):
         txt = _('search in: ')
         prefix = zope.i18n.translate(txt, context=self.request, default=txt)
-        return '%s%s' % (prefix, self.form.title)
+        return '{}{}'.format(prefix, self.form.title)
 
     @label.setter
     def label(self, value):
@@ -358,7 +358,7 @@ class PrincipalRegistrySearchForm(SearchFormMixin):
 class PrincipalSourceWidget(widget.HTMLInputWidget, SequenceWidget):
     """Select widget implementation."""
 
-    klass = u'principal-source-widget checkbox-widget'
+    klass = 'principal-source-widget checkbox-widget'
     value = []
     items = []
 
@@ -375,7 +375,7 @@ class PrincipalSourceWidget(widget.HTMLInputWidget, SequenceWidget):
         checked = self.isChecked(term)
         label = zope.i18n.translate(term.title, context=self.request,
                                     default=term.title)
-        id = '%s-%s' % (self.id, term.token)
+        id = '{}-{}'.format(self.id, term.token)
         item = {'id': id, 'name': self.name + ':list', 'value': term.token,
                 'label': label, 'checked': checked}
         if item not in self.items:
@@ -383,7 +383,7 @@ class PrincipalSourceWidget(widget.HTMLInputWidget, SequenceWidget):
 
     def update(self):
         """See z3c.form.interfaces.IWidget."""
-        super(PrincipalSourceWidget, self).update()
+        super().update()
         widget.addFieldClass(self)
 
         # update serach forms
@@ -404,7 +404,7 @@ class PrincipalSourceWidget(widget.HTMLInputWidget, SequenceWidget):
         else:
             queriables = [
                 (self.name + '.' +
-                 six.text_type(i).encode('base64').strip().replace('=', '_'),
+                 str(i).encode('base64').strip().replace('=', '_'),
                  s)
                 for (i, s) in queriables.getQueriables()]
 

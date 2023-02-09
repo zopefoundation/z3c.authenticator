@@ -20,7 +20,7 @@ from z3c.authenticator import interfaces
 
 # principal events
 @zope.interface.implementer(interfaces.IAuthenticatedPrincipalCreated)
-class AuthenticatedPrincipalCreated(object):
+class AuthenticatedPrincipalCreated:
     """
     >>> from zope.interface.verify import verifyObject
     >>> event = AuthenticatedPrincipalCreated('authentication', 'principal',
@@ -36,7 +36,7 @@ class AuthenticatedPrincipalCreated(object):
 
 
 @zope.interface.implementer(interfaces.IUnauthenticatedPrincipalCreated)
-class UnauthenticatedPrincipalCreated(object):
+class UnauthenticatedPrincipalCreated:
     """
     >>> from zope.interface.verify import verifyObject
     >>> event = UnauthenticatedPrincipalCreated('authentication', 'principal')
@@ -50,7 +50,7 @@ class UnauthenticatedPrincipalCreated(object):
 
 
 @zope.interface.implementer(interfaces.IFoundPrincipalCreated)
-class FoundPrincipalCreated(object):
+class FoundPrincipalCreated:
     """
     >>> from zope.interface.verify import verifyObject
     >>> event = FoundPrincipalCreated('authentication', 'principal')
@@ -65,7 +65,7 @@ class FoundPrincipalCreated(object):
 
 # group events
 @zope.interface.implementer(interfaces.IGroupAdded)
-class GroupAdded(object):
+class GroupAdded:
     """Group added event
 
     >>> from zope.interface.verify import verifyObject
@@ -81,14 +81,14 @@ class GroupAdded(object):
         return "<GroupAdded %r>" % self.group.__name__
 
 
-class AbstractUsersChanged(object):
+class AbstractUsersChanged:
 
     def __init__(self, principal_ids, group_id):
         self.principal_ids = principal_ids
         self.group_id = group_id
 
     def __repr__(self):
-        return "<%s %r %r>" % (
+        return "<{} {!r} {!r}>".format(
             self.__class__.__name__, sorted(self.principal_ids), self.group_id)
 
 

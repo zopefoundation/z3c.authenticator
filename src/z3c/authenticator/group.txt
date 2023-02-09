@@ -14,7 +14,7 @@ Like other users, groups are created when they are needed.
 
   >>> from z3c.authenticator import interfaces
   >>> from z3c.authenticator.group import Group
-  >>> group1 = Group(u'groups')
+  >>> group1 = Group('groups')
   >>> group1
   <Group None>
 
@@ -22,10 +22,10 @@ Like other users, groups are created when they are needed.
   True
 
   >>> group1.title
-  u'groups'
+  'groups'
 
   >>> group1.description
-  u''
+  ''
 
   >>> group1.principals
   ()
@@ -46,21 +46,21 @@ IFoundGroup to this IGroup objects.
 We can add your previous created group to the group container using the 
 addGroup method which returns the group id and group:
 
-  >>> gid, g1 = groups.addGroup(u'g1', group1)
+  >>> gid, g1 = groups.addGroup('g1', group1)
   >>> gid
-  u'groups.g1'
+  'groups.g1'
 
   >>> interfaces.IGroup.providedBy(g1)
   True
 
   >>> g1.__name__
-  u'groups.g1'
+  'groups.g1'
 
 Note that when group is added, a GroupAdded event is generated:
 
   >>> from zope.component.eventtesting import getEvents
   >>> getEvents(interfaces.IGroupAdded)
-  [<GroupAdded u'groups.g1'>]
+  [<GroupAdded 'groups.g1'>]
 
 Groups are defined with respect to an authentication service. Groups must be 
 accessible via an authentication service and can contain principals accessible
@@ -115,10 +115,10 @@ and configure and add the credential plugin to the Authenticator:
 We also need a principal and a IAuthenticationPlugin:
 
   >>> from z3c.authenticator.user import User
-  >>> p1 = User(u'p1', u'password', u'Principal 1')
-  >>> p2 = User(u'p2', u'password', u'Principal 2')
-  >>> p3 = User(u'p3', u'password', u'Principal 3')
-  >>> p4 = User(u'p4', u'password', u'Principal 4')
+  >>> p1 = User('p1', 'password', 'Principal 1')
+  >>> p2 = User('p2', 'password', 'Principal 2')
+  >>> p3 = User('p3', 'password', 'Principal 3')
+  >>> p4 = User('p4', 'password', 'Principal 4')
 
   >>> from z3c.authenticator.user import UserContainer
   >>> users = UserContainer()
@@ -176,12 +176,12 @@ And we need the ``setGroupsForPrincipal`` subscriber:
 Adding users fires an event.
 
   >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
-  <PrincipalsAddedToGroup [..., ...] u'groups.g1'>
+  <PrincipalsAddedToGroup [..., ...] 'groups.g1'>
 
 We can now look up groups for the users:
 
   >>> groups.getGroupsForPrincipal(p1.__name__)
-  (u'groups.g1',)
+  ('groups.g1',)
 
 Note that the group id is a concatenation of the group-folder prefix
 and the name of the group object within the folder.
@@ -217,14 +217,14 @@ available for the principal. Let's use a different group name:
   >>> groups['groups.G1'] = g1
 
   >>> groups.getGroupsForPrincipal(p1.__name__)
-  (u'groups.G1',)
+  ('groups.G1',)
 
 Here we see that the new name is reflected in the group information.
 
 An event is fired, as usual.
 
   >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
-  <PrincipalsAddedToGroup [..., ...] u'groups.G1'>
+  <PrincipalsAddedToGroup [..., ...] 'groups.G1'>
 
 In terms of member events (members added and removed from groups), we have
 now seen that events are fired when a group object is added and when it is 
@@ -247,10 +247,10 @@ quickly see some more examples.
   True
 
   >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
-  <PrincipalsAddedToGroup [..., ...] u'groups.G1'>
+  <PrincipalsAddedToGroup [..., ...] 'groups.G1'>
 
   >>> getEvents(interfaces.IPrincipalsRemovedFromGroup)[-1]
-  <PrincipalsRemovedFromGroup [...] u'groups.G1'>
+  <PrincipalsRemovedFromGroup [...] 'groups.G1'>
 
   >>> g1.principals = (p1.__name__, p2.__name__)
   >>> g1.principals
@@ -263,13 +263,13 @@ quickly see some more examples.
   True
 
   >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
-  <PrincipalsAddedToGroup [...] u'groups.G1'>
+  <PrincipalsAddedToGroup [...] 'groups.G1'>
 
   >>> getEvents(interfaces.IPrincipalsRemovedFromGroup)[-1]
-  <PrincipalsRemovedFromGroup [..., ...] u'groups.G1'>
+  <PrincipalsRemovedFromGroup [..., ...] 'groups.G1'>
 
   >>> groups.getGroupsForPrincipal(p2.__name__)
-  (u'groups.G1',)
+  ('groups.G1',)
 
 
 Groups in groups
@@ -300,11 +300,11 @@ Groups can contain groups:
   True
 
   >>> groups.getGroupsForPrincipal('groups.G1')
-  (u'groups.G2',)
+  ('groups.G2',)
 
   >>> old = getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
   >>> old
-  <PrincipalsAddedToGroup ['groups.G1'] u'groups.G2'>
+  <PrincipalsAddedToGroup ['groups.G1'] 'groups.G2'>
 
 Groups cannot contain cycles:
 
@@ -323,7 +323,7 @@ Groups cannot contain cycles:
   >>> g1.principals = (p1.__name__, p2.__name__, 'groups.G2')
   Traceback (most recent call last):
   ...
-  GroupCycle: (...)
+  z3c.authenticator.group.GroupCycle: (...)
 
   >>> g1.principals
   (..., ...)
@@ -362,17 +362,17 @@ They need not be hierarchical:
 Group containers provide a very simple search interface.  They perform
 simple string searches on group titles and descriptions.
 
-  >>> list(groups.search({'search': 'grou'}))
-  [u'groups.G1', u'groups.G2',
-   u'groups.GA', u'groups.GB', u'groups.GC', u'groups.GD']
+  >>> list(groups.search({'search': 'gro'}))
+  ['groups.G1', 'groups.G2',
+   'groups.GA', 'groups.GB', 'groups.GC', 'groups.GD']
 
   >>> list(groups.search({'search': 'two'}))
-  [u'groups.G2']
+  ['groups.G2']
 
 They also support batching:
 
-  >>> list(groups.search({'search': 'grou'}, 2, 3))
-  [u'groups.GA', u'groups.GB', u'groups.GC']
+  >>> list(groups.search({'search': 'gro'}, 2, 3))
+  ['groups.GA', 'groups.GB', 'groups.GC']
 
 
 If you don't supply a search key, no results will be returned:
@@ -391,16 +391,16 @@ users in those groups:
   >>> auth1 = authenticator.getPrincipal(p1.__name__)
 
   >>> auth1.groups
-  [u'groups.G1', u'groups.GA']
+  ['groups.G1', 'groups.GA']
 
 Of course, this applies to groups too:
 
   >>> g1 = authenticator.getPrincipal('groups.G1')
   >>> g1.id
-  u'groups.G1'
+  'groups.G1'
 
   >>> g1.groups
-  [u'groups.G2']
+  ['groups.G2']
 
 A FoundGroup provides IFoundGroup which is inherited from 
 IFoundPrincipal and IGroup:
@@ -456,7 +456,7 @@ Then the group will be added to the principal:
 
   >>> specialGroups(event)
   >>> found.groups
-  [u'groups.all']
+  ['groups.all']
 
 Similarly for the authenticated group:
 
@@ -476,7 +476,7 @@ Then the group will be added to the principal:
   >>> specialGroups(event)
   >>> found.groups.sort()
   >>> found.groups
-  [u'groups.all', u'groups.authenticated']
+  ['groups.all', 'groups.authenticated']
 
 It is important that we do not apply a group twice since the
 UnauthenticatedPrincipal is a single instance in the securitypolicy. This issue
@@ -484,7 +484,7 @@ is fixed in version 0.6.1 and 0.7.1
 
   >>> specialGroups(event)
   >>> found.groups
-  [u'groups.all', u'groups.authenticated']
+  ['groups.all', 'groups.authenticated']
 
 
 allGroups
@@ -493,15 +493,15 @@ allGroups
 The `allGroups` attribute is a readonly iterable of the full closure of the
 groups in the `groups` attribute. Let's define a new principal first:
 
-  >>> p = User(u'p', u'password', u'Principal')
+  >>> p = User('p', 'password', 'Principal')
   >>> token, p = users.add(p)
 
 And the groups:
 
   >>> ga = Group("Administrators")
   >>> gr = Group("Reviewers")
-  >>> gid, ga = groups.addGroup(u'Administrators', ga)
-  >>> gid, gr = groups.addGroup(u'Reviewers', gr)
+  >>> gid, ga = groups.addGroup('Administrators', ga)
+  >>> gid, gr = groups.addGroup('Reviewers', gr)
 
 If the principal is a direct member of the 'Administrators' group, 
 
@@ -510,7 +510,7 @@ If the principal is a direct member of the 'Administrators' group,
 then getGroupsForPrincipal would be ['Administrators']
 
   >>> groups.getGroupsForPrincipal(p.__name__)
-  (u'groups.Administrators',)
+  ('groups.Administrators',)
   
 and if the 'Administrators' group is a member of the 'Reviewers' group, 
 
@@ -519,7 +519,7 @@ and if the 'Administrators' group is a member of the 'Reviewers' group,
 then groups would be ['Administrators'] too.
 
   >>> groups.getGroupsForPrincipal(p.__name__)
-  (u'groups.Administrators',)
+  ('groups.Administrators',)
 
 now let's use the setGroupsForPrincipal subscriber which knows how to apply
 the groups to the found principal:
@@ -531,9 +531,9 @@ the groups to the found principal:
 As you can see and pFound.groups is ['Administrators'].
 
   >>> sorted(pFound.groups)
-  [u'groups.Administrators']
+  ['groups.Administrators']
 
 And pFound.allGroups is ['Administrators', 'Reviewers'].
 
   >>> sorted(pFound.allGroups)
-  [u'groups.Administrators', u'groups.Reviewers']
+  ['groups.Administrators', 'groups.Reviewers']

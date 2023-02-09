@@ -127,21 +127,21 @@ First we create a principal:
 
   >>> from z3c.authenticator import interfaces
   >>> from z3c.authenticator.user import User
-  >>> login = u'bob'
-  >>> password = u'secret'
-  >>> title = u'Bob'
+  >>> login = 'bob'
+  >>> password = 'secret'
+  >>> title = 'Bob'
   >>> p = User(login, password, title)
 
 Such a principal provides the following attributes be default
 
   >>> p.login
-  u'bob'
+  'bob'
 
   >>> p.password.decode('utf-8')
-  u'secret'
+  'secret'
 
   >>> p.title
-  u'Bob'
+  'Bob'
 
 and IUser:
 
@@ -187,13 +187,13 @@ The returned user is still our previous added IUser
   32
 
   >>> user.login
-  u'bob'
+  'bob'
 
   >>> user.password.decode('utf-8')
-  u'secret'
+  'secret'
 
   >>> user.title
-  u'Bob'
+  'Bob'
 
 Let's register the UserContainer as a named IAuthenticatorPlugin utility:
 
@@ -303,7 +303,7 @@ principal from the UserContainer and changing the login on the IUser
 implementation:
 
   >>> internal = authPlugin[bob.id]
-  >>> internal.login = u'bob2'
+  >>> internal.login = 'bob2'
 
 Now we should be able to login with the new login:
 
@@ -313,7 +313,7 @@ Now we should be able to login with the new login:
   <AuthenticatedPrincipal ...>
 
   >>> bob2.title
-  u'Bob'
+  'Bob'
 
 But not with the old one:
 
@@ -357,13 +357,13 @@ And the principal attribute in the event provides the authenticated principal:
 The principal has the id, title, and description.
 
   >>> event.principal.title
-  u'Bob'
+  'Bob'
 
   >>> event.principal.id == uid
   True
 
   >>> event.principal.description
-  u''
+  ''
 
 We provide subscribers to these events that can be used for doing custom
 processing. Note, the principal attibute provides an IAuthenticatedPrincipal:
@@ -379,7 +379,7 @@ Now, if we authenticate a principal, its description is set:
 
   >>> principal = auth.authenticate(request)
   >>> principal.description
-  u'Description for: ...'
+  'Description for: ...'
 
 
 Customization
@@ -391,8 +391,8 @@ First we have to define the interfaces declaring the email attribute:
 
   >>> class IMyEmail(zope.interface.Interface):
   ...     email = zope.schema.TextLine(
-  ...         title=u'EMail',
-  ...         description=u'The EMail')
+  ...         title='EMail',
+  ...         description='The EMail')
 
   >>> class IMyUser(IMyEmail, interfaces.IUser):
   ...     """Custom IUser interface."""
@@ -446,7 +446,7 @@ adapters:
 Now we can use them without any other event subscribers or other registration
 in our principal container. Let's add a principal to this container:
 
-  >>> p = MyUser(u'max', u'password', u'Max', u'', u'max@foobar.com')
+  >>> p = MyUser('max', 'password', 'Max', '', 'max@foobar.com')
   >>> token, max = authPlugin.add(p)
   >>> len(token)
   32
@@ -455,13 +455,13 @@ in our principal container. Let's add a principal to this container:
   True
 
   >>> max.password.decode('utf-8')
-  u'password'
+  'password'
 
   >>> max.title
-  u'Max'
+  'Max'
 
   >>> max.email
-  u'max@foobar.com'
+  'max@foobar.com'
 
 Let's try to authenticate...
 
@@ -480,7 +480,7 @@ and check your authenticated principal:
   True
 
   >>> authenticated.email
-  u'max@foobar.com'
+  'max@foobar.com'
 
 Check getUserByLogin:
 
@@ -489,7 +489,7 @@ Check getUserByLogin:
   'MyUser'
 
   >>> authPlugin.getUserByLogin('max').login
-  u'max'
+  'max'
 
   >>> authPlugin.getUserByLogin('max').__name__ == token
   True
@@ -500,8 +500,8 @@ Usually in z.a.authentication the ``token`` == login and we want to keep it
 that way, unless you want to iterate through all permissions and whatever.
 Note, the __name__ and the id in the container must be the *SAME* object.
 
-  >>> login = u'migrateduser'
-  >>> p = User(login, u'password', u'John')
+  >>> login = 'migrateduser'
+  >>> p = User(login, 'password', 'John')
 
 Preset the ``token``
 
@@ -514,7 +514,7 @@ the preset ``token`` in __name__.
 
 Here we are, the user is set with the non-generated token.
 
-  >>> u'migrateduser' in authPlugin.keys()
+  >>> 'migrateduser' in authPlugin.keys()
   True
 
   >>> authPlugin['migrateduser']
@@ -527,13 +527,9 @@ Here we are, the user is set with the non-generated token.
 Edge cases
 ----------
 
-We can have Users with unicode logins, as we allow this with TextLine in IUser.
+We can have Users with text logins, as we allow this with TextLine in IUser.
 
-  >>> try:
-  ...     unichr = unichr
-  ... except NameError:
-  ...     unichr = chr # PY3
-  >>> p = User(u'bob'+unichr(233), 'password', 'title')
+  >>> p = User('bob'+chr(233), 'password', 'title')
 
 Adding it should not fail:
 

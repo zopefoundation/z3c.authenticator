@@ -13,20 +13,18 @@
 ##############################################################################
 """Credential Plugins
 """
+import base64
 
-import transaction
 import persistent
-
-import six
+import transaction
 import zope.interface
 from zope.component import hooks
+from zope.container import contained
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.session.interfaces import ISession
 from zope.traversing.browser.absoluteurl import absoluteURL
-from zope.container import contained
 
 from z3c.authenticator import interfaces
-from z3c.authenticator._compat import base64_decode
 
 
 @zope.interface.implementer(interfaces.IHTTPBasicAuthCredentialsPlugin)
@@ -44,7 +42,7 @@ class HTTPBasicAuthCredentialsPlugin(persistent.Persistent,
 
           >>> from zope.publisher.browser import TestRequest
           >>> request = TestRequest(
-          ...     environ={'HTTP_AUTHORIZATION': u'Basic bWdyOm1ncnB3'})
+          ...     environ={'HTTP_AUTHORIZATION': 'Basic bWdyOm1ncnB3'})
 
         Now create the plugin and get the credentials.
 
@@ -75,11 +73,11 @@ class HTTPBasicAuthCredentialsPlugin(persistent.Persistent,
             return None
 
         if request._auth:
-            if request._auth.lower().startswith(u'basic '):
+            if request._auth.lower().startswith('basic '):
                 credentials = request._auth.split()[-1]
-                if isinstance(credentials, six.text_type):
+                if isinstance(credentials, str):
                     credentials = credentials.encode('utf-8')
-                login, password = base64_decode(credentials).split(b':')
+                login, password = base64.decodebytes(credentials).split(b':')
                 return {'login': login.decode('utf-8'),
                         'password': password.decode('utf-8')}
         return None
@@ -136,7 +134,7 @@ class HTTPBasicAuthCredentialsPlugin(persistent.Persistent,
 
 
 @zope.interface.implementer(interfaces.ISessionCredentials)
-class SessionCredentials(object):
+class SessionCredentials:
     """Credentials class for use with sessions.
 
     A session credential is created with a login and a password:
@@ -381,8 +379,8 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
           ...     'QUERY_STRING': 'q=value'
           ...     }
           >>> request = TestRequest(environ=env)
-          >>> request._traversed_names = [u'foo', u'bar']
-          >>> request._traversal_stack = [u'page 1.html', u'folder']
+          >>> request._traversed_names = ['foo', 'bar']
+          >>> request._traversal_stack = ['page 1.html', 'folder']
           >>> request['REQUEST_URI']
           '/foo/bar/folder/page%201.html?q=value'
 
@@ -401,7 +399,7 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
           >>> session = ISession(request, None)
           >>> sessionData = session['z3c.authenticator.credential.session']
           >>> sessionData['camefrom']
-          u'/foo/bar/folder/page%201.html?q=value'
+          '/foo/bar/folder/page%201.html?q=value'
 
         If the given challenge argument doesn't provide IHTTPRequest the
         result will always be False:
@@ -425,7 +423,7 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
         camefrom = '/'.join([request.getURL(path_only=True)] + stack)
         if query:
             camefrom = camefrom + '?' + query
-        url = '%s/@@%s' % (absoluteURL(site, request), self.loginpagename)
+        url = '{}/@@{}'.format(absoluteURL(site, request), self.loginpagename)
         # only redirect to the login form
         request.response.redirect(url)
         # and store the camefrom url into a session variable, then this url

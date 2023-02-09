@@ -16,18 +16,17 @@
 import zope.component
 import zope.interface
 import zope.traversing
+from zope.password.interfaces import IPasswordManager
+from zope.password.password import PlainTextPasswordManager
 from zope.publisher.interfaces import IRequest
-
+from zope.session.http import CookieClientIdManager
 from zope.session.interfaces import IClientId
 from zope.session.interfaces import IClientIdManager
 from zope.session.interfaces import ISession
 from zope.session.interfaces import ISessionDataContainer
-from zope.session.session import Session
 from zope.session.session import RAMSessionDataContainer
-from zope.session.http import CookieClientIdManager
+from zope.session.session import Session
 
-from zope.password.interfaces import IPasswordManager
-from zope.password.password import PlainTextPasswordManager
 
 ###############################################################################
 #
@@ -42,7 +41,7 @@ def setUpPasswordManager():
 
 
 @zope.interface.implementer(IClientId)
-class TestClientId(object):
+class TestClientId:
     def __new__(cls, request):
         return 'dummyclientidfortesting'
 

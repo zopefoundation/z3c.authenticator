@@ -13,21 +13,21 @@
 ##############################################################################
 """Users
 """
-from hashlib import md5
 import random
-import time
 import socket
-
+import time
+from hashlib import md5
 
 import persistent
-import zope.interface
 import zope.component
-from zope.container import contained
+import zope.interface
 from zope.container import btree
+from zope.container import contained
 from zope.container.interfaces import DuplicateIDError
 from zope.password.interfaces import IPasswordManager
 
 from z3c.authenticator import interfaces
+
 
 # get the IP address only once
 try:
@@ -40,7 +40,7 @@ def generateUserIDToken(id):
     """Generates a unique user id token."""
     t = int(time.time() * 1000)
     r = int(random.random() * 100000000000000000)
-    data = "%s %s %s %s" % (ip, t, r, id)
+    data = "{} {} {} {}".format(ip, t, r, id)
     return md5(data.encode('utf-8')).hexdigest()
 
 
@@ -48,7 +48,7 @@ def generateUserIDToken(id):
 class User(persistent.Persistent, contained.Contained):
     """User stored in IUserContainer."""
 
-    def __init__(self, login, password, title, description=u'',
+    def __init__(self, login, password, title, description='',
                  passwordManagerName="Plain Text"):
         self._login = login
         self._passwordManagerName = passwordManagerName
@@ -104,7 +104,7 @@ class UserContainer(btree.BTreeContainer):
     """
 
     def __init__(self):
-        super(UserContainer, self).__init__()
+        super().__init__()
         self.__id_by_login = self._newContainerData()
 
     def notifyLoginChanged(self, oldLogin, principal):
@@ -202,7 +202,7 @@ class UserContainer(btree.BTreeContainer):
         if user.login in self.__id_by_login:
             raise DuplicateIDError('Login already taken!')
 
-        super(UserContainer, self).__setitem__(id, user)
+        super().__setitem__(id, user)
         self.__id_by_login[user.login] = id
 
     def add(self, user):
@@ -215,7 +215,7 @@ class UserContainer(btree.BTreeContainer):
     def __delitem__(self, id):
         """Remove principal information."""
         user = self[id]
-        super(UserContainer, self).__delitem__(id)
+        super().__delitem__(id)
         del self.__id_by_login[user.login]
 
     def authenticateCredentials(self, credentials):

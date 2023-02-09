@@ -31,9 +31,9 @@ others in a faux Authenticator.
     ...         self.name = name
     ...
     >>> utility_plugins = dict(
-    ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(4))
+    ...     (i, DemoPlugin('Plugin %d' % i)) for i in range(4))
     >>> contained_plugins = dict(
-    ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(1, 5))
+    ...     (i, DemoPlugin('Plugin %d' % i)) for i in range(1, 5))
     >>> sorted(utility_plugins.keys())
     [0, 1, 2, 3]
     >>> for p in utility_plugins.values():
@@ -45,8 +45,8 @@ others in a faux Authenticator.
     ... class DemoAuth(dict):
     ...     def __init__(self, *args, **kwargs):
     ...         super(DemoAuth, self).__init__(*args, **kwargs)
-    ...         self.authenticatorPlugins = (u'Plugin 3', u'Plugin X')
-    ...         self.credentialsPlugins = (u'Plugin 4', u'Plugin X')
+    ...         self.authenticatorPlugins = ('Plugin 3', 'Plugin X')
+    ...         self.credentialsPlugins = ('Plugin 4', 'Plugin X')
     ...
     >>> auth = DemoAuth((p.name, p) for p in contained_plugins.values())
     
@@ -73,8 +73,8 @@ widget that sorts values on the basis of localized collation order of the
 term titles.)
 
     >>> [term.value for term in vocab] # doctest: +NORMALIZE_WHITESPACE
-    [u'Plugin 0', u'Plugin 1', u'Plugin 2', u'Plugin 3', u'Plugin 4',
-     u'Plugin X']
+    ['Plugin 0', 'Plugin 1', 'Plugin 2', 'Plugin 3', 'Plugin 4',
+     'Plugin X']
 
 Similarly, we can use `in` to test for the presence of values in the
 vocabulary.
@@ -118,7 +118,7 @@ functionality.
     ...     zope.component.adapts(ISpecial)
     ...     def __init__(self, context):
     ...         pass
-    ...     title = u'Special Title'
+    ...     title = 'Special Title'
     ...
     >>> zope.component.provideAdapter(DemoDCAdapter)
 
@@ -133,12 +133,12 @@ expect.
     >>> from zope import i18n
     >>> import pprint
     >>> pprint.pprint([i18n.translate(term.title) for term in vocab])
-    [u'Plugin 0 (a utility)',
-     u'Special Title (in contents)',
-     u'Plugin 2 (in contents)',
-     u'Plugin 3 (in contents)',
-     u'Plugin 4 (in contents)',
-     u'Plugin X (not found; deselecting will remove)']
+    ['Plugin 0 (a utility)',
+     'Special Title (in contents)',
+     'Plugin 2 (in contents)',
+     'Plugin 3 (in contents)',
+     'Plugin 4 (in contents)',
+     'Plugin X (not found; deselecting will remove)']
 
 
 credentialsPlugins
@@ -152,9 +152,9 @@ For completeness, we'll do the same review of the credentialsPlugins.
     ...         self.name = name
     ...
     >>> utility_plugins = dict(
-    ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(4))
+    ...     (i, DemoPlugin('Plugin %d' % i)) for i in range(4))
     >>> contained_plugins = dict(
-    ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(1, 5))
+    ...     (i, DemoPlugin('Plugin %d' % i)) for i in range(1, 5))
     >>> for p in utility_plugins.values():
     ...     zope.component.provideUtility(p, name=p.name)
     ...
@@ -168,8 +168,8 @@ titles.) Similarly, we can use `in` to test for the presence of values in the
 vocabulary. The length reports the expected value.
 
     >>> [term.value for term in vocab] # doctest: +NORMALIZE_WHITESPACE
-    [u'Plugin 0', u'Plugin 1', u'Plugin 2', u'Plugin 3', u'Plugin 4',
-     u'Plugin X']
+    ['Plugin 0', 'Plugin 1', 'Plugin 2', 'Plugin 3', 'Plugin 4',
+     'Plugin X']
     >>> ['Plugin %s' % i in vocab for i in range(-1, 6)]
     [False, True, True, True, True, True, False]
     >>> 'Plugin X' in vocab
@@ -200,9 +200,9 @@ them to see what we expect.
     >>> zope.interface.directlyProvides(contained_plugins[1], ISpecial)
     >>> vocab = vocabulary.credentialsPlugins(auth)
     >>> pprint.pprint([i18n.translate(term.title) for term in vocab])
-    [u'Plugin 0 (a utility)',
-     u'Special Title (in contents)',
-     u'Plugin 2 (in contents)',
-     u'Plugin 3 (in contents)',
-     u'Plugin 4 (in contents)',
-     u'Plugin X (not found; deselecting will remove)']
+    ['Plugin 0 (a utility)',
+     'Special Title (in contents)',
+     'Plugin 2 (in contents)',
+     'Plugin 3 (in contents)',
+     'Plugin 4 (in contents)',
+     'Plugin X (not found; deselecting will remove)']

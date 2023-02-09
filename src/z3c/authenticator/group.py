@@ -15,24 +15,21 @@
 """
 import BTrees.OOBTree
 import persistent
-
-import zope.interface
 import zope.component
 import zope.event
-
-from zope.security.interfaces import IGroup
-from zope.security.interfaces import IGroupAwarePrincipal
-
-from zope.container import btree
-from zope.container import contained
-from zope.authentication.interfaces import IAuthentication
+import zope.interface
 from zope.authentication.interfaces import IAuthenticatedGroup
+from zope.authentication.interfaces import IAuthentication
 from zope.authentication.interfaces import IEveryoneGroup
 from zope.authentication.interfaces import IUnauthenticatedGroup
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.container import btree
+from zope.container import contained
+from zope.security.interfaces import IGroup
+from zope.security.interfaces import IGroupAwarePrincipal
 
-from z3c.authenticator import interfaces
 from z3c.authenticator import event
+from z3c.authenticator import interfaces
 
 
 @zope.interface.implementer(interfaces.IGroup)
@@ -41,7 +38,7 @@ class Group(persistent.Persistent, contained.Contained):
 
     _principals = ()
 
-    def __init__(self, title=u'', description=u''):
+    def __init__(self, title='', description=''):
         self.title = title
         self.description = description
 
@@ -90,15 +87,15 @@ class Group(persistent.Persistent, contained.Contained):
     principals = property(lambda self: self._principals, setPrincipals)
 
     def __repr__(self):
-        return "<%s %s>" % (self.__class__.__name__, self.__name__)
+        return "<{} {}>".format(self.__class__.__name__, self.__name__)
 
 
 @zope.interface.implementer(interfaces.IGroupContainer)
 class GroupContainer(btree.BTreeContainer):
 
-    def __init__(self, prefix=u''):
+    def __init__(self, prefix=''):
         self.prefix = prefix
-        super(GroupContainer, self).__init__()
+        super().__init__()
         # __inversemapping is used to map principals to groups
         self.__inverseMapping = BTrees.OOBTree.OOBTree()
 
@@ -137,7 +134,7 @@ class GroupContainer(btree.BTreeContainer):
         if not name.startswith(self.prefix):
             raise KeyError('Wrong prefix used in group id!')
 
-        super(GroupContainer, self).__setitem__(name, group)
+        super().__setitem__(name, group)
         gid = group.__name__
         self._addPrincipalsToGroup(group.principals, gid)
         if group.principals:
@@ -156,7 +153,7 @@ class GroupContainer(btree.BTreeContainer):
         if group.principals:
             zope.event.notify(
                 event.PrincipalsRemovedFromGroup(group.principals, gid))
-        super(GroupContainer, self).__delitem__(gid)
+        super().__delitem__(gid)
 
     def _addPrincipalsToGroup(self, pids, gid):
         for pid in pids:

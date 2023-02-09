@@ -13,18 +13,18 @@
 ##############################################################################
 """Interfaces
 """
+import zope.deprecation
 import zope.interface
 import zope.schema
-import zope.deprecation
 import zope.security.interfaces
-
-from zope.container.interfaces import IContainer
-from zope.container.constraints import contains
-from zope.container.constraints import containers
 from zope.authentication.interfaces import ILogout
 from zope.authentication.principal import PrincipalSource
-
+from zope.container.constraints import containers
+from zope.container.constraints import contains
+from zope.container.interfaces import IContainer
 from zope.i18nmessageid import MessageFactory
+
+
 _ = MessageFactory('z3c')
 
 
@@ -226,7 +226,7 @@ class IUser(zope.interface.Interface):
         description=_("Provides a description for the principal."),
         required=False,
         missing_value='',
-        default=u'')
+        default='')
 
 
 class ISourceSearchCriteria(zope.interface.Interface):
@@ -236,8 +236,8 @@ class ISourceSearchCriteria(zope.interface.Interface):
         title=_("Search String"),
         description=_("A Search String"),
         required=False,
-        default=u'',
-        missing_value=u'')
+        default='',
+        missing_value='')
 
 
 class IUserContainer(IContainer, IAuthenticatorPlugin, ISearchable):
@@ -370,7 +370,7 @@ class IGroupContainer(IContainer, IAuthenticatorPlugin, ISearchable):
     prefix = zope.schema.TextLine(
         title=_('Prefix'),
         description=_("Prefix added to IDs of groups in this container"),
-        default=u'',
+        default='',
         required=True,
         readonly=True,
     )
@@ -460,10 +460,10 @@ class IHTTPBasicAuthRealm(zope.interface.Interface):
     """
 
     realm = zope.schema.TextLine(
-        title=u'Realm',
-        description=u'HTTP Basic Authentication Realm',
+        title='Realm',
+        description='HTTP Basic Authentication Realm',
         required=True,
-        default=u'ZAM')
+        default='ZAM')
 
 
 class ISessionCredentials(zope.interface.Interface):
@@ -484,35 +484,35 @@ class IBrowserFormChallenger(zope.interface.Interface):
     """A challenger that uses a browser form to collect user credentials."""
 
     prefixes = zope.schema.List(
-        title=u'Form prefixes',
-        description=u'List of prefixes used in different login forms',
+        title='Form prefixes',
+        description='List of prefixes used in different login forms',
         value_type=zope.schema.TextLine(
-            title=u'Form prefix',
-            description=u'Form prefix',
-            missing_value=u'',
+            title='Form prefix',
+            description='Form prefix',
+            missing_value='',
             required=True),
         default=[])
 
     loginpagename = zope.schema.TextLine(
-        title=u'Loginpagename',
-        description=u"""Name of the login form used by challenger.
+        title='Loginpagename',
+        description="""Name of the login form used by challenger.
 
         The form must provide 'login' and 'password' input fields.
         """,
-        default=u'loginForm.html')
+        default='loginForm.html')
 
     loginfield = zope.schema.TextLine(
-        title=u'Loginfield',
+        title='Loginfield',
         description=(
-            u"Field of the login page in which is looked for the login user"
-            u" name."),
-        default=u"login")
+            "Field of the login page in which is looked for the login user"
+            " name."),
+        default="login")
 
     passwordfield = zope.schema.TextLine(
-        title=u'Passwordfield',
+        title='Passwordfield',
         description=(
-            u"Field of the login page in which is looked for the password."),
-        default=u"password")
+            "Field of the login page in which is looked for the password."),
+        default="password")
 
 
 class IHTTPBasicAuthCredentialsPlugin(ICredentialsPlugin, IHTTPBasicAuthRealm):
@@ -527,13 +527,13 @@ class ILoginSchema(zope.interface.Interface):
     """The subscription form."""
 
     login = zope.schema.TextLine(
-        title=_(u'Login'),
-        description=_(u'Your login name.'),
+        title=_('Login'),
+        description=_('Your login name.'),
         required=True)
 
     password = zope.schema.Password(
-        title=_(u'Password'),
-        description=_(u'Your password.'))
+        title=_('Password'),
+        description=_('Your password.'))
 
 
 # queriable search interfaces

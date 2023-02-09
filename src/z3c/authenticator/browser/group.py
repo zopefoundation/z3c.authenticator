@@ -13,18 +13,19 @@
 ##############################################################################
 """Group Forms
 """
-import zope.interface
 import zope.event
+import zope.interface
 import zope.lifecycleevent
-from zope.traversing.browser import absoluteURL
 import zope.schema
-
-from z3c.authenticator import interfaces
-from z3c.authenticator import group
-from z3c.authenticator.widget import getSourceInputWidget
-from z3c.form import field
 from z3c.form import button
+from z3c.form import field
 from z3c.formui import form
+from zope.traversing.browser import absoluteURL
+
+from z3c.authenticator import group
+from z3c.authenticator import interfaces
+from z3c.authenticator.widget import getSourceInputWidget
+
 
 # Make z3c.configurator optional.
 try:
@@ -39,8 +40,8 @@ class IAddName(zope.interface.Interface):
     """Object name."""
 
     __name__ = zope.schema.TextLine(
-        title=u'Object Name',
-        description=u'Object Name',
+        title='Object Name',
+        description='Object Name',
         required=True)
 
 
@@ -56,8 +57,8 @@ class GroupContainerAddForm(form.AddForm):
 
     def createAndAdd(self, data):
         obj = group.GroupContainer()
-        obj.prefix = data.get('prefix', u'')
-        self.contentName = data.get('__name__', u'')
+        obj.prefix = data.get('prefix', '')
+        self.contentName = data.get('__name__', '')
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
         self.context[self.contentName] = obj
 
@@ -81,10 +82,10 @@ class GroupAddForm(form.AddForm):
     fields += field.Fields(interfaces.IGroup).select('title', 'description')
 
     def createAndAdd(self, data):
-        title = data.get('title', u'')
-        description = data.get('description', u'')
+        title = data.get('title', '')
+        description = data.get('description', '')
         obj = group.Group(title, description)
-        name = data.get('__name__', u'')
+        name = data.get('__name__', '')
         prefix = self.context.prefix
         if not name.startswith(prefix):
             name = prefix + name
