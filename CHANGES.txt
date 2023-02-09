@@ -5,13 +5,9 @@ CHANGES
 2.0 (unreleased)
 ----------------
 
-- Add support for Python 3.10, 3.11.
+- Drop support for Python 2.6, 2.7, 3.4, 3.5, 3.6.
 
-- Drop support for Python 2.7, 3.5, 3.6.
-
-- Add Python 3.7, 3.8 and 3.9 support.
-
-- Drop Python 2.6 from Travis CI.
+- Add Python 3.7, 3.8, 3.9, 3.10, 3.11 support.
 
 - Remove unused imports.
 
