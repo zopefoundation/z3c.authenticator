@@ -54,7 +54,7 @@ class PrincipalBase:
                         stack.append(iter(group.groups))
 
     def __repr__(self):
-        return "<{} {}>".format(self.__class__.__name__, self.id)
+        return f"<{self.__class__.__name__} {self.id}>"
 
 
 @zope.component.adapter(interfaces.IUser)
@@ -117,4 +117,4 @@ class FoundGroup:
         return self._group.description
 
     def __repr__(self):
-        return "<{} {}>".format(self.__class__.__name__, self.id)
+        return f"<{self.__class__.__name__} {self.id}>"

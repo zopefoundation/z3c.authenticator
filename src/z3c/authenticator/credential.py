@@ -423,7 +423,7 @@ class SessionCredentialsPlugin(persistent.Persistent, contained.Contained):
         camefrom = '/'.join([request.getURL(path_only=True)] + stack)
         if query:
             camefrom = camefrom + '?' + query
-        url = '{}/@@{}'.format(absoluteURL(site, request), self.loginpagename)
+        url = f'{absoluteURL(site, request)}/@@{self.loginpagename}'
         # only redirect to the login form
         request.response.redirect(url)
         # and store the camefrom url into a session variable, then this url

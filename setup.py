@@ -41,7 +41,7 @@ setup(
         + '\n\n' +
         read('CHANGES.txt')
     ),
-    license="ZPL 2.1",
+    license="ZPL-2.1",
     keywords="zope3 z3c authentication auth group",
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -50,11 +50,11 @@ setup(
         'License :: OSI Approved :: Zope Public License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Natural Language :: English',
@@ -67,7 +67,7 @@ setup(
     include_package_data=True,
     package_dir={'': 'src'},
     namespace_packages=['z3c'],
-    python_requires='>=3.7',
+    python_requires='>=3.9',
     extras_require=dict(
         test=[
             'z3c.testing >= 1.0.0a3',
@@ -102,6 +102,5 @@ setup(
         'zope.site',
         'zope.traversing',
     ],
-    test_suite='z3c.authenticator.tests.test_suite',
     zip_safe=False,
 )

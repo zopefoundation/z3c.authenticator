@@ -40,7 +40,7 @@ def generateUserIDToken(id):
     """Generates a unique user id token."""
     t = int(time.time() * 1000)
     r = int(random.random() * 100000000000000000)
-    data = "{} {} {} {}".format(ip, t, r, id)
+    data = f"{ip} {t} {r} {id}"
     return md5(data.encode('utf-8')).hexdigest()
 
 

@@ -87,7 +87,7 @@ class Group(persistent.Persistent, contained.Contained):
     principals = property(lambda self: self._principals, setPrincipals)
 
     def __repr__(self):
-        return "<{} {}>".format(self.__class__.__name__, self.__name__)
+        return f"<{self.__class__.__name__} {self.__name__}>"
 
 
 @zope.interface.implementer(interfaces.IGroupContainer)
