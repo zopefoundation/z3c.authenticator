@@ -28,7 +28,7 @@ from z3c.authenticator import user
 # Make z3c.configurator optional.
 try:
     from z3c.configurator import configurator
-except ImportError:
+except ModuleNotFoundError:
     configurator = None
 
 from z3c.authenticator.interfaces import _

@@ -192,7 +192,7 @@ class SourceResultWidget(widget.HTMLInputWidget, SequenceWidget):
         checked = self.isChecked(term)
         label = zope.i18n.translate(term.title, context=self.request,
                                     default=term.title)
-        id = '{}-{}'.format(self.id, term.token)
+        id = f'{self.id}-{term.token}'
         item = {'id': id, 'name': self.name + ':list', 'value': term.token,
                 'label': label, 'checked': checked}
         if item not in self.items:
@@ -239,7 +239,7 @@ class SourceSearchWidget(text.TextWidget):
     def label(self):
         txt = _('search in: ')
         prefix = zope.i18n.translate(txt, context=self.request, default=txt)
-        return '{}{}'.format(prefix, self.form.title)
+        return f'{prefix}{self.form.title}'
 
     @label.setter
     def label(self, value):
@@ -375,7 +375,7 @@ class PrincipalSourceWidget(widget.HTMLInputWidget, SequenceWidget):
         checked = self.isChecked(term)
         label = zope.i18n.translate(term.title, context=self.request,
                                     default=term.title)
-        id = '{}-{}'.format(self.id, term.token)
+        id = f'{self.id}-{term.token}'
         item = {'id': id, 'name': self.name + ':list', 'value': term.token,
                 'label': label, 'checked': checked}
         if item not in self.items:
